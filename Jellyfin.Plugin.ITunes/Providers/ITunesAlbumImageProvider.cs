@@ -4,7 +4,6 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using HtmlAgilityPack;
 using Jellyfin.Plugin.ITunes.Dtos;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities;
@@ -17,19 +16,19 @@ using Microsoft.Extensions.Logging;
 namespace Jellyfin.Plugin.ITunesArt.Providers
 {
     /// <summary>
-    /// The ITunes artist image provider.
+    /// The ITunes album image provider.
     /// </summary>
-    public class ITunesArtistImageProvider : IRemoteImageProvider, IHasOrder
+    public class ITunesAlbumImageProvider : IRemoteImageProvider, IHasOrder
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly ILogger<ITunesArtistImageProvider> _logger;
+        private readonly ILogger<ITunesAlbumImageProvider> _logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ITunesArtistImageProvider"/> class.
+        /// Initializes a new instance of the <see cref="ITunesAlbumImageProvider"/> class.
         /// </summary>
         /// <param name="httpClientFactory">Instance of the <see cref="IHttpClientFactory"/> interface.</param>
         /// <param name="logger">Instance of the <see cref="ILogger"/> interface.</param>
-        public ITunesArtistImageProvider(IHttpClientFactory httpClientFactory, ILogger<ITunesArtistImageProvider> logger)
+        public ITunesAlbumImageProvider(IHttpClientFactory httpClientFactory, ILogger<ITunesAlbumImageProvider> logger)
         {
             _httpClientFactory = httpClientFactory;
             _logger = logger;
@@ -41,16 +40,23 @@ namespace Jellyfin.Plugin.ITunesArt.Providers
         public string Name => "Apple Music";
 
         /// <summary>
-        /// Gets the provider order.
+        /// Gets the plugin order.
         /// </summary>
-        // After fanart
-        public int Order => 1;
+        public int Order => 1; // After embedded provider
+
+        /// <summary>
+        /// Gets if <see cref="BaseItem"/> is supported.
+        /// </summary>
+        /// <param name="item">Object of the <see cref="BaseItem"/> class.</param>
+        /// <returns>IF <see cref="BaseItem"/> is supported.</returns>
+        public bool Supports(BaseItem item)
+            => item is MusicAlbum;
 
         /// <summary>
         /// Gets the supported <see cref="ImageType"/> to a <see cref="BaseItem"/>.
         /// </summary>
         /// <param name="item">Object of the <see cref="BaseItem"/> class.</param>
-        /// <returns>List of supported <see cref="ImageType"/>.</returns>
+        /// <returns>Supported <see cref="ImageType"/>.</returns>
         public IEnumerable<ImageType> GetSupportedImages(BaseItem item)
         {
             return new List<ImageType>
@@ -60,7 +66,7 @@ namespace Jellyfin.Plugin.ITunesArt.Providers
         }
 
         /// <summary>
-        /// Gets the image response from an URL.
+        /// Gets the image from an URL.
         /// </summary>
         /// <param name="url">The URL.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
@@ -79,16 +85,25 @@ namespace Jellyfin.Plugin.ITunesArt.Providers
         /// <returns>List of <see cref="RemoteImageInfo"/>.</returns>
         public async Task<IEnumerable<RemoteImageInfo>> GetImages(BaseItem item, CancellationToken cancellationToken)
         {
-            var artist = (MusicArtist)item;
+            var album = (MusicAlbum)item;
             var list = new List<RemoteImageInfo>();
 
-            if (!string.IsNullOrEmpty(artist.Name))
+            if (!string.IsNullOrEmpty(album.Name))
             {
-                var searchQuery = artist.Name;
+                var searchQuery = album.Name;
+
+                if (album.AlbumArtists.Count > 0)
+                {
+                    string[] terms =
+                    {
+                        album.AlbumArtists[0],
+                        album.Name
+                    };
+                    searchQuery = string.Join(' ', terms);
+                }
 
                 var encodedName = Uri.EscapeDataString(searchQuery);
-
-                var remoteImages = await GetImagesInternal($"https://itunes.apple.com/search?term=${encodedName}&media=music&entity=musicArtist", cancellationToken).ConfigureAwait(false);
+                var remoteImages = await GetImagesInternal($"https://itunes.apple.com/search?term={encodedName}&media=music&entity=album", cancellationToken).ConfigureAwait(false);
 
                 if (remoteImages != null)
                 {
@@ -105,29 +120,18 @@ namespace Jellyfin.Plugin.ITunesArt.Providers
 
             var iTunesAlbumDto = await _httpClientFactory
                 .CreateClient(NamedClient.Default)
-                .GetFromJsonAsync<ITunesArtistDto>(new Uri(url), cancellationToken)
+                .GetFromJsonAsync<ITunesAlbumDto>(new Uri(url), cancellationToken)
                 .ConfigureAwait(false);
 
             if (iTunesAlbumDto != null && iTunesAlbumDto.Results != null)
             {
-                var result = iTunesAlbumDto.Results[0];
-                if (result.ArtistLinkUrl != null)
+                foreach (Result result in iTunesAlbumDto.Results)
                 {
-                    _logger.LogDebug("URL: {0}", result.ArtistLinkUrl);
-                    HtmlWeb web = new HtmlWeb();
-                    var doc = web.Load(new Uri(result.ArtistLinkUrl));
-                    var navigator = (HtmlAgilityPack.HtmlNodeNavigator)doc.CreateNavigator();
-
-                    var metaOgImage = navigator.SelectSingleNode("/html/head/meta[@property='og:image']/@content");
-
-                    if (metaOgImage != null)
+                    if (result.ArtworkUrl100 != null)
                     {
-                        _logger.LogDebug("Node: {0} | {1}", metaOgImage.NodeType, metaOgImage.Value);
-
                         // The artwork size can vary quite a bit, but for our uses, 1400x1400 should be plenty.
                         // https://artists.apple.com/support/88-artist-image-guidelines
-                        var image100 = metaOgImage.Value.Replace("1200x630cw", "100x100cc", StringComparison.OrdinalIgnoreCase);
-                        var image1400 = metaOgImage.Value.Replace("1200x630cw", "1400x1400cc", StringComparison.OrdinalIgnoreCase);
+                        var image1400 = result.ArtworkUrl100.Replace("100x100bb", "1400x1400bb", StringComparison.OrdinalIgnoreCase);
 
                         list.Add(
                             new RemoteImageInfo
@@ -135,7 +139,9 @@ namespace Jellyfin.Plugin.ITunesArt.Providers
                                 ProviderName = Name,
                                 Url = image1400,
                                 Type = ImageType.Primary,
-                                ThumbnailUrl = image100
+                                ThumbnailUrl = result?.ArtworkUrl100,
+                                Height = 1400,
+                                Width = 1400
                             });
                     }
                 }
@@ -147,9 +153,5 @@ namespace Jellyfin.Plugin.ITunesArt.Providers
 
             return list;
         }
-
-        /// <inheritdoc />
-        public bool Supports(BaseItem item)
-            => item is MusicArtist;
     }
 }
