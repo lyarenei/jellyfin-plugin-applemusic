@@ -16,7 +16,7 @@ using Microsoft.Extensions.Logging;
 namespace Jellyfin.Plugin.ITunesArt.Providers
 {
     /// <summary>
-    /// The ITunes album image provider.
+    /// The iTunes album image provider.
     /// </summary>
     public class ITunesAlbumImageProvider : IRemoteImageProvider, IHasOrder
     {
@@ -78,7 +78,7 @@ namespace Jellyfin.Plugin.ITunesArt.Providers
         }
 
         /// <summary>
-        /// Adds ITunes images to the current remote images of a <see cref="BaseItem"/>.
+        /// Adds iTunes images to the current remote images of a <see cref="BaseItem"/>.
         /// </summary>
         /// <param name="item">Object of the <see cref="BaseItem"/> class.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
@@ -103,9 +103,9 @@ namespace Jellyfin.Plugin.ITunesArt.Providers
                 }
 
                 var encodedName = Uri.EscapeDataString(searchQuery);
-                var remoteImages = await GetImagesInternal($"https://itunes.apple.com/search?term={encodedName}&media=music&entity=album", cancellationToken).ConfigureAwait(false);
+                var remoteImages = await GetImagesInternal($"https://itunes.apple.com/search?term={encodedName}&media=music&entity=album&attribute=albumTerm", cancellationToken).ConfigureAwait(false);
 
-                if (remoteImages != null)
+                if (remoteImages is not null)
                 {
                     list.AddRange(remoteImages);
                 }
@@ -118,16 +118,16 @@ namespace Jellyfin.Plugin.ITunesArt.Providers
         {
             List<RemoteImageInfo> list = new List<RemoteImageInfo>();
 
-            var iTunesAlbumDto = await _httpClientFactory
+            var iTunesArtistDto = await _httpClientFactory
                 .CreateClient(NamedClient.Default)
                 .GetFromJsonAsync<ITunesAlbumDto>(new Uri(url), cancellationToken)
                 .ConfigureAwait(false);
 
-            if (iTunesAlbumDto != null && iTunesAlbumDto.Results != null)
+            if (iTunesArtistDto is not null && iTunesArtistDto.ResultCount > 0)
             {
-                foreach (Result result in iTunesAlbumDto.Results)
+                foreach (Result result in iTunesArtistDto.Results)
                 {
-                    if (result.ArtworkUrl100 != null)
+                    if (!string.IsNullOrEmpty(result.ArtworkUrl100))
                     {
                         // The artwork size can vary quite a bit, but for our uses, 1400x1400 should be plenty.
                         // https://artists.apple.com/support/88-artist-image-guidelines
@@ -139,7 +139,7 @@ namespace Jellyfin.Plugin.ITunesArt.Providers
                                 ProviderName = Name,
                                 Url = image1400,
                                 Type = ImageType.Primary,
-                                ThumbnailUrl = result?.ArtworkUrl100,
+                                ThumbnailUrl = result.ArtworkUrl100,
                                 Height = 1400,
                                 Width = 1400
                             });
@@ -148,7 +148,7 @@ namespace Jellyfin.Plugin.ITunesArt.Providers
             }
             else
             {
-                return Array.Empty<RemoteImageInfo>();
+                return list;
             }
 
             return list;

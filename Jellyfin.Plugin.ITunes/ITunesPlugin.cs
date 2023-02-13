@@ -23,7 +23,7 @@ namespace Jellyfin.Plugin.ITunesArt
         }
 
         /// <inheritdoc />
-        public override string Name => "ITunes Art";
+        public override string Name => "iTunes Art";
 
         /// <inheritdoc />
         public override Guid Id => Guid.Parse("a9f62a44-fea5-46c3-ac26-55abba29c7c8");

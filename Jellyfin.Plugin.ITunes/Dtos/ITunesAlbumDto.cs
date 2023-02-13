@@ -1,5 +1,4 @@
-#pragma warning disable CA1819
-
+using System;
 using System.Text.Json.Serialization;
 
 namespace Jellyfin.Plugin.ITunes.Dtos
@@ -21,6 +20,6 @@ namespace Jellyfin.Plugin.ITunes.Dtos
         /// </summary>
         /// <value>The results.</value>
         [JsonPropertyName("results")]
-        public Result[]? Results { get; set; }
+        public Result[] Results { get; set; } = Array.Empty<Result>();
     }
 }

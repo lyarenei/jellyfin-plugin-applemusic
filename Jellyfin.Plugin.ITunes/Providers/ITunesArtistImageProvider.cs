@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading;
@@ -17,7 +18,7 @@ using Microsoft.Extensions.Logging;
 namespace Jellyfin.Plugin.ITunesArt.Providers
 {
     /// <summary>
-    /// The ITunes artist image provider.
+    /// The iTunes artist image provider.
     /// </summary>
     public class ITunesArtistImageProvider : IRemoteImageProvider, IHasOrder
     {
@@ -72,7 +73,7 @@ namespace Jellyfin.Plugin.ITunesArt.Providers
         }
 
         /// <summary>
-        /// Adds ITunes images to the current remote images of a <see cref="BaseItem"/>.
+        /// Adds iTunes images to the current remote images of a <see cref="BaseItem"/>.
         /// </summary>
         /// <param name="item">Object of the <see cref="BaseItem"/> class.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
@@ -88,9 +89,9 @@ namespace Jellyfin.Plugin.ITunesArt.Providers
 
                 var encodedName = Uri.EscapeDataString(searchQuery);
 
-                var remoteImages = await GetImagesInternal($"https://itunes.apple.com/search?term=${encodedName}&media=music&entity=musicArtist", cancellationToken).ConfigureAwait(false);
+                var remoteImages = await GetImagesInternal($"https://itunes.apple.com/search?term=${encodedName}&media=music&entity=musicArtist&attribute=artistTerm", cancellationToken).ConfigureAwait(false);
 
-                if (remoteImages != null)
+                if (remoteImages is not null)
                 {
                     list.AddRange(remoteImages);
                 }
@@ -108,10 +109,10 @@ namespace Jellyfin.Plugin.ITunesArt.Providers
                 .GetFromJsonAsync<ITunesArtistDto>(new Uri(url), cancellationToken)
                 .ConfigureAwait(false);
 
-            if (iTunesAlbumDto != null && iTunesAlbumDto.Results != null)
+            if (iTunesAlbumDto is not null && iTunesAlbumDto.ResultCount > 0)
             {
-                var result = iTunesAlbumDto.Results[0];
-                if (result.ArtistLinkUrl != null)
+                var result = iTunesAlbumDto.Results.First();
+                if (result.ArtistLinkUrl is not null)
                 {
                     _logger.LogDebug("URL: {0}", result.ArtistLinkUrl);
                     HtmlWeb web = new HtmlWeb();
@@ -142,7 +143,7 @@ namespace Jellyfin.Plugin.ITunesArt.Providers
             }
             else
             {
-                return Array.Empty<RemoteImageInfo>();
+                return list;
             }
 
             return list;
