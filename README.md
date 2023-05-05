@@ -9,11 +9,13 @@
 [![Current Release](https://img.shields.io/github/release/Shadowghost/jellyfin-plugin-itunes.svg)](https://github.com/Shadowghost/jellyfin-plugin-itunes/releases)
 
 ## About
-Fetches Metadata from iTunes
+Fetches Metadata from iTunes (Apple Music)
 
 Currently supported:
 * Album Images
 * Artist Images
+* Artist Info (Overview)
+* Identifying albums and artists
 
 ## Installation
 
