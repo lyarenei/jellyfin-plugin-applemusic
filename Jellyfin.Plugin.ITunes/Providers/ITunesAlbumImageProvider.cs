@@ -125,7 +125,7 @@ namespace Jellyfin.Plugin.ITunesArt.Providers
 
             if (iTunesArtistDto is not null && iTunesArtistDto.ResultCount > 0)
             {
-                foreach (Result result in iTunesArtistDto.Results)
+                foreach (AlbumResult result in iTunesArtistDto.Results)
                 {
                     if (!string.IsNullOrEmpty(result.ArtworkUrl100))
                     {

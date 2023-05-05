@@ -15,7 +15,7 @@ namespace Jellyfin.Plugin.ITunes.Dtos
         public ITunesAlbumDto()
         {
             ResultCount = 0;
-            Results = new List<Result>();
+            Results = new List<AlbumResult>();
         }
 
         /// <summary>
@@ -31,6 +31,6 @@ namespace Jellyfin.Plugin.ITunes.Dtos
         /// <value>The results.</value>
         [JsonPropertyName("results")]
         [SuppressMessage("Usage", "CA2227", Justification = "Setter is necessary for deserialization")]
-        public ICollection<Result> Results { get; set; }
+        public ICollection<AlbumResult> Results { get; set; }
     }
 }

@@ -148,7 +148,7 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
         };
     }
 
-    private static List<(string Url, ImageType Type)> GetAlbumImages(Result album)
+    private static List<(string Url, ImageType Type)> GetAlbumImages(AlbumResult album)
     {
         if (album.ArtworkUrl100 is null)
         {
