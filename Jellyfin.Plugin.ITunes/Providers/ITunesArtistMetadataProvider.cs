@@ -135,7 +135,7 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
         {
             Item = musicArtist,
             HasMetadata = true,
-            RemoteImages = await GetArtistImages(url, cancellationToken).ConfigureAwait(false)
+            RemoteImages = await GetArtistImages(result.ArtistLinkUrl, cancellationToken).ConfigureAwait(false)
         };
     }
 
