@@ -99,7 +99,7 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
         if (aboutArtistNode is null)
         {
             _logger.LogDebug("Failed to get full about artist node, will fall back to truncated");
-            aboutArtistNode = navigator.SelectSingleNode("//p[@data-testid=\"trruncate-text\"]");
+            aboutArtistNode = navigator.SelectSingleNode("//p[@data-testid=\"truncate-text\"]");
         }
 
         if (aboutArtistNode is null)
