@@ -95,16 +95,10 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
             return EmptyResult();
         }
 
-        var aboutArtistNode = navigator.SelectSingleNode("//p[@data-testid=\"content-modal-text\"]");
+        var aboutArtistNode = navigator.SelectSingleNode("//p[@data-testid=\"truncate-text\"]");
         if (aboutArtistNode is null)
         {
-            _logger.LogDebug("Failed to get full about artist node, will fall back to truncated");
-            aboutArtistNode = navigator.SelectSingleNode("//p[@data-testid=\"truncate-text\"]");
-        }
-
-        if (aboutArtistNode is null)
-        {
-            _logger.LogDebug("Failed to get truncated about artist, giving up");
+            _logger.LogDebug("Failed to get about artist info");
             return EmptyResult();
         }
 
