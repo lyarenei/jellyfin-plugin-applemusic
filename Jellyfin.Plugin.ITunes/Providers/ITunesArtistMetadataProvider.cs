@@ -11,6 +11,7 @@ using Jellyfin.Plugin.ITunes.Dtos;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Providers;
+using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
 using Microsoft.Extensions.Logging;
 
@@ -132,6 +133,7 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
         {
             Item = musicArtist,
             HasMetadata = true,
+            RemoteImages = await GetArtistImages(url, cancellationToken).ConfigureAwait(false)
         };
     }
 
@@ -156,5 +158,30 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
         var doc = await context.OpenAsync(url, cancellationToken).ConfigureAwait(false);
         var artistInfo = doc.Body.SelectSingleNode("//p[@data-testid='truncate-text']");
         return artistInfo?.TextContent;
+    }
+
+    private async Task<List<(string Url, ImageType Type)>> GetArtistImages(string url, CancellationToken cancellationToken)
+    {
+        var context = BrowsingContext.New(_config);
+        var doc = await context.OpenAsync(url, cancellationToken).ConfigureAwait(false);
+        var artistImage = doc.Head.SelectSingleNode("//meta[@property='og:image']/@content");
+        if (artistImage is null)
+        {
+            return new List<(string Url, ImageType Type)>();
+        }
+
+        // The artwork size can vary quite a bit, but for our uses, 1400x1400 should be plenty.
+        // https://artists.apple.com/support/88-artist-image-guidelines
+        var primaryImageUrl = artistImage.TextContent.Replace("1200x630cw", "1400x1400cc", StringComparison.OrdinalIgnoreCase);
+        var thumbImageUrl = artistImage.TextContent.Replace("1200x630cw", "100x100cc", StringComparison.OrdinalIgnoreCase);
+
+        _logger.LogDebug("Found primary image at: {Primary}", primaryImageUrl);
+        _logger.LogDebug("Found thumbnail image at: {Thumbnail}", thumbImageUrl);
+
+        return new List<(string Url, ImageType Type)>
+        {
+            (primaryImageUrl, ImageType.Primary),
+            (thumbImageUrl, ImageType.Thumb)
+        };
     }
 }
