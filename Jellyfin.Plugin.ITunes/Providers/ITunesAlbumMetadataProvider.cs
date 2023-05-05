@@ -69,7 +69,7 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
             var albumImages = GetAlbumImages(albumDto);
             results.Add(new RemoteSearchResult
             {
-                Name = albumDto.ArtistName,
+                Name = albumDto.CollectionName,
                 ImageUrl = albumImages.FirstOrDefault((string.Empty, ImageType.Thumb)).Item1
             });
         }
