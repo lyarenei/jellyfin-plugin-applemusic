@@ -92,7 +92,7 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
 
         var context = BrowsingContext.New(_config);
         var doc = await context.OpenAsync(result.ArtistLinkUrl, cancellationToken).ConfigureAwait(false);
-        var artistInfo = doc.Body.SelectSingleNode("//p[@data-testid=\"truncate-text\"]");
+        var artistInfo = doc.Body.SelectSingleNode("//p[@data-testid='truncate-text']");
         if (artistInfo is null)
         {
             _logger.LogDebug("Failed to get about artist info");
