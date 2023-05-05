@@ -5,7 +5,8 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using HtmlAgilityPack;
+using AngleSharp;
+using AngleSharp.XPath;
 using Jellyfin.Plugin.ITunes.Dtos;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities.Audio;
@@ -22,6 +23,7 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<ITunesArtistMetadataProvider> _logger;
+    private readonly IConfiguration _config;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ITunesArtistMetadataProvider"/> class.
@@ -32,6 +34,7 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
     {
         _httpClientFactory = httpClientFactory;
         _logger = loggerFactory.CreateLogger<ITunesArtistMetadataProvider>();
+        _config = AngleSharp.Configuration.Default.WithDefaultLoader();
     }
 
     /// <inheritdoc />
@@ -87,22 +90,16 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
 
         _logger.LogDebug("URL: {Url}", result.ArtistLinkUrl);
 
-        HtmlWeb web = new HtmlWeb();
-        var doc = web.Load(new Uri(result.ArtistLinkUrl));
-        if (doc?.CreateNavigator() is not HtmlNodeNavigator navigator)
-        {
-            _logger.LogDebug("Failed to create a scraping navigator");
-            return EmptyResult();
-        }
-
-        var aboutArtistNode = navigator.SelectSingleNode("//p[@data-testid=\"truncate-text\"]");
-        if (aboutArtistNode is null)
+        var context = BrowsingContext.New(_config);
+        var doc = await context.OpenAsync(result.ArtistLinkUrl, cancellationToken).ConfigureAwait(false);
+        var artistInfo = doc.Body.SelectSingleNode("//p[@data-testid=\"truncate-text\"]");
+        if (artistInfo is null)
         {
             _logger.LogDebug("Failed to get about artist info");
             return EmptyResult();
         }
 
-        var musicArtist = new MusicArtist { Overview = aboutArtistNode.Value };
+        var musicArtist = new MusicArtist { Overview = artistInfo.TextContent };
         return new MetadataResult<MusicArtist>
         {
             Item = musicArtist,
