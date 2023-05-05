@@ -28,7 +28,7 @@ Currently supported:
   dotnet publish --configuration Release --output bin
   ```
 
-3. Place the dll-file in the `plugins/coverartarchive` folder (you might need to create the folders) of your JF install
+3. Place the dll-file in the `plugins/itunes` folder (you might need to create the folders) of your JF install
 
 ## Releasing
 
