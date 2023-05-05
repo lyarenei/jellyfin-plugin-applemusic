@@ -88,7 +88,7 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
             return EmptyResult();
         }
 
-        _logger.LogDebug("URL: {Url}", result.ArtistLinkUrl);
+        _logger.LogDebug("Using {Url} to fetch artist info", result.ArtistLinkUrl);
 
         var context = BrowsingContext.New(_config);
         var doc = await context.OpenAsync(result.ArtistLinkUrl, cancellationToken).ConfigureAwait(false);
