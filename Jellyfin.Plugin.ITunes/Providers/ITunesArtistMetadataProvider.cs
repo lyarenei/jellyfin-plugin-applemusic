@@ -82,10 +82,12 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
             }
 
             var artistInfo = await GetArtistInfo(artistDto.ArtistLinkUrl, cancellationToken).ConfigureAwait(false);
+            var artistImages = await GetArtistImages(artistDto.ArtistLinkUrl, cancellationToken).ConfigureAwait(false);
             results.Add(new RemoteSearchResult
             {
                 Name = artistDto.ArtistName,
-                Overview = artistInfo ?? string.Empty
+                Overview = artistInfo ?? string.Empty,
+                ImageUrl = artistImages.FirstOrDefault((string.Empty, ImageType.Thumb)).Item1
             });
         }
 
