@@ -15,6 +15,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.ITunes.Providers;
 
+/// <summary>
+/// The iTunes album metadata provider.
+/// </summary>
 public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, AlbumInfo>
 {
     private readonly IHttpClientFactory _httpClientFactory;
@@ -35,9 +38,43 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
     public string Name => "Apple Music";
 
     /// <inheritdoc />
-    public Task<IEnumerable<RemoteSearchResult>> GetSearchResults(AlbumInfo searchInfo, CancellationToken cancellationToken)
+    public async Task<IEnumerable<RemoteSearchResult>> GetSearchResults(AlbumInfo searchInfo, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        if (string.IsNullOrEmpty(searchInfo.Name))
+        {
+            return Enumerable.Empty<RemoteSearchResult>();
+        }
+
+        var artistName = searchInfo.AlbumArtists.FirstOrDefault(string.Empty);
+        var url = GetSearchUrl(searchInfo.Name, artistName);
+        var iTunesAlbumDto = await _httpClientFactory
+            .CreateClient(NamedClient.Default)
+            .GetFromJsonAsync<ITunesAlbumDto>(new Uri(url), cancellationToken)
+            .ConfigureAwait(false);
+
+        if (iTunesAlbumDto is null || iTunesAlbumDto.ResultCount < 1)
+        {
+            _logger.LogDebug("No results for url {Url}", url);
+            return Enumerable.Empty<RemoteSearchResult>();
+        }
+
+        var results = new List<RemoteSearchResult>();
+        foreach (var albumDto in iTunesAlbumDto.Results)
+        {
+            if (albumDto.CollectionViewUrl is null)
+            {
+                continue;
+            }
+
+            var albumImages = GetAlbumImages(albumDto);
+            results.Add(new RemoteSearchResult
+            {
+                Name = albumDto.ArtistName,
+                ImageUrl = albumImages.FirstOrDefault((string.Empty, ImageType.Thumb)).Item1
+            });
+        }
+
+        return results;
     }
 
     /// <inheritdoc />
