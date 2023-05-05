@@ -49,16 +49,49 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
             return EmptyResult();
         }
 
-        var encodedName = Uri.EscapeDataString(info.Name);
-        return await GetMetadataInternal(
-            $"https://itunes.apple.com/search?term=${encodedName}&media=music&entity=musicArtist&attribute=artistTerm",
-            cancellationToken).ConfigureAwait(false);
+        return await GetMetadataInternal(GetSearchUrl(info.Name), cancellationToken).ConfigureAwait(false);
     }
 
     /// <inheritdoc />
-    public Task<IEnumerable<RemoteSearchResult>> GetSearchResults(ArtistInfo searchInfo, CancellationToken cancellationToken)
+    public async Task<IEnumerable<RemoteSearchResult>> GetSearchResults(ArtistInfo searchInfo, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        if (string.IsNullOrEmpty(searchInfo.Name))
+        {
+            return Enumerable.Empty<RemoteSearchResult>();
+        }
+
+        var url = GetSearchUrl(searchInfo.Name);
+        var iTunesArtistDto = await _httpClientFactory
+            .CreateClient(NamedClient.Default)
+            .GetFromJsonAsync<ITunesArtistDto>(new Uri(url), cancellationToken)
+            .ConfigureAwait(false);
+
+        if (iTunesArtistDto is null || iTunesArtistDto.ResultCount < 1)
+        {
+            _logger.LogDebug("No results for url {Url}", url);
+            return Enumerable.Empty<RemoteSearchResult>();
+        }
+
+        var results = new List<RemoteSearchResult>();
+        foreach (var artistDto in iTunesArtistDto.Results)
+        {
+            if (artistDto.ArtistLinkUrl is null)
+            {
+                continue;
+            }
+
+            var artistInfo = await GetArtistInfo(artistDto.ArtistLinkUrl, cancellationToken).ConfigureAwait(false);
+            if (artistInfo is not null)
+            {
+                results.Add(new RemoteSearchResult
+                {
+                    Name = artistDto.ArtistName,
+                    Overview = artistInfo
+                });
+            }
+        }
+
+        return results;
     }
 
     /// <inheritdoc />
@@ -90,16 +123,14 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
 
         _logger.LogDebug("Using {Url} to fetch artist info", result.ArtistLinkUrl);
 
-        var context = BrowsingContext.New(_config);
-        var doc = await context.OpenAsync(result.ArtistLinkUrl, cancellationToken).ConfigureAwait(false);
-        var artistInfo = doc.Body.SelectSingleNode("//p[@data-testid='truncate-text']");
+        var artistInfo = await GetArtistInfo(result.ArtistLinkUrl, cancellationToken).ConfigureAwait(false);
         if (artistInfo is null)
         {
             _logger.LogDebug("Failed to get about artist info");
             return EmptyResult();
         }
 
-        var musicArtist = new MusicArtist { Overview = artistInfo.TextContent };
+        var musicArtist = new MusicArtist { Overview = artistInfo };
         return new MetadataResult<MusicArtist>
         {
             Item = musicArtist,
@@ -114,5 +145,19 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
             Item = new MusicArtist(),
             HasMetadata = false
         };
+    }
+
+    private static string GetSearchUrl(string artistName)
+    {
+        var encodedName = Uri.EscapeDataString(artistName);
+        return $"https://itunes.apple.com/search?term=${encodedName}&media=music&entity=musicArtist&attribute=artistTerm";
+    }
+
+    private async Task<string?> GetArtistInfo(string url, CancellationToken cancellationToken)
+    {
+        var context = BrowsingContext.New(_config);
+        var doc = await context.OpenAsync(url, cancellationToken).ConfigureAwait(false);
+        var artistInfo = doc.Body.SelectSingleNode("//p[@data-testid='truncate-text']");
+        return artistInfo?.TextContent;
     }
 }
