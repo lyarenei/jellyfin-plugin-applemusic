@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
 namespace Jellyfin.Plugin.ITunes.Dtos
@@ -29,6 +30,7 @@ namespace Jellyfin.Plugin.ITunes.Dtos
         /// </summary>
         /// <value>The results.</value>
         [JsonPropertyName("results")]
+        [SuppressMessage("Usage", "CA2227", Justification = "Setter is necessary for deserialization")]
         public ICollection<Result> Results { get; set; }
     }
 }
