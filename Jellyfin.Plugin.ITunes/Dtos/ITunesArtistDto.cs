@@ -1,4 +1,4 @@
-using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace Jellyfin.Plugin.ITunes.Dtos
@@ -8,6 +8,15 @@ namespace Jellyfin.Plugin.ITunes.Dtos
     /// </summary>
     public class ITunesArtistDto
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ITunesArtistDto"/> class.
+        /// </summary>
+        public ITunesArtistDto()
+        {
+            ResultCount = 0;
+            Results = new List<ArtistResult>();
+        }
+
         /// <summary>
         /// Gets or sets the result count.
         /// </summary>
@@ -20,6 +29,6 @@ namespace Jellyfin.Plugin.ITunes.Dtos
         /// </summary>
         /// <value>The results.</value>
         [JsonPropertyName("results")]
-        public ArtistResult[] Results { get; set; } = Array.Empty<ArtistResult>();
+        public ICollection<ArtistResult> Results { get; set; }
     }
 }
