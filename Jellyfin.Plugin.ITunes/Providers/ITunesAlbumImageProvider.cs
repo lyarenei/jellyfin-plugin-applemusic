@@ -49,8 +49,7 @@ public class ITunesAlbumImageProvider : IRemoteImageProvider, IHasOrder
     /// </summary>
     /// <param name="item">Object of the <see cref="BaseItem"/> class.</param>
     /// <returns>IF <see cref="BaseItem"/> is supported.</returns>
-    public bool Supports(BaseItem item)
-        => item is MusicAlbum;
+    public bool Supports(BaseItem item) => item is MusicAlbum;
 
     /// <summary>
     /// Gets the supported <see cref="ImageType"/> to a <see cref="BaseItem"/>.
@@ -59,10 +58,7 @@ public class ITunesAlbumImageProvider : IRemoteImageProvider, IHasOrder
     /// <returns>Supported <see cref="ImageType"/>.</returns>
     public IEnumerable<ImageType> GetSupportedImages(BaseItem item)
     {
-        return new List<ImageType>
-        {
-            ImageType.Primary
-        };
+        return new List<ImageType> { ImageType.Primary };
     }
 
     /// <summary>
