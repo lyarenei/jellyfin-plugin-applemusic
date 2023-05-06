@@ -28,12 +28,12 @@ public class ITunesAlbumImageProvider : IRemoteImageProvider, IHasOrder
     /// Initializes a new instance of the <see cref="ITunesAlbumImageProvider"/> class.
     /// </summary>
     /// <param name="httpClientFactory">Instance of the <see cref="IHttpClientFactory"/> interface.</param>
-    /// <param name="loggerFactory">Logger factory.</param>
+    /// <param name="logger">Instance of the <see cref="ILogger"/> interface.</param>
     /// <param name="scraper">Scraper instance.</param>
-    public ITunesAlbumImageProvider(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory, IScraper<AlbumScraper> scraper)
+    public ITunesAlbumImageProvider(IHttpClientFactory httpClientFactory, ILogger<ITunesAlbumImageProvider> logger, IScraper<AlbumScraper> scraper)
     {
         _httpClientFactory = httpClientFactory;
-        _logger = loggerFactory.CreateLogger<ITunesAlbumImageProvider>();
+        _logger = logger;
         _scraper = scraper;
     }
 
