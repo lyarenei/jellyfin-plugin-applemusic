@@ -18,7 +18,7 @@ namespace Jellyfin.Plugin.ITunes.Providers;
 /// <summary>
 /// The iTunes album image provider.
 /// </summary>
-public class ITunesAlbumImageProvider : IRemoteImageProvider, IHasOrder
+public class ITunesAlbumImageProvider : IRemoteImageProvider
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<ITunesAlbumImageProvider> _logger;
@@ -39,9 +39,6 @@ public class ITunesAlbumImageProvider : IRemoteImageProvider, IHasOrder
 
     /// <inheritdoc />
     public string Name => ITunesPlugin.Instance?.Name ?? "Apple Music";
-
-    /// <inheritdoc />
-    public int Order => 1; // After embedded provider
 
     /// <inheritdoc />
     public bool Supports(BaseItem item) => item is MusicAlbum;

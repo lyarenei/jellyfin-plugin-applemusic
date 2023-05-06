@@ -17,7 +17,7 @@ namespace Jellyfin.Plugin.ITunes.Providers;
 /// <summary>
 /// The iTunes artist image provider.
 /// </summary>
-public class ITunesArtistImageProvider : IRemoteImageProvider, IHasOrder
+public class ITunesArtistImageProvider : IRemoteImageProvider
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<ITunesArtistImageProvider> _logger;
@@ -40,12 +40,6 @@ public class ITunesArtistImageProvider : IRemoteImageProvider, IHasOrder
     /// Gets the provider name.
     /// </summary>
     public string Name => ITunesPlugin.Instance?.Name ?? "Apple Music";
-
-    /// <summary>
-    /// Gets the provider order.
-    /// </summary>
-    // After fanart
-    public int Order => 1;
 
     /// <inheritdoc />
     public IEnumerable<ImageType> GetSupportedImages(BaseItem item)
