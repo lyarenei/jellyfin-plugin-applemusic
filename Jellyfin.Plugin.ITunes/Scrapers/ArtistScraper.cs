@@ -87,7 +87,9 @@ public class ArtistScraper : IScraper<ArtistScraper>
             ProviderName = "Apple Music",
             Url = primaryImageUrl,
             Type = ImageType.Primary,
-            ThumbnailUrl = thumbImageUrl
+            ThumbnailUrl = thumbImageUrl,
+            Height = 1400,
+            Width = 1400
         });
 
         return imageList;
