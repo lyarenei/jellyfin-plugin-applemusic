@@ -14,8 +14,8 @@ public interface IScraper<out TScraperType>
     /// <summary>
     /// Search and scrape images using provided URL.
     /// </summary>
-    /// <param name="searchUrl">URL for searching images.</param>
+    /// <param name="searchTerm">Term to use for searching.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of images.</returns>
-    public Task<IEnumerable<RemoteImageInfo>> GetImages(string searchUrl, CancellationToken cancellationToken);
+    public Task<IEnumerable<RemoteImageInfo>> GetImages(string searchTerm, CancellationToken cancellationToken);
 }

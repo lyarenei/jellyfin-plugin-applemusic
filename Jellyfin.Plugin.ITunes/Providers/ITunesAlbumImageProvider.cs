@@ -70,8 +70,6 @@ public class ITunesAlbumImageProvider : IRemoteImageProvider
             return new List<RemoteImageInfo>();
         }
 
-        var encodedName = Uri.EscapeDataString(album.Name);
-        var searchUrl = $"https://itunes.apple.com/search?term={encodedName}&media=music&entity=album&attribute=albumTerm";
-        return await _scraper.GetImages(searchUrl, cancellationToken).ConfigureAwait(false);
+        return await _scraper.GetImages(album.Name, cancellationToken).ConfigureAwait(false);
     }
 }

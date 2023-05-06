@@ -68,9 +68,7 @@ public class ITunesArtistImageProvider : IRemoteImageProvider
             return new List<RemoteImageInfo>();
         }
 
-        var encodedName = Uri.EscapeDataString(artist.Name);
-        var searchUrl = $"https://itunes.apple.com/search?term=${encodedName}&media=music&entity=musicArtist&attribute=artistTerm";
-        return await _scraper.GetImages(searchUrl, cancellationToken).ConfigureAwait(false);
+        return await _scraper.GetImages(artist.Name, cancellationToken).ConfigureAwait(false);
     }
 
     /// <inheritdoc />

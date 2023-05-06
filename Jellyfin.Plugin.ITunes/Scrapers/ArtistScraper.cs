@@ -39,13 +39,13 @@ public class ArtistScraper : IScraper<ArtistScraper>
     }
 
     /// <inheritdoc />
-    public async Task<IEnumerable<RemoteImageInfo>> GetImages(string searchUrl, CancellationToken cancellationToken)
+    public async Task<IEnumerable<RemoteImageInfo>> GetImages(string searchTerm, CancellationToken cancellationToken)
     {
         var imageList = new List<RemoteImageInfo>();
-        var searchData = await Search(searchUrl, cancellationToken).ConfigureAwait(false);
+        var searchData = await Search(searchTerm, cancellationToken).ConfigureAwait(false);
         if (searchData is null || searchData.ResultCount < 1)
         {
-            _logger.LogInformation("No results found for url: {Url}", searchUrl);
+            _logger.LogInformation("No results found for url: {Url}", searchTerm);
             return imageList;
         }
 
@@ -67,12 +67,14 @@ public class ArtistScraper : IScraper<ArtistScraper>
         return imageList;
     }
 
-    private async Task<ITunesArtistDto?> Search(string url, CancellationToken cancellationToken)
+    private async Task<ITunesArtistDto?> Search(string searchTerm, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Using {Url} for image search", url);
+        var encodedName = Uri.EscapeDataString(searchTerm);
+        var searchUrl = $"https://itunes.apple.com/search?term=${encodedName}&media=music&entity=musicArtist&attribute=artistTerm";
+        _logger.LogInformation("Using {Url} for image search", searchUrl);
         return await _httpClientFactory
             .CreateClient(NamedClient.Default)
-            .GetFromJsonAsync<ITunesArtistDto>(new Uri(url), cancellationToken)
+            .GetFromJsonAsync<ITunesArtistDto>(new Uri(searchUrl), cancellationToken)
             .ConfigureAwait(false);
     }
 
