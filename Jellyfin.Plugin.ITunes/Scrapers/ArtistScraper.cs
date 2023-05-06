@@ -25,7 +25,6 @@ public class ArtistScraper : IScraper
 
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<ArtistScraper> _logger;
-    private readonly string _searchUrl;
     private readonly IConfiguration _config;
 
     /// <summary>
@@ -33,23 +32,21 @@ public class ArtistScraper : IScraper
     /// </summary>
     /// <param name="httpClientFactory">HTTP client factory.</param>
     /// <param name="loggerFactory">Logger factory.</param>
-    /// <param name="searchUrl">Artist URL.</param>
-    public ArtistScraper(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory, string searchUrl)
+    public ArtistScraper(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory)
     {
         _httpClientFactory = httpClientFactory;
         _logger = loggerFactory.CreateLogger<ArtistScraper>();
-        _searchUrl = searchUrl;
         _config = AngleSharp.Configuration.Default.WithDefaultLoader();
     }
 
     /// <inheritdoc />
-    public async Task<IEnumerable<RemoteImageInfo>> GetImages(CancellationToken cancellationToken)
+    public async Task<IEnumerable<RemoteImageInfo>> GetImages(string searchUrl, CancellationToken cancellationToken)
     {
         var imageList = new List<RemoteImageInfo>();
-        var searchData = await Search(cancellationToken).ConfigureAwait(false);
+        var searchData = await Search(searchUrl, cancellationToken).ConfigureAwait(false);
         if (searchData is null || searchData.ResultCount < 1)
         {
-            _logger.LogInformation("No results found for url: {Url}", _searchUrl);
+            _logger.LogInformation("No results found for url: {Url}", searchUrl);
             return imageList;
         }
 
@@ -96,12 +93,12 @@ public class ArtistScraper : IScraper
         return imageList;
     }
 
-    private async Task<ITunesArtistDto?> Search(CancellationToken cancellationToken)
+    private async Task<ITunesArtistDto?> Search(string url, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Using {Url} for image search", _searchUrl);
+        _logger.LogInformation("Using {Url} for image search", url);
         return await _httpClientFactory
             .CreateClient(NamedClient.Default)
-            .GetFromJsonAsync<ITunesArtistDto>(new Uri(_searchUrl), cancellationToken)
+            .GetFromJsonAsync<ITunesArtistDto>(new Uri(url), cancellationToken)
             .ConfigureAwait(false);
     }
 

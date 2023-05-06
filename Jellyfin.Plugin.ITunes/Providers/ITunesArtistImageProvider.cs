@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Jellyfin.Plugin.ITunes.Dtos;
+using Jellyfin.Plugin.ITunes.Scrapers;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
@@ -24,16 +25,18 @@ public class ITunesArtistImageProvider : IRemoteImageProvider, IHasOrder
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<ITunesArtistImageProvider> _logger;
+    private readonly IScraper _scraper;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ITunesArtistImageProvider"/> class.
     /// </summary>
     /// <param name="httpClientFactory">Instance of the <see cref="IHttpClientFactory"/> interface.</param>
-    /// <param name="logger">Instance of the <see cref="ILogger"/> interface.</param>
-    public ITunesArtistImageProvider(IHttpClientFactory httpClientFactory, ILogger<ITunesArtistImageProvider> logger)
+    /// <param name="loggerFactory">Logger factory.</param>
+    public ITunesArtistImageProvider(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory)
     {
         _httpClientFactory = httpClientFactory;
-        _logger = logger;
+        _logger = loggerFactory.CreateLogger<ITunesArtistImageProvider>();
+        _scraper = new ArtistScraper(httpClientFactory, loggerFactory);
     }
 
     /// <summary>
@@ -66,24 +69,21 @@ public class ITunesArtistImageProvider : IRemoteImageProvider, IHasOrder
     /// <inheritdoc />
     public async Task<IEnumerable<RemoteImageInfo>> GetImages(BaseItem item, CancellationToken cancellationToken)
     {
-        var artist = (MusicArtist)item;
-        var list = new List<RemoteImageInfo>();
-
-        if (!string.IsNullOrEmpty(artist.Name))
+        if (item is not MusicArtist artist)
         {
-            var searchQuery = artist.Name;
-
-            var encodedName = Uri.EscapeDataString(searchQuery);
-
-            var remoteImages = await GetImagesInternal($"https://itunes.apple.com/search?term=${encodedName}&media=music&entity=musicArtist&attribute=artistTerm", cancellationToken).ConfigureAwait(false);
-
-            if (remoteImages is not null)
-            {
-                list.AddRange(remoteImages);
-            }
+            _logger.LogDebug("Provided item is not an artist, cannot continue");
+            return new List<RemoteImageInfo>();
         }
 
-        return list;
+        if (string.IsNullOrEmpty(artist.Name))
+        {
+            _logger.LogInformation("No artist name provided, cannot continue");
+            return new List<RemoteImageInfo>();
+        }
+
+        var encodedName = Uri.EscapeDataString(artist.Name);
+        var searchUrl = $"https://itunes.apple.com/search?term=${encodedName}&media=music&entity=musicArtist&attribute=artistTerm";
+        return await _scraper.GetImages(searchUrl, cancellationToken).ConfigureAwait(false);
     }
 
     private async Task<IEnumerable<RemoteImageInfo>> GetImagesInternal(string url, CancellationToken cancellationToken)
@@ -136,6 +136,5 @@ public class ITunesArtistImageProvider : IRemoteImageProvider, IHasOrder
     }
 
     /// <inheritdoc />
-    public bool Supports(BaseItem item)
-        => item is MusicArtist;
+    public bool Supports(BaseItem item) => item is MusicArtist;
 }

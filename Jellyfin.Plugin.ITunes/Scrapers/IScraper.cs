@@ -13,7 +13,8 @@ public interface IScraper
     /// <summary>
     /// Get images.
     /// </summary>
+    /// <param name="searchUrl">URL for searching images.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of images.</returns>
-    public Task<IEnumerable<RemoteImageInfo>> GetImages(CancellationToken cancellationToken);
+    public Task<IEnumerable<RemoteImageInfo>> GetImages(string searchUrl, CancellationToken cancellationToken);
 }
