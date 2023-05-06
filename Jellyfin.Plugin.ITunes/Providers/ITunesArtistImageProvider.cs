@@ -36,9 +36,8 @@ public class ITunesArtistImageProvider : IRemoteImageProvider
         _scraper = scraper;
     }
 
-    /// <summary>
-    /// Gets the provider name.
-    /// </summary>
+
+    /// <inheritdoc />
     public string Name => ITunesPlugin.Instance?.Name ?? "Apple Music";
 
     /// <inheritdoc />
