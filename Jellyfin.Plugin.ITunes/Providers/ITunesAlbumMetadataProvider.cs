@@ -21,7 +21,7 @@ namespace Jellyfin.Plugin.ITunes.Providers;
 public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, AlbumInfo>
 {
     private readonly IHttpClientFactory _httpClientFactory;
-    private readonly ILogger<ITunesArtistMetadataProvider> _logger;
+    private readonly ILogger<ITunesAlbumMetadataProvider> _logger;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ITunesAlbumMetadataProvider"/> class.
@@ -31,7 +31,7 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
     public ITunesAlbumMetadataProvider(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory)
     {
         _httpClientFactory = httpClientFactory;
-        _logger = loggerFactory.CreateLogger<ITunesArtistMetadataProvider>();
+        _logger = loggerFactory.CreateLogger<ITunesAlbumMetadataProvider>();
     }
 
     /// <inheritdoc />
