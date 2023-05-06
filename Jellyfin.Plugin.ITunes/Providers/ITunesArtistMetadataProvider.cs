@@ -30,11 +30,11 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
     /// Initializes a new instance of the <see cref="ITunesArtistMetadataProvider"/> class.
     /// </summary>
     /// <param name="httpClientFactory">HTTP client factory.</param>
-    /// <param name="loggerFactory">Logger factory.</param>
-    public ITunesArtistMetadataProvider(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory)
+    /// <param name="logger">Logger instance.</param>
+    public ITunesArtistMetadataProvider(IHttpClientFactory httpClientFactory, ILogger<ITunesArtistMetadataProvider> logger)
     {
         _httpClientFactory = httpClientFactory;
-        _logger = loggerFactory.CreateLogger<ITunesArtistMetadataProvider>();
+        _logger = logger;
         _config = AngleSharp.Configuration.Default.WithDefaultLoader();
     }
 

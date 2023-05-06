@@ -27,11 +27,11 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
     /// Initializes a new instance of the <see cref="ITunesAlbumMetadataProvider"/> class.
     /// </summary>
     /// <param name="httpClientFactory">HTTP client factory.</param>
-    /// <param name="loggerFactory">Logger factory.</param>
-    public ITunesAlbumMetadataProvider(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory)
+    /// <param name="logger">Logger instance.</param>
+    public ITunesAlbumMetadataProvider(IHttpClientFactory httpClientFactory, ILogger<ITunesAlbumMetadataProvider> logger)
     {
         _httpClientFactory = httpClientFactory;
-        _logger = loggerFactory.CreateLogger<ITunesAlbumMetadataProvider>();
+        _logger = logger;
     }
 
     /// <inheritdoc />
