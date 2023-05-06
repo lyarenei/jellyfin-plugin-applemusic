@@ -38,7 +38,7 @@ public class ITunesAlbumImageProvider : IRemoteImageProvider, IHasOrder
     }
 
     /// <inheritdoc />
-    public string Name => "Apple Music";
+    public string Name => ITunesPlugin.Instance?.Name ?? "Apple Music";
 
     /// <inheritdoc />
     public int Order => 1; // After embedded provider

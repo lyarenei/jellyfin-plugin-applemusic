@@ -39,7 +39,7 @@ public class ITunesArtistImageProvider : IRemoteImageProvider, IHasOrder
     /// <summary>
     /// Gets the provider name.
     /// </summary>
-    public string Name => "Apple Music";
+    public string Name => ITunesPlugin.Instance?.Name ?? "Apple Music";
 
     /// <summary>
     /// Gets the provider order.
