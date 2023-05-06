@@ -2,10 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Jellyfin.Plugin.ITunes.Dtos;
 using Jellyfin.Plugin.ITunes.Scrapers;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities;
@@ -80,45 +78,5 @@ public class ITunesAlbumImageProvider : IRemoteImageProvider, IHasOrder
         var encodedName = Uri.EscapeDataString(searchName);
         var searchUrl = $"https://itunes.apple.com/search?term={encodedName}&media=music&entity=album&attribute=albumTerm";
         return await _scraper.GetImages(searchUrl, cancellationToken).ConfigureAwait(false);
-    }
-
-    private async Task<IEnumerable<RemoteImageInfo>> GetImagesInternal(string url, CancellationToken cancellationToken)
-    {
-        List<RemoteImageInfo> list = new List<RemoteImageInfo>();
-
-        var iTunesArtistDto = await _httpClientFactory
-            .CreateClient(NamedClient.Default)
-            .GetFromJsonAsync<ITunesAlbumDto>(new Uri(url), cancellationToken)
-            .ConfigureAwait(false);
-
-        if (iTunesArtistDto is not null && iTunesArtistDto.ResultCount > 0)
-        {
-            foreach (Result result in iTunesArtistDto.Results)
-            {
-                if (!string.IsNullOrEmpty(result.ArtworkUrl100))
-                {
-                    // The artwork size can vary quite a bit, but for our uses, 1400x1400 should be plenty.
-                    // https://artists.apple.com/support/88-artist-image-guidelines
-                    var image1400 = result.ArtworkUrl100.Replace("100x100bb", "1400x1400bb", StringComparison.OrdinalIgnoreCase);
-
-                    list.Add(
-                        new RemoteImageInfo
-                        {
-                            ProviderName = Name,
-                            Url = image1400,
-                            Type = ImageType.Primary,
-                            ThumbnailUrl = result.ArtworkUrl100,
-                            Height = 1400,
-                            Width = 1400
-                        });
-                }
-            }
-        }
-        else
-        {
-            return list;
-        }
-
-        return list;
     }
 }
