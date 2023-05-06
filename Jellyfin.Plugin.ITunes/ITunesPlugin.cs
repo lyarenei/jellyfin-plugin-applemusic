@@ -31,5 +31,5 @@ public class ITunesPlugin : BasePlugin<PluginConfiguration>
     /// <summary>
     /// Gets the plugin instance.
     /// </summary>
-    public ITunesPlugin? Instance { get; private set; }
+    public static ITunesPlugin? Instance { get; private set; }
 }
