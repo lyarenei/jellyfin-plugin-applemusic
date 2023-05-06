@@ -7,7 +7,7 @@ using MediaBrowser.Model.Serialization;
 namespace Jellyfin.Plugin.ITunes;
 
 /// <summary>
-/// The ITunes art plugin.
+/// The iTunes (Apple Music) metadata plugin.
 /// </summary>
 public class ITunesPlugin : BasePlugin<PluginConfiguration>
 {
