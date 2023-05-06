@@ -24,11 +24,11 @@ public class AlbumScraper : IScraper<AlbumScraper>
     /// Initializes a new instance of the <see cref="AlbumScraper"/> class.
     /// </summary>
     /// <param name="httpClientFactory">HTTP client factory.</param>
-    /// <param name="loggerFactory">Logger factory.</param>
-    public AlbumScraper(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory)
+    /// <param name="logger">Logger instance.</param>
+    public AlbumScraper(IHttpClientFactory httpClientFactory, ILogger<AlbumScraper> logger)
     {
         _httpClientFactory = httpClientFactory;
-        _logger = loggerFactory.CreateLogger<AlbumScraper>();
+        _logger = logger;
     }
 
     /// <inheritdoc />

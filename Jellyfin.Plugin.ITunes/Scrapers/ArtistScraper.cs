@@ -30,11 +30,11 @@ public class ArtistScraper : IScraper<ArtistScraper>
     /// Initializes a new instance of the <see cref="ArtistScraper"/> class.
     /// </summary>
     /// <param name="httpClientFactory">HTTP client factory.</param>
-    /// <param name="loggerFactory">Logger factory.</param>
-    public ArtistScraper(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory)
+    /// <param name="logger">Logger isntance.</param>
+    public ArtistScraper(IHttpClientFactory httpClientFactory, ILogger<ArtistScraper> logger)
     {
         _httpClientFactory = httpClientFactory;
-        _logger = loggerFactory.CreateLogger<ArtistScraper>();
+        _logger = logger;
         _config = AngleSharp.Configuration.Default.WithDefaultLoader();
     }
 
