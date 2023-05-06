@@ -74,9 +74,7 @@ public class ITunesAlbumImageProvider : IRemoteImageProvider, IHasOrder
             return new List<RemoteImageInfo>();
         }
 
-        string albumArtist = album.AlbumArtists.FirstOrDefault(string.Empty);
-        var searchName = string.IsNullOrEmpty(albumArtist) ? album.Name : $"{albumArtist} {album.Name}";
-        var encodedName = Uri.EscapeDataString(searchName);
+        var encodedName = Uri.EscapeDataString(album.Name);
         var searchUrl = $"https://itunes.apple.com/search?term={encodedName}&media=music&entity=album&attribute=albumTerm";
         return await _scraper.GetImages(searchUrl, cancellationToken).ConfigureAwait(false);
     }
