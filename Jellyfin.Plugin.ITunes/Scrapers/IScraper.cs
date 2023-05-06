@@ -11,7 +11,7 @@ namespace Jellyfin.Plugin.ITunes.Scrapers;
 public interface IScraper
 {
     /// <summary>
-    /// Get images.
+    /// Search and scrape images using provided URL.
     /// </summary>
     /// <param name="searchUrl">URL for searching images.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
