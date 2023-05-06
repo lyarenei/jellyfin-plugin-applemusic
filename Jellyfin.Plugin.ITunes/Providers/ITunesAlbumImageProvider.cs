@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Jellyfin.Plugin.ITunes.Dtos;
+using Jellyfin.Plugin.ITunes.Scrapers;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
@@ -22,16 +24,18 @@ public class ITunesAlbumImageProvider : IRemoteImageProvider, IHasOrder
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<ITunesAlbumImageProvider> _logger;
+    private readonly IScraper _scraper;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ITunesAlbumImageProvider"/> class.
     /// </summary>
     /// <param name="httpClientFactory">Instance of the <see cref="IHttpClientFactory"/> interface.</param>
-    /// <param name="logger">Instance of the <see cref="ILogger"/> interface.</param>
-    public ITunesAlbumImageProvider(IHttpClientFactory httpClientFactory, ILogger<ITunesAlbumImageProvider> logger)
+    /// <param name="loggerFactory">Logger factory.</param>
+    public ITunesAlbumImageProvider(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory)
     {
         _httpClientFactory = httpClientFactory;
-        _logger = logger;
+        _logger = loggerFactory.CreateLogger<ITunesAlbumImageProvider>();
+        _scraper = new AlbumScraper(httpClientFactory, loggerFactory);
     }
 
     /// <inheritdoc />
@@ -59,33 +63,23 @@ public class ITunesAlbumImageProvider : IRemoteImageProvider, IHasOrder
     /// <inheritdoc />
     public async Task<IEnumerable<RemoteImageInfo>> GetImages(BaseItem item, CancellationToken cancellationToken)
     {
-        var album = (MusicAlbum)item;
-        var list = new List<RemoteImageInfo>();
-
-        if (!string.IsNullOrEmpty(album.Name))
+        if (item is not MusicAlbum album)
         {
-            var searchQuery = album.Name;
-
-            if (album.AlbumArtists.Count > 0)
-            {
-                string[] terms =
-                {
-                    album.AlbumArtists[0],
-                    album.Name
-                };
-                searchQuery = string.Join(' ', terms);
-            }
-
-            var encodedName = Uri.EscapeDataString(searchQuery);
-            var remoteImages = await GetImagesInternal($"https://itunes.apple.com/search?term={encodedName}&media=music&entity=album&attribute=albumTerm", cancellationToken).ConfigureAwait(false);
-
-            if (remoteImages is not null)
-            {
-                list.AddRange(remoteImages);
-            }
+            _logger.LogDebug("Provided item is not an album, cannot continue");
+            return new List<RemoteImageInfo>();
         }
 
-        return list;
+        if (string.IsNullOrEmpty(album.Name))
+        {
+            _logger.LogInformation("No album name provided, cannot continue");
+            return new List<RemoteImageInfo>();
+        }
+
+        string albumArtist = album.AlbumArtists.FirstOrDefault(string.Empty);
+        var searchName = string.IsNullOrEmpty(albumArtist) ? album.Name : $"{albumArtist} {album.Name}";
+        var encodedName = Uri.EscapeDataString(searchName);
+        var searchUrl = $"https://itunes.apple.com/search?term={encodedName}&media=music&entity=album&attribute=albumTerm";
+        return await _scraper.GetImages(searchUrl, cancellationToken).ConfigureAwait(false);
     }
 
     private async Task<IEnumerable<RemoteImageInfo>> GetImagesInternal(string url, CancellationToken cancellationToken)
