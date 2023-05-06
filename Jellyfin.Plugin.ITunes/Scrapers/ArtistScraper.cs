@@ -18,7 +18,7 @@ namespace Jellyfin.Plugin.ITunes.Scrapers;
 /// <summary>
 /// Apple Music artist metadata scraper.
 /// </summary>
-public class ArtistScraper : IScraper<ArtistScraper>
+public class ArtistScraper : IScraper
 {
     private const string ImageXPath = "//meta[@property='og:image']/@content";
 
@@ -30,11 +30,11 @@ public class ArtistScraper : IScraper<ArtistScraper>
     /// Initializes a new instance of the <see cref="ArtistScraper"/> class.
     /// </summary>
     /// <param name="httpClientFactory">HTTP client factory.</param>
-    /// <param name="logger">Logger isntance.</param>
-    public ArtistScraper(IHttpClientFactory httpClientFactory, ILogger<ArtistScraper> logger)
+    /// <param name="loggerFactory">Logger factory.</param>
+    public ArtistScraper(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory)
     {
         _httpClientFactory = httpClientFactory;
-        _logger = logger;
+        _logger = loggerFactory.CreateLogger<ArtistScraper>();
         _config = AngleSharp.Configuration.Default.WithDefaultLoader();
     }
 

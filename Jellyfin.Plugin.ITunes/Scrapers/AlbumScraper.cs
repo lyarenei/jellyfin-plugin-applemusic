@@ -15,7 +15,7 @@ namespace Jellyfin.Plugin.ITunes.Scrapers;
 /// <summary>
 /// Apple Music album metadata scraper.
 /// </summary>
-public class AlbumScraper : IScraper<AlbumScraper>
+public class AlbumScraper : IScraper
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<AlbumScraper> _logger;
@@ -24,11 +24,11 @@ public class AlbumScraper : IScraper<AlbumScraper>
     /// Initializes a new instance of the <see cref="AlbumScraper"/> class.
     /// </summary>
     /// <param name="httpClientFactory">HTTP client factory.</param>
-    /// <param name="logger">Logger instance.</param>
-    public AlbumScraper(IHttpClientFactory httpClientFactory, ILogger<AlbumScraper> logger)
+    /// <param name="loggerFactory">Logger factory.</param>
+    public AlbumScraper(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory)
     {
         _httpClientFactory = httpClientFactory;
-        _logger = logger;
+        _logger = loggerFactory.CreateLogger<AlbumScraper>();
     }
 
     /// <inheritdoc />
