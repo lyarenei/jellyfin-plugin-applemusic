@@ -19,7 +19,7 @@ namespace Jellyfin.Plugin.ITunes.Scrapers;
 /// <summary>
 /// Apple Music artist metadata scraper.
 /// </summary>
-public class ArtistScraper : IScraper
+public class ArtistScraper : IScraper<ArtistScraper>
 {
     private const string ImageXPath = "//meta[@property='og:image']/@content";
 

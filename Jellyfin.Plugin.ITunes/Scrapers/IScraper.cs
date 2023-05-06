@@ -8,7 +8,8 @@ namespace Jellyfin.Plugin.ITunes.Scrapers;
 /// <summary>
 /// Scraper interface for getting various metadata.
 /// </summary>
-public interface IScraper
+/// <typeparam name="TScraperType">Concrete scraper type to use.</typeparam>
+public interface IScraper<out TScraperType>
 {
     /// <summary>
     /// Search and scrape images using provided URL.

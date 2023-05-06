@@ -15,7 +15,7 @@ namespace Jellyfin.Plugin.ITunes.Scrapers;
 /// <summary>
 /// Apple Music album metadata scraper.
 /// </summary>
-public class AlbumScraper : IScraper
+public class AlbumScraper : IScraper<AlbumScraper>
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<AlbumScraper> _logger;
