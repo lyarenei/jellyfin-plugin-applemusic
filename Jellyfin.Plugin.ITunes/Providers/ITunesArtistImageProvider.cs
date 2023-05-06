@@ -47,11 +47,7 @@ public class ITunesArtistImageProvider : IRemoteImageProvider, IHasOrder
     // After fanart
     public int Order => 1;
 
-    /// <summary>
-    /// Gets the supported <see cref="ImageType"/> to a <see cref="BaseItem"/>.
-    /// </summary>
-    /// <param name="item">Object of the <see cref="BaseItem"/> class.</param>
-    /// <returns>List of supported <see cref="ImageType"/>.</returns>
+    /// <inheritdoc />
     public IEnumerable<ImageType> GetSupportedImages(BaseItem item)
     {
         return new List<ImageType>
@@ -60,24 +56,14 @@ public class ITunesArtistImageProvider : IRemoteImageProvider, IHasOrder
         };
     }
 
-    /// <summary>
-    /// Gets the image response from an URL.
-    /// </summary>
-    /// <param name="url">The URL.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns><see cref="HttpResponseMessage"/>.</returns>
+    /// <inheritdoc />
     public async Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
     {
         var httpClient = _httpClientFactory.CreateClient(NamedClient.Default);
         return await httpClient.GetAsync(new Uri(url), cancellationToken).ConfigureAwait(false);
     }
 
-    /// <summary>
-    /// Adds iTunes images to the current remote images of a <see cref="BaseItem"/>.
-    /// </summary>
-    /// <param name="item">Object of the <see cref="BaseItem"/> class.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>List of <see cref="RemoteImageInfo"/>.</returns>
+    /// <inheritdoc />
     public async Task<IEnumerable<RemoteImageInfo>> GetImages(BaseItem item, CancellationToken cancellationToken)
     {
         var artist = (MusicArtist)item;
