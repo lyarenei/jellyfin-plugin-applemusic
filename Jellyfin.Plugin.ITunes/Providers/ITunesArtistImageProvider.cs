@@ -49,10 +49,7 @@ public class ITunesArtistImageProvider : IRemoteImageProvider, IHasOrder
     /// <inheritdoc />
     public IEnumerable<ImageType> GetSupportedImages(BaseItem item)
     {
-        return new List<ImageType>
-        {
-            ImageType.Primary
-        };
+        return new List<ImageType> { ImageType.Primary };
     }
 
     /// <inheritdoc />
