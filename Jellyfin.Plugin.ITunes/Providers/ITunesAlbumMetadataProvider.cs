@@ -158,8 +158,7 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
         var primaryImageUrl = album.ArtworkUrl100.Replace("100x100bb", "1400x1400bb", StringComparison.OrdinalIgnoreCase);
         return new List<(string Url, ImageType Type)>
         {
-            (primaryImageUrl, ImageType.Primary),
-            (album.ArtworkUrl100, ImageType.Thumb)
+            (primaryImageUrl, ImageType.Primary)
         };
     }
 }

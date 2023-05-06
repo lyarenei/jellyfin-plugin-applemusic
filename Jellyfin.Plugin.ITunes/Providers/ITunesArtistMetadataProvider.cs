@@ -175,15 +175,12 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
         // The artwork size can vary quite a bit, but for our uses, 1400x1400 should be plenty.
         // https://artists.apple.com/support/88-artist-image-guidelines
         var primaryImageUrl = artistImage.TextContent.Replace("1200x630cw", "1400x1400cc", StringComparison.OrdinalIgnoreCase);
-        var thumbImageUrl = artistImage.TextContent.Replace("1200x630cw", "100x100cc", StringComparison.OrdinalIgnoreCase);
 
         _logger.LogDebug("Found primary image at: {Primary}", primaryImageUrl);
-        _logger.LogDebug("Found thumbnail image at: {Thumbnail}", thumbImageUrl);
 
         return new List<(string Url, ImageType Type)>
         {
-            (primaryImageUrl, ImageType.Primary),
-            (thumbImageUrl, ImageType.Thumb)
+            (primaryImageUrl, ImageType.Primary)
         };
     }
 }
