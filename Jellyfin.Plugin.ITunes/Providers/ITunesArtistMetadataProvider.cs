@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using AngleSharp;
 using Jellyfin.Plugin.ITunes.Scrapers;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities.Audio;
@@ -22,7 +21,6 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<ITunesArtistMetadataProvider> _logger;
-    private readonly IConfiguration _config;
     private readonly IScraper<MusicArtist> _scraper;
 
     /// <summary>
@@ -35,7 +33,6 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
     {
         _httpClientFactory = httpClientFactory;
         _logger = loggerFactory.CreateLogger<ITunesArtistMetadataProvider>();
-        _config = AngleSharp.Configuration.Default.WithDefaultLoader();
         _scraper = scraper ?? new ArtistScraper(httpClientFactory, loggerFactory);
     }
 
