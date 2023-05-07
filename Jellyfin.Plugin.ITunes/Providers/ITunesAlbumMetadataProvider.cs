@@ -35,7 +35,7 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
     }
 
     /// <inheritdoc />
-    public string Name => "Apple Music";
+    public string Name => ITunesPlugin.Instance?.Name ?? "Apple Music";
 
     /// <inheritdoc />
     public async Task<IEnumerable<RemoteSearchResult>> GetSearchResults(AlbumInfo searchInfo, CancellationToken cancellationToken)

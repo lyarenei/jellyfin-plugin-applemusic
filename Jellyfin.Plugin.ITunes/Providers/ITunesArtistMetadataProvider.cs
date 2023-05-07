@@ -39,7 +39,7 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
     }
 
     /// <inheritdoc />
-    public string Name => "Apple Music";
+    public string Name => ITunesPlugin.Instance?.Name ?? "Apple Music";
 
     /// <inheritdoc />
     public async Task<MetadataResult<MusicArtist>> GetMetadata(ArtistInfo info, CancellationToken cancellationToken)
