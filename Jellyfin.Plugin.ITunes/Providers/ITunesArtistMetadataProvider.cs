@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using AngleSharp;
 using AngleSharp.XPath;
 using Jellyfin.Plugin.ITunes.Dtos;
+using Jellyfin.Plugin.ITunes.Scrapers;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Providers;
@@ -25,17 +26,20 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<ITunesArtistMetadataProvider> _logger;
     private readonly IConfiguration _config;
+    private readonly IScraper _scraper;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ITunesArtistMetadataProvider"/> class.
     /// </summary>
     /// <param name="httpClientFactory">HTTP client factory.</param>
-    /// <param name="logger">Logger instance.</param>
-    public ITunesArtistMetadataProvider(IHttpClientFactory httpClientFactory, ILogger<ITunesArtistMetadataProvider> logger)
+    /// <param name="loggerFactory">Logger factory.</param>
+    /// <param name="scraper">Scraper instance. If null, a defaults instance will be used.</param>
+    public ITunesArtistMetadataProvider(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory, IScraper? scraper = null)
     {
         _httpClientFactory = httpClientFactory;
-        _logger = logger;
+        _logger = loggerFactory.CreateLogger<ITunesArtistMetadataProvider>();
         _config = AngleSharp.Configuration.Default.WithDefaultLoader();
+        _scraper = scraper ?? new ArtistScraper(httpClientFactory, loggerFactory);
     }
 
     /// <inheritdoc />

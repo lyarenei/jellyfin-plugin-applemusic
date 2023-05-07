@@ -6,6 +6,7 @@ using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Jellyfin.Plugin.ITunes.Dtos;
+using Jellyfin.Plugin.ITunes.Scrapers;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Providers;
@@ -22,16 +23,19 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<ITunesAlbumMetadataProvider> _logger;
+    private readonly IScraper _scraper;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ITunesAlbumMetadataProvider"/> class.
     /// </summary>
     /// <param name="httpClientFactory">HTTP client factory.</param>
-    /// <param name="logger">Logger instance.</param>
-    public ITunesAlbumMetadataProvider(IHttpClientFactory httpClientFactory, ILogger<ITunesAlbumMetadataProvider> logger)
+    /// <param name="loggerFactory">Logger factory.</param>
+    /// <param name="scraper">Scraper instance. If null, a default instance will be used.</param>
+    public ITunesAlbumMetadataProvider(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory, IScraper? scraper = null)
     {
         _httpClientFactory = httpClientFactory;
-        _logger = logger;
+        _logger = loggerFactory.CreateLogger<ITunesAlbumMetadataProvider>();
+        _scraper = scraper ?? new AlbumScraper(httpClientFactory, loggerFactory);
     }
 
     /// <inheritdoc />
