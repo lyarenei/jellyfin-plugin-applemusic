@@ -12,9 +12,9 @@ namespace Jellyfin.Plugin.ITunes.Scrapers;
 public interface IScraper<T>
 {
     /// <summary>
-    /// Search and scrape images using provided URL.
+    /// Search and scrape images using the provided search term.
     /// </summary>
-    /// <param name="searchTerm">Term to use for searching.</param>
+    /// <param name="searchTerm">Term to use for search.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of images.</returns>
     public Task<IEnumerable<RemoteImageInfo>> GetImages(string searchTerm, CancellationToken cancellationToken);
