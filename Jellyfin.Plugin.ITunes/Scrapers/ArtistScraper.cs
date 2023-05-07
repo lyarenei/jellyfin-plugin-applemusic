@@ -47,7 +47,7 @@ public class ArtistScraper : IScraper<MusicArtist>
         var searchData = await DoSearch(searchTerm, cancellationToken).ConfigureAwait(false);
         if (searchData is null || searchData.ResultCount < 1)
         {
-            _logger.LogInformation("No results found for url: {Url}", searchTerm);
+            _logger.LogInformation("No results found for {Term}", searchTerm);
             return imageList;
         }
 
