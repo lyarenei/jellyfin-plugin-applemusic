@@ -92,10 +92,6 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
 
     private static MetadataResult<MusicArtist> EmptyMetadataResult()
     {
-        return new MetadataResult<MusicArtist>
-        {
-            Item = new MusicArtist(),
-            HasMetadata = false
-        };
+        return new MetadataResult<MusicArtist> { HasMetadata = false };
     }
 }

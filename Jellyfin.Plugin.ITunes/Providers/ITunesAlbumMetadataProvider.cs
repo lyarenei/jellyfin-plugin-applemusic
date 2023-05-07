@@ -103,11 +103,7 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
 
     private static MetadataResult<MusicAlbum> EmptyResult()
     {
-        return new MetadataResult<MusicAlbum>
-        {
-            Item = new MusicAlbum(),
-            HasMetadata = false
-        };
+        return new MetadataResult<MusicAlbum> { HasMetadata = false };
     }
 
     private static string GetSearchUrl(string albumName, string artistName)
