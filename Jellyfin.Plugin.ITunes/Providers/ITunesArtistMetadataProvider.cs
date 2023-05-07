@@ -76,6 +76,7 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
     {
         if (string.IsNullOrEmpty(searchInfo.Name))
         {
+            _logger.LogInformation("Empty artist name, cannot search");
             return Enumerable.Empty<RemoteSearchResult>();
         }
 
