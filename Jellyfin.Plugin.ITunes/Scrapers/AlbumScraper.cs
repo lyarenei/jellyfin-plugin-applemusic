@@ -37,7 +37,7 @@ public class AlbumScraper : IScraper<MusicAlbum>
     public async Task<IEnumerable<RemoteImageInfo>> GetImages(string searchTerm, CancellationToken cancellationToken)
     {
         var imageList = new List<RemoteImageInfo>();
-        var searchData = await SearchInternal(searchTerm, cancellationToken).ConfigureAwait(false);
+        var searchData = await DoSearch(searchTerm, cancellationToken).ConfigureAwait(false);
         if (searchData is null || searchData.ResultCount < 1)
         {
             _logger.LogInformation("No results found for url: {Url}", searchTerm);
@@ -65,7 +65,7 @@ public class AlbumScraper : IScraper<MusicAlbum>
         throw new NotImplementedException();
     }
 
-    private async Task<ITunesAlbumDto?> SearchInternal(string searchTerm, CancellationToken cancellationToken)
+    private async Task<ITunesAlbumDto?> DoSearch(string searchTerm, CancellationToken cancellationToken)
     {
         var encodedTerm = Uri.EscapeDataString(searchTerm);
         var searchUrl = $"https://itunes.apple.com/search?term={encodedTerm}&media=music&entity=album&attribute=albumTerm";
