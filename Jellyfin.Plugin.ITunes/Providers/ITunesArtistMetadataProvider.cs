@@ -26,7 +26,7 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<ITunesArtistMetadataProvider> _logger;
     private readonly IConfiguration _config;
-    private readonly IScraper _scraper;
+    private readonly IScraper<MusicArtist> _scraper;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ITunesArtistMetadataProvider"/> class.
@@ -34,7 +34,7 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
     /// <param name="httpClientFactory">HTTP client factory.</param>
     /// <param name="loggerFactory">Logger factory.</param>
     /// <param name="scraper">Scraper instance. If null, a defaults instance will be used.</param>
-    public ITunesArtistMetadataProvider(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory, IScraper? scraper = null)
+    public ITunesArtistMetadataProvider(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory, IScraper<MusicArtist>? scraper = null)
     {
         _httpClientFactory = httpClientFactory;
         _logger = loggerFactory.CreateLogger<ITunesArtistMetadataProvider>();

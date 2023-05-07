@@ -9,6 +9,8 @@ using AngleSharp.Dom;
 using AngleSharp.XPath;
 using Jellyfin.Plugin.ITunes.Dtos;
 using MediaBrowser.Common.Net;
+using MediaBrowser.Controller.Entities.Audio;
+using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
 using Microsoft.Extensions.Logging;
@@ -18,7 +20,7 @@ namespace Jellyfin.Plugin.ITunes.Scrapers;
 /// <summary>
 /// Apple Music artist metadata scraper.
 /// </summary>
-public class ArtistScraper : IScraper
+public class ArtistScraper : IScraper<MusicArtist>
 {
     private const string ImageXPath = "//meta[@property='og:image']/@content";
 
@@ -65,6 +67,12 @@ public class ArtistScraper : IScraper
         }
 
         return imageList;
+    }
+
+    /// <inheritdoc />
+    public Task<MetadataResult<MusicArtist>?> GetMetadata(string searchTerm, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
     }
 
     private async Task<ITunesArtistDto?> Search(string searchTerm, CancellationToken cancellationToken)

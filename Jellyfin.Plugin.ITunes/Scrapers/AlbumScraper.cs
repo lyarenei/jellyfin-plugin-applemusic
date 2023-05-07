@@ -6,6 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Jellyfin.Plugin.ITunes.Dtos;
 using MediaBrowser.Common.Net;
+using MediaBrowser.Controller.Entities.Audio;
+using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
 using Microsoft.Extensions.Logging;
@@ -15,7 +17,7 @@ namespace Jellyfin.Plugin.ITunes.Scrapers;
 /// <summary>
 /// Apple Music album metadata scraper.
 /// </summary>
-public class AlbumScraper : IScraper
+public class AlbumScraper : IScraper<MusicAlbum>
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<AlbumScraper> _logger;
@@ -55,6 +57,12 @@ public class AlbumScraper : IScraper
         }
 
         return imageList;
+    }
+
+    /// <inheritdoc />
+    public Task<MetadataResult<MusicAlbum>?> GetMetadata(string searchTerm, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
     }
 
     private async Task<ITunesAlbumDto?> Search(string searchTerm, CancellationToken cancellationToken)
