@@ -10,7 +10,6 @@ using AngleSharp.XPath;
 using Jellyfin.Plugin.ITunes.Dtos;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities.Audio;
-using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
 using Microsoft.Extensions.Logging;
@@ -23,6 +22,7 @@ namespace Jellyfin.Plugin.ITunes.Scrapers;
 public class ArtistScraper : IScraper<MusicArtist>
 {
     private const string ImageXPath = "//meta[@property='og:image']/@content";
+    private const string InfoXPath = "//p[@data-testid='truncate-text']";
 
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<ArtistScraper> _logger;
@@ -44,7 +44,7 @@ public class ArtistScraper : IScraper<MusicArtist>
     public async Task<IEnumerable<RemoteImageInfo>> GetImages(string searchTerm, CancellationToken cancellationToken)
     {
         var imageList = new List<RemoteImageInfo>();
-        var searchData = await Search(searchTerm, cancellationToken).ConfigureAwait(false);
+        var searchData = await DoSearch(searchTerm, cancellationToken).ConfigureAwait(false);
         if (searchData is null || searchData.ResultCount < 1)
         {
             _logger.LogInformation("No results found for url: {Url}", searchTerm);
@@ -70,12 +70,43 @@ public class ArtistScraper : IScraper<MusicArtist>
     }
 
     /// <inheritdoc />
-    public Task<MetadataResult<MusicArtist>?> GetMetadata(string searchTerm, CancellationToken cancellationToken)
+    public async Task<IEnumerable<RemoteSearchResult>> Search(string searchTerm, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var searchData = await DoSearch(searchTerm, cancellationToken).ConfigureAwait(false);
+        var results = new List<RemoteSearchResult>();
+        if (searchData is null)
+        {
+            _logger.LogDebug("No search results for {Term}", searchTerm);
+            return results;
+        }
+
+        foreach (var artistDto in searchData.Results)
+        {
+            if (artistDto.ArtistLinkUrl is null)
+            {
+                continue;
+            }
+
+            var artistInfo = await GetArtistInfo(artistDto.ArtistLinkUrl, cancellationToken).ConfigureAwait(false);
+            var result = new RemoteSearchResult
+            {
+                Name = artistDto.ArtistName,
+                Overview = artistInfo ?? string.Empty
+            };
+
+            var image = await GetRemoteImage(artistDto.ArtistLinkUrl).ConfigureAwait(false);
+            if (image is not null)
+            {
+                result.ImageUrl = image.Url;
+            }
+
+            results.Add(result);
+        }
+
+        return results;
     }
 
-    private async Task<ITunesArtistDto?> Search(string searchTerm, CancellationToken cancellationToken)
+    private async Task<ITunesArtistDto?> DoSearch(string searchTerm, CancellationToken cancellationToken)
     {
         var encodedName = Uri.EscapeDataString(searchTerm);
         var searchUrl = $"https://itunes.apple.com/search?term=${encodedName}&media=music&entity=musicArtist&attribute=artistTerm";
@@ -122,5 +153,13 @@ public class ArtistScraper : IScraper<MusicArtist>
             Height = 1400,
             Width = 1400
         };
+    }
+
+    private async Task<string?> GetArtistInfo(string url, CancellationToken cancellationToken)
+    {
+        var context = BrowsingContext.New(_config);
+        var doc = await context.OpenAsync(url, cancellationToken).ConfigureAwait(false);
+        var artistInfo = doc.Body.SelectSingleNode(InfoXPath);
+        return artistInfo?.TextContent;
     }
 }

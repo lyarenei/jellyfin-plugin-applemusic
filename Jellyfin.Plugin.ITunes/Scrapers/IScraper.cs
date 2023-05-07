@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Providers;
 
 namespace Jellyfin.Plugin.ITunes.Scrapers;
@@ -21,10 +20,10 @@ public interface IScraper<T>
     public Task<IEnumerable<RemoteImageInfo>> GetImages(string searchTerm, CancellationToken cancellationToken);
 
     /// <summary>
-    /// Search and scrape metadata using the provided term.
+    /// Search for results using the specified search term.
     /// </summary>
-    /// <param name="searchTerm">Term to use for searching.</param>
+    /// <param name="searchTerm">Term to use for search.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
-    /// <returns>Metadata result.</returns>
-    public Task<MetadataResult<T>?> GetMetadata(string searchTerm, CancellationToken cancellationToken);
+    /// <returns>Results.</returns>
+    public Task<IEnumerable<RemoteSearchResult>> Search(string searchTerm, CancellationToken cancellationToken);
 }
