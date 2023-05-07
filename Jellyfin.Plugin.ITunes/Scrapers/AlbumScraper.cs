@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Jellyfin.Plugin.ITunes.Dtos;
 using MediaBrowser.Common.Net;
+using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
 using Microsoft.Extensions.Logging;
@@ -15,7 +17,7 @@ namespace Jellyfin.Plugin.ITunes.Scrapers;
 /// <summary>
 /// Apple Music album metadata scraper.
 /// </summary>
-public class AlbumScraper : IScraper
+public class AlbumScraper : IScraper<MusicAlbum>
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<AlbumScraper> _logger;
@@ -35,7 +37,7 @@ public class AlbumScraper : IScraper
     public async Task<IEnumerable<RemoteImageInfo>> GetImages(string searchTerm, CancellationToken cancellationToken)
     {
         var imageList = new List<RemoteImageInfo>();
-        var searchData = await Search(searchTerm, cancellationToken).ConfigureAwait(false);
+        var searchData = await DoSearch(searchTerm, cancellationToken).ConfigureAwait(false);
         if (searchData is null || searchData.ResultCount < 1)
         {
             _logger.LogInformation("No results found for url: {Url}", searchTerm);
@@ -57,7 +59,36 @@ public class AlbumScraper : IScraper
         return imageList;
     }
 
-    private async Task<ITunesAlbumDto?> Search(string searchTerm, CancellationToken cancellationToken)
+    /// <inheritdoc />
+    public async Task<IEnumerable<RemoteSearchResult>> Search(string searchTerm, CancellationToken cancellationToken)
+    {
+        var searchData = await DoSearch(searchTerm, cancellationToken).ConfigureAwait(false);
+        if (searchData is null || searchData.ResultCount < 1)
+        {
+            _logger.LogInformation("No results for term {Term}", searchTerm);
+            return Enumerable.Empty<RemoteSearchResult>();
+        }
+
+        var results = new List<RemoteSearchResult>();
+        foreach (var albumDto in searchData.Results)
+        {
+            if (albumDto.ArtworkUrl100 is null)
+            {
+                continue;
+            }
+
+            var image = GetRemoteImage(albumDto.ArtworkUrl100);
+            results.Add(new RemoteSearchResult
+            {
+                Name = albumDto.CollectionName,
+                ImageUrl = image.Url
+            });
+        }
+
+        return results;
+    }
+
+    private async Task<ITunesAlbumDto?> DoSearch(string searchTerm, CancellationToken cancellationToken)
     {
         var encodedTerm = Uri.EscapeDataString(searchTerm);
         var searchUrl = $"https://itunes.apple.com/search?term={encodedTerm}&media=music&entity=album&attribute=albumTerm";

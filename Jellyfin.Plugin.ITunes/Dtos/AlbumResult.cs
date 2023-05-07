@@ -5,7 +5,7 @@ namespace Jellyfin.Plugin.ITunes.Dtos
     /// <summary>
     /// Result.
     /// </summary>
-    public class Result
+    public class AlbumResult
     {
         /// <summary>
         /// Gets or sets the wrapper type.

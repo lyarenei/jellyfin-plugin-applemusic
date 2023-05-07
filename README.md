@@ -9,11 +9,13 @@
 [![Current Release](https://img.shields.io/github/release/Shadowghost/jellyfin-plugin-itunes.svg)](https://github.com/Shadowghost/jellyfin-plugin-itunes/releases)
 
 ## About
-Fetches Metadata from iTunes
+Fetches Metadata from iTunes (Apple Music)
 
 Currently supported:
 * Album Images
 * Artist Images
+* Artist Info (Overview)
+* Identifying albums and artists
 
 ## Installation
 
@@ -21,14 +23,14 @@ Currently supported:
 
 ## Build
 
-1. To build this plugin you will need [.Net 6.x](https://dotnet.microsoft.com/download/dotnet/6.0).
+1. To build this plugin you will need [.Net 7.x](https://dotnet.microsoft.com/download/dotnet/7.0).
 
 2. Build plugin with following command
   ```
   dotnet publish --configuration Release --output bin
   ```
 
-3. Place the dll-file in the `plugins/coverartarchive` folder (you might need to create the folders) of your JF install
+3. Place the dll-file in the `plugins/itunes` folder (you might need to create the folders) of your JF install
 
 ## Releasing
 
