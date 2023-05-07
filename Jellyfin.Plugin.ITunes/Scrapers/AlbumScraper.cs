@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading;
@@ -60,9 +61,32 @@ public class AlbumScraper : IScraper<MusicAlbum>
     }
 
     /// <inheritdoc />
-    public Task<IEnumerable<RemoteSearchResult>> Search(string searchTerm, CancellationToken cancellationToken)
+    public async Task<IEnumerable<RemoteSearchResult>> Search(string searchTerm, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var searchData = await DoSearch(searchTerm, cancellationToken).ConfigureAwait(false);
+        if (searchData is null || searchData.ResultCount < 1)
+        {
+            _logger.LogInformation("No results for term {Term}", searchTerm);
+            return Enumerable.Empty<RemoteSearchResult>();
+        }
+
+        var results = new List<RemoteSearchResult>();
+        foreach (var albumDto in searchData.Results)
+        {
+            if (albumDto.ArtworkUrl100 is null)
+            {
+                continue;
+            }
+
+            var image = GetRemoteImage(albumDto.ArtworkUrl100);
+            results.Add(new RemoteSearchResult
+            {
+                Name = albumDto.CollectionName,
+                ImageUrl = image.Url
+            });
+        }
+
+        return results;
     }
 
     private async Task<ITunesAlbumDto?> DoSearch(string searchTerm, CancellationToken cancellationToken)
