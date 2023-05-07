@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Jellyfin.Plugin.ITunes.Dtos;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities.Audio;
-using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
 using Microsoft.Extensions.Logging;
