@@ -1,7 +1,5 @@
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using MediaBrowser.Model.Providers;
+using AngleSharp.Dom;
+using Jellyfin.Plugin.ITunes.Dtos;
 
 namespace Jellyfin.Plugin.ITunes.Scrapers;
 
@@ -12,18 +10,9 @@ namespace Jellyfin.Plugin.ITunes.Scrapers;
 public interface IScraper<T>
 {
     /// <summary>
-    /// Search and scrape images using the provided search term.
+    /// Scrape provided document for metadata.
     /// </summary>
-    /// <param name="searchTerm">Term to use for search.</param>
-    /// <param name="cancellationToken">Cancellation token.</param>
-    /// <returns>A collection of images.</returns>
-    public Task<IEnumerable<RemoteImageInfo>> GetImages(string searchTerm, CancellationToken cancellationToken);
-
-    /// <summary>
-    /// Search for results using the specified search term.
-    /// </summary>
-    /// <param name="searchTerm">Term to use for search.</param>
-    /// <param name="cancellationToken">Cancellation token.</param>
-    /// <returns>Results.</returns>
-    public Task<IEnumerable<RemoteSearchResult>> Search(string searchTerm, CancellationToken cancellationToken);
+    /// <param name="document">Document to scrape.</param>
+    /// <returns>Scraped data. Null if error.</returns>
+    public IITunesItem? Scrape(IDocument document);
 }

@@ -4,13 +4,16 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Jellyfin.Plugin.ITunes.Scrapers;
+using Jellyfin.Plugin.ITunes.Dtos;
+using Jellyfin.Plugin.ITunes.MetadataServices;
+using Jellyfin.Plugin.ITunes.Utils;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
 using Microsoft.Extensions.Logging;
+using IMetadataService = Jellyfin.Plugin.ITunes.MetadataServices.IMetadataService;
 
 namespace Jellyfin.Plugin.ITunes.Providers;
 
@@ -21,23 +24,23 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<ITunesAlbumMetadataProvider> _logger;
-    private readonly IScraper<MusicAlbum> _scraper;
+    private readonly IMetadataService _service;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ITunesAlbumMetadataProvider"/> class.
     /// </summary>
     /// <param name="httpClientFactory">HTTP client factory.</param>
     /// <param name="loggerFactory">Logger factory.</param>
-    /// <param name="scraper">Scraper instance. If null, a default instance will be used.</param>
-    public ITunesAlbumMetadataProvider(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory, IScraper<MusicAlbum>? scraper = null)
+    /// <param name="service">Metadata service instance. If null, a default instance will be used.</param>
+    public ITunesAlbumMetadataProvider(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory, IMetadataService? service = null)
     {
         _httpClientFactory = httpClientFactory;
         _logger = loggerFactory.CreateLogger<ITunesAlbumMetadataProvider>();
-        _scraper = scraper ?? new AlbumScraper(httpClientFactory, loggerFactory);
+        _service = service ?? new AppleMusicMetadataService(loggerFactory);
     }
 
     /// <inheritdoc />
-    public string Name => ITunesPlugin.Instance?.Name ?? "Apple Music";
+    public string Name => PluginUtils.PluginName;
 
     /// <inheritdoc />
     public async Task<IEnumerable<RemoteSearchResult>> GetSearchResults(AlbumInfo searchInfo, CancellationToken cancellationToken)
@@ -48,7 +51,31 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
             return Enumerable.Empty<RemoteSearchResult>();
         }
 
-        return await _scraper.Search(searchInfo.Name, cancellationToken).ConfigureAwait(false);
+        var results = await _service.Search(searchInfo.Name, ItemType.Album, cancellationToken).ConfigureAwait(false);
+        var searchResults = new List<RemoteSearchResult>();
+        foreach (var result in results)
+        {
+            var scrapeResult = await _service.Scrape(result, ItemType.Album).ConfigureAwait(false);
+            if (scrapeResult is not ITunesAlbum album)
+            {
+                continue;
+            }
+
+            var searchResult = scrapeResult.ToRemoteSearchResult();
+            if (album.ArtistUrl is not null)
+            {
+                var scrapedArtist = await _service.Scrape(album.ArtistUrl, ItemType.Artist).ConfigureAwait(false);
+                if (scrapedArtist is ITunesArtist artist)
+                {
+                    searchResult.AlbumArtist = artist.ToRemoteSearchResult();
+                    searchResult.Artists = new[] { artist.ToRemoteSearchResult() };
+                }
+            }
+
+            searchResults.Add(searchResult);
+        }
+
+        return searchResults;
     }
 
     /// <inheritdoc />
@@ -62,7 +89,7 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
 
         var albumArtist = info.AlbumArtists.FirstOrDefault(string.Empty);
         var term = $"{albumArtist} {info.Name}";
-        var results = await _scraper.Search(term, cancellationToken).ConfigureAwait(false);
+        var results = await _service.Search(term, ItemType.Album, cancellationToken).ConfigureAwait(false);
         var resultList = results.ToList();
         if (!resultList.Any())
         {
@@ -71,12 +98,23 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
         }
 
         var result = resultList.First();
+        var scrapedAlbum = await _service.Scrape(result, ItemType.Album).ConfigureAwait(false);
+        if (scrapedAlbum is null)
+        {
+            _logger.LogDebug("Failed to scrape data from {Url}", result);
+            return EmptyResult();
+        }
+
         var metadataResult = new MetadataResult<MusicAlbum>
         {
-            Item = new MusicAlbum { Name = result.Name },
-            HasMetadata = true,
-            RemoteImages = new List<(string Url, ImageType Type)> { (result.ImageUrl, ImageType.Primary) }
+            Item = new MusicAlbum { Name = scrapedAlbum.Name },
+            HasMetadata = true
         };
+
+        if (scrapedAlbum.ImageUrl is not null)
+        {
+            metadataResult.RemoteImages.Add((scrapedAlbum.ImageUrl, ImageType.Primary));
+        }
 
         return metadataResult;
     }

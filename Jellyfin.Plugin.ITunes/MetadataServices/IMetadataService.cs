@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Jellyfin.Plugin.ITunes.Dtos;
+using MediaBrowser.Model.Providers;
 
 namespace Jellyfin.Plugin.ITunes.MetadataServices;
 
@@ -33,4 +35,12 @@ public interface IMetadataService
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Collection of URLs to search results.</returns>
     public Task<IEnumerable<string>> Search(string searchTerm, ItemType type, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Scrapes metadata on provided URL.
+    /// </summary>
+    /// <param name="url">URL to work with.</param>
+    /// <param name="type">Item type to scrape.</param>
+    /// <returns>Instance of <see cref="RemoteSearchResult"/>. Null if error.</returns>
+    public Task<IITunesItem?> Scrape(string url, ItemType type);
 }
