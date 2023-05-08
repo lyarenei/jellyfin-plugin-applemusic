@@ -55,12 +55,43 @@ public class AppleMusicMetadataService : IMetadataService
     public async Task<IITunesItem?> Scrape(string url, ItemType type)
     {
         var document = await OpenPage(url).ConfigureAwait(false);
-        return type switch
+        var item = type switch
         {
-            ItemType.Album => _albumScraper.Scrape(document),
+            ItemType.Album => await ScrapeAlbum(document).ConfigureAwait(false),
             ItemType.Artist => _artistScraper.Scrape(document),
             _ => null
         };
+
+        if (item is not null)
+        {
+            item.Url = url;
+        }
+
+        return item;
+    }
+
+    private async Task<ITunesAlbum?> ScrapeAlbum(IDocument document)
+    {
+        // Scrape album data.
+        var scrapedAlbum = _albumScraper.Scrape(document);
+        if (scrapedAlbum is not ITunesAlbum album)
+        {
+            return null;
+        }
+
+        // Scrape artists found in album.
+        var scrapedArtists = new List<ITunesArtist>();
+        foreach (var artist in album.Artists)
+        {
+            var scrapedArtist = await Scrape(artist.Url, ItemType.Artist).ConfigureAwait(false);
+            if (scrapedArtist is ITunesArtist newArtist)
+            {
+                scrapedArtists.Add(newArtist);
+            }
+        }
+
+        album.Artists = scrapedArtists;
+        return album;
     }
 
     private async Task<IDocument> OpenPage(string url)

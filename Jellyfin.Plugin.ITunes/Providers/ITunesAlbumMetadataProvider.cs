@@ -56,23 +56,10 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
         foreach (var result in results)
         {
             var scrapeResult = await _service.Scrape(result, ItemType.Album).ConfigureAwait(false);
-            if (scrapeResult is not ITunesAlbum album)
+            if (scrapeResult is ITunesAlbum album)
             {
-                continue;
+                searchResults.Add(album.ToRemoteSearchResult());
             }
-
-            var searchResult = scrapeResult.ToRemoteSearchResult();
-            if (album.ArtistUrl is not null)
-            {
-                var scrapedArtist = await _service.Scrape(album.ArtistUrl, ItemType.Artist).ConfigureAwait(false);
-                if (scrapedArtist is ITunesArtist artist)
-                {
-                    searchResult.AlbumArtist = artist.ToRemoteSearchResult();
-                    searchResult.Artists = new[] { artist.ToRemoteSearchResult() };
-                }
-            }
-
-            searchResults.Add(searchResult);
         }
 
         return searchResults;

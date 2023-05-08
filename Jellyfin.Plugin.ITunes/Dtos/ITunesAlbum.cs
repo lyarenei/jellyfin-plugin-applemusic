@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using MediaBrowser.Model.Providers;
 
 namespace Jellyfin.Plugin.ITunes.Dtos;
@@ -14,10 +16,15 @@ public class ITunesAlbum : IITunesItem
     public ITunesAlbum()
     {
         Name = string.Empty;
+        Url = string.Empty;
+        Artists = new List<ITunesArtist>();
     }
 
     /// <inheritdoc />
     public string Name { get; set; }
+
+    /// <inheritdoc />
+    public string Url { get; set; }
 
     /// <inheritdoc />
     public string? ImageUrl { get; set; }
@@ -26,14 +33,10 @@ public class ITunesAlbum : IITunesItem
     public string? About { get; set; }
 
     /// <summary>
-    /// Gets or sets artist name.
+    /// Gets or sets artists.
+    /// The first artist should be also an album artist.
     /// </summary>
-    public string? ArtistName { get; set; }
-
-    /// <summary>
-    /// Gets or sets URL to artist.
-    /// </summary>
-    public string? ArtistUrl { get; set; }
+    public ICollection<ITunesArtist> Artists { get; set; }
 
     /// <summary>
     /// Gets or sets release date.
@@ -49,7 +52,9 @@ public class ITunesAlbum : IITunesItem
             ImageUrl = ImageUrl,
             Overview = About,
             PremiereDate = ReleaseDate,
-            ProductionYear = ReleaseDate?.Year
+            ProductionYear = ReleaseDate?.Year,
+            AlbumArtist = Artists.FirstOrDefault()?.ToRemoteSearchResult(),
+            Artists = (from artist in Artists select artist.ToRemoteSearchResult()).ToArray()
         };
     }
 }

@@ -13,10 +13,14 @@ public class ITunesArtist : IITunesItem
     public ITunesArtist()
     {
         Name = string.Empty;
+        Url = string.Empty;
     }
 
     /// <inheritdoc />
     public string Name { get; set; }
+
+    /// <inheritdoc />
+    public string Url { get; set; }
 
     /// <inheritdoc />
     public string? ImageUrl { get; set; }

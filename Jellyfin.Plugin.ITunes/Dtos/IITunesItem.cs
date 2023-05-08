@@ -13,6 +13,11 @@ public interface IITunesItem
     public string Name { get; set; }
 
     /// <summary>
+    /// Gets or sets item's URL.
+    /// </summary>
+    public string Url { get; set; }
+
+    /// <summary>
     /// Gets or sets item's image url.
     /// </summary>
     public string? ImageUrl { get; set; }

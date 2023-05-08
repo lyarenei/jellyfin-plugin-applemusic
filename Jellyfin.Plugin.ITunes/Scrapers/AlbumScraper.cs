@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 using AngleSharp;
 using AngleSharp.Dom;
@@ -52,14 +54,32 @@ public class AlbumScraper : IScraper<MusicAlbum>
             _logger.LogError("No album image found");
         }
 
-        var artistNode = document.Body.SelectSingleNode(AlbumDetailXPath + AlbumArtistXPath) as IHtmlAnchorElement;
+        var artistNodes = document.Body.SelectNodes(AlbumDetailXPath + AlbumArtistXPath);
+        if (artistNodes is null || !artistNodes.Any())
+        {
+            _logger.LogDebug("No album artists found");
+            return null;
+        }
+
+        var artists = new List<ITunesArtist>();
+        foreach (var node in artistNodes)
+        {
+            if (node is IHtmlAnchorElement artistElem)
+            {
+                artists.Add(new ITunesArtist
+                {
+                    Name = artistElem.TextContent,
+                    Url = artistElem.Href
+                });
+            }
+        }
+
         var descString = document.Body.SelectSingleNode(AlbumDescriptionXPath)?.TextContent;
         var parsedDesc = ParseDescription(descString);
         return new ITunesAlbum
         {
             Name = albumName.Trim(),
-            ArtistName = artistNode?.TextContent.Trim(),
-            ArtistUrl = artistNode?.Href,
+            Artists = artists,
             ImageUrl = imageUrl,
             ReleaseDate = parsedDesc?.Date
         };
