@@ -22,6 +22,7 @@ public class AlbumScraper : IScraper<MusicAlbum>
     private const string AlbumDetailXPath = "//div[@data-testid='container-detail-header']";
     private const string AlbumNameXPath = "//h1[@data-testid='non-editable-product-title']";
     private const string AlbumArtistXPath = "//a[@data-testid='click-action']";
+    private const string AboutXPath = "//p[@data-testid='truncate-text']";
     private const string AlbumDescriptionXPath = "//p[@data-testid='tracklist-footer-description']";
 
     private const string AlbumDescRegex = @"(?'date'\w+ \d+, \d+)\W(?'runtime'\d+)\W+(?'runtimeUnit'\w+)\W+(?'productionYear'\d+)\W+(?'producer'\w+)";
@@ -74,6 +75,7 @@ public class AlbumScraper : IScraper<MusicAlbum>
             }
         }
 
+        var aboutText = document.Body.SelectSingleNode(AlbumDetailXPath + AboutXPath)?.TextContent;
         var descString = document.Body.SelectSingleNode(AlbumDescriptionXPath)?.TextContent;
         var parsedDesc = ParseDescription(descString);
         return new ITunesAlbum
@@ -81,7 +83,8 @@ public class AlbumScraper : IScraper<MusicAlbum>
             Name = albumName.Trim(),
             Artists = artists,
             ImageUrl = imageUrl,
-            ReleaseDate = parsedDesc?.Date
+            ReleaseDate = parsedDesc?.Date,
+            About = aboutText
         };
     }
 
