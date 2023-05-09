@@ -2,6 +2,7 @@ using AngleSharp;
 using AngleSharp.Dom;
 using AngleSharp.XPath;
 using Jellyfin.Plugin.ITunes.Dtos;
+using Jellyfin.Plugin.ITunes.Utils;
 using MediaBrowser.Controller.Entities.Audio;
 using Microsoft.Extensions.Logging;
 
@@ -48,6 +49,10 @@ public class ArtistScraper : IScraper<MusicArtist>
         if (imageUrl is null)
         {
             _logger.LogDebug("Artist image not found");
+        }
+        else
+        {
+            imageUrl = PluginUtils.ModifyImageUrlSize(imageUrl, "1200x630cw", "1400x1400cc");
         }
 
         return new ITunesArtist
