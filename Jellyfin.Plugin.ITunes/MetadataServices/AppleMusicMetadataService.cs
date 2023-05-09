@@ -39,7 +39,7 @@ public class AppleMusicMetadataService : IMetadataService
     }
 
     /// <inheritdoc />
-    public async Task<IEnumerable<string>> Search(string searchTerm, ItemType type, CancellationToken cancellationToken)
+    public async Task<ICollection<string>> Search(string searchTerm, ItemType type, CancellationToken cancellationToken)
     {
         var encodedTerm = Uri.EscapeDataString(searchTerm);
         var searchUrl = $"http://music.apple.com/us/search?term={encodedTerm}";
@@ -48,7 +48,7 @@ public class AppleMusicMetadataService : IMetadataService
 
         var document = await OpenPage(searchUrl).ConfigureAwait(false);
         var nodes = document.Body.SelectNodes(SearchResultXPath(type));
-        return from IHtmlAnchorElement elemNode in nodes select elemNode.Href;
+        return (from IHtmlAnchorElement elemNode in nodes select elemNode.Href).ToList();
     }
 
     /// <inheritdoc />
