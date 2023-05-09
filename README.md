@@ -1,47 +1,54 @@
-# Jellyfin iTunes Plugin
+# Apple Music _metadata_ plugin for Jellyfin
 
-<p align="center">
-<img alt="Plugin Banner" src="https://raw.githubusercontent.com/Shadowghost/jellyfin-plugin-itunes/master/image.png?sanitize=true"/>
-</p>
+<img alt="Plugin Banner" src="https://raw.githubusercontent.com/lyarenei/jellyfin-plugin-itunes/master/image.png?sanitize=true"/>
 
-[![🏗️ Build Plugin](https://github.com/Shadowghost/jellyfin-plugin-itunes/actions/workflows/build.yaml/badge.svg)](https://github.com/Shadowghost/jellyfin-plugin-itunes/actions/workflows/build.yaml)
-[![GPLv3 License](https://img.shields.io/github/license/Shadowghost/jellyfin-plugin-itunes.svg)](https://github.com/Shadowghost/jellyfin-plugin-itunes)
-[![Current Release](https://img.shields.io/github/release/Shadowghost/jellyfin-plugin-itunes.svg)](https://github.com/Shadowghost/jellyfin-plugin-itunes/releases)
+[![Build](https://github.com/lyarenei/jellyfin-plugin-itunes/actions/workflows/build.yaml/badge.svg)](https://github.com/lyarenei/jellyfin-plugin-itunes/actions/workflows/build.yaml)
+[![GPLv3 License](https://img.shields.io/github/license/lyarenei/jellyfin-plugin-itunes.svg)](https://github.com/lyarenei/jellyfin-plugin-itunes)
+[![Current Release](https://img.shields.io/github/release/lyarenei/jellyfin-plugin-itunes.svg)](https://github.com/lyarenei/jellyfin-plugin-itunes/releases)
 
 ## About
-Fetches Metadata from iTunes (Apple Music)
+This plugin scrapes metadata from Apple Music and saves them in Jellyfin database.
 
-Currently supported:
-* Album Images
-* Artist Images
-* Artist Info (Overview)
-* Identifying albums and artists
+Currently supported features:
+* Album image and metadata provider
+* Artist image and metadata provider
 
 ## Installation
 
-[See the official documentation for install instructions](https://jellyfin.org/docs/general/server/plugins/index.html#installing).
+There are no releases yet, as I wanted to focus on the functionality and evaluate how much would be possible to implement with Apple Music scraping.
+Once the plugin will be ready for general use, I'll provide automated releases and a Jellyfin repository to install from.
 
-## Build
+With that said, you can always compile and install the plugin manually. Check out the [Build section](#build) for more details.
 
-1. To build this plugin you will need [.Net 7.x](https://dotnet.microsoft.com/download/dotnet/7.0).
+## Configuration
 
-2. Build plugin with following command
-  ```
-  dotnet publish --configuration Release --output bin
-  ```
+This plugin has no configuration (at least right now). Once you install it, it's ready to use.
 
-3. Place the dll-file in the `plugins/itunes` folder (you might need to create the folders) of your JF install
+However, don't forget to enable `Apple Music` sources in library settings.
 
-## Releasing
+## Development
 
-To release the plugin we recommend [JPRM](https://github.com/oddstr13/jellyfin-plugin-repository-manager) that will build and package the plugin.
-For additional context and for how to add the packaged plugin zip to a plugin manifest see the [JPRM documentation](https://github.com/oddstr13/jellyfin-plugin-repository-manager) for more info.
+There is nothing special to set up. You obviously need the [.Net 6.x SDK](https://dotnet.microsoft.com/download/dotnet/6.0) installed on your system.
+Then clone the repo, open it in your favorite editor, restore dependencies and you should be good to go.
+Debugging requires additional setup - documented in the [jellyfin plugin template](https://github.com/jellyfin/jellyfin-plugin-template#6-set-up-debugging).
 
-## Contributing
+### Build
 
-We welcome all contributions and pull requests! If you have a larger feature in mind please open an issue so we can discuss the implementation before you start.
-In general refer to our [contributing guidelines](https://github.com/jellyfin/.github/blob/master/CONTRIBUTING.md) for further information.
+Run `dotnet publish --configuration Release --output bin` command.
+After successfully compiling, you'll find few files in the output directory.
+
+To install the plugin, copy the following files into the `${CONFIG_DIR}/plugins/itunes` directory (create it first):
+- Jellyfin.Plugin.ITunes.dll
+- AngleSharp.dll
+- AngleSharp.XPath.dll
+
+After restarting Jellyfin, the plugin should be recognized by the server and active.
 
 ## Licence
 
-This plugins code and packages are distributed under the GPLv3 License. See [LICENSE](./LICENSE) for more information.
+The plugin code and packages are distributed under the GPLv3 License. See [LICENSE](./LICENSE) for more information.
+
+Per the licence requirements, the following modifications were made:
+- Plugin code restructure/cleanup/refactor
+- Use Apple Music for search instead of iTunes JSON API
+- Support for fetching metadata instead of only images
