@@ -1,0 +1,28 @@
+using Jellyfin.Plugin.ITunes.Utils;
+using MediaBrowser.Controller.Entities.Audio;
+using MediaBrowser.Controller.Providers;
+using MediaBrowser.Model.Entities;
+using MediaBrowser.Model.Providers;
+
+namespace Jellyfin.Plugin.ITunes.ExternalIds;
+
+/// <summary>
+/// Apple Music album external ID.
+/// </summary>
+public class ITunesAlbumExternalId : IExternalId
+{
+    /// <inheritdoc />
+    public string ProviderName => PluginUtils.PluginName;
+
+    /// <inheritdoc />
+    public string Key => ITunesProviderKey.Album.ToString();
+
+    /// <inheritdoc />
+    public ExternalIdMediaType? Type => ExternalIdMediaType.Album;
+
+    /// <inheritdoc />
+    public string UrlFormatString => PluginUtils.AppleMusicBaseUrl + "/album/{AlbumId}";
+
+    /// <inheritdoc />
+    public bool Supports(IHasProviderIds item) => item is Audio or MusicAlbum;
+}

@@ -13,6 +13,11 @@ public static class PluginUtils
     public static string PluginName => "Apple Music";
 
     /// <summary>
+    /// Gets Apple Music base URL.
+    /// </summary>
+    public static string AppleMusicBaseUrl => "https://music.apple.com/us";
+
+    /// <summary>
     /// Replace size in image URL.
     /// </summary>
     /// <param name="url">URL to work with.</param>
