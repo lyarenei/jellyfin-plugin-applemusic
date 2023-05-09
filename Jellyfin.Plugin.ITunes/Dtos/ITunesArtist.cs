@@ -12,9 +12,13 @@ public class ITunesArtist : IITunesItem
     /// </summary>
     public ITunesArtist()
     {
+        Id = string.Empty;
         Name = string.Empty;
         Url = string.Empty;
     }
+
+    /// <inheritdoc />
+    public string Id { get; set; }
 
     /// <inheritdoc />
     public string Name { get; set; }

@@ -8,6 +8,11 @@ namespace Jellyfin.Plugin.ITunes.Dtos;
 public interface IITunesItem
 {
     /// <summary>
+    /// Gets or sets item's ID.
+    /// </summary>
+    public string Id { get; set; }
+
+    /// <summary>
     /// Gets or sets item's name.
     /// </summary>
     public string Name { get; set; }

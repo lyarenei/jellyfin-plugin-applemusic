@@ -12,7 +12,7 @@ namespace Jellyfin.Plugin.ITunes.ExternalIds;
 public class ITunesAlbumExternalId : IExternalId
 {
     /// <inheritdoc />
-    public string ProviderName => PluginUtils.PluginName;
+    public string ProviderName => PluginUtils.PluginName + " (album)";
 
     /// <inheritdoc />
     public string Key => ITunesProviderKey.Album.ToString();
@@ -21,7 +21,7 @@ public class ITunesAlbumExternalId : IExternalId
     public ExternalIdMediaType? Type => ExternalIdMediaType.Album;
 
     /// <inheritdoc />
-    public string UrlFormatString => PluginUtils.AppleMusicBaseUrl + "/album/{AlbumId}";
+    public string UrlFormatString => PluginUtils.AppleMusicBaseUrl + "/album/{0}";
 
     /// <inheritdoc />
     public bool Supports(IHasProviderIds item) => item is Audio or MusicAlbum;

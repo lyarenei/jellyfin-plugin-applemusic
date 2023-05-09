@@ -65,6 +65,7 @@ public class AppleMusicMetadataService : IMetadataService
         if (item is not null)
         {
             item.Url = url;
+            item.Id = url.Split('/').LastOrDefault(string.Empty);
         }
 
         return item;

@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Jellyfin.Plugin.ITunes.Dtos;
+using Jellyfin.Plugin.ITunes.ExternalIds;
 using Jellyfin.Plugin.ITunes.MetadataServices;
 using Jellyfin.Plugin.ITunes.Utils;
 using MediaBrowser.Common.Net;
@@ -119,6 +120,7 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
             metadataResult.RemoteImages.Add((album.ImageUrl, ImageType.Primary));
         }
 
+        metadataResult.Item.SetProviderId(ITunesProviderKey.Album.ToString(), album.Id);
         return metadataResult;
     }
 
