@@ -107,8 +107,12 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
             metadataResult.RemoteImages.Add((album.ImageUrl, ImageType.Primary));
         }
 
+        if (album.Artists.Any())
+        {
+            metadataResult.Item.SetProviderId(ITunesProviderKey.AlbumArtist.ToString(), album.Artists.First().Id);
+        }
+
         metadataResult.Item.SetProviderId(ITunesProviderKey.Album.ToString(), album.Id);
-        metadataResult.Item.SetProviderId(ITunesProviderKey.AlbumArtist.ToString(), album.Artists.First().Id);
         return metadataResult;
     }
 
