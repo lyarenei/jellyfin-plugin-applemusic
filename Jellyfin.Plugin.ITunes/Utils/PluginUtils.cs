@@ -50,6 +50,8 @@ public static class PluginUtils
         string? urlFormat = key switch
         {
             ITunesProviderKey.Album => new ITunesAlbumExternalId().UrlFormatString,
+            ITunesProviderKey.AlbumArtist => new ITunesAlbumArtistExternalId().UrlFormatString,
+            ITunesProviderKey.Artist => new ITunesArtistExternalId().UrlFormatString,
             _ => null
         };
 

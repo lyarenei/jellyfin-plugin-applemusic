@@ -16,5 +16,10 @@ public enum ITunesProviderKey
     /// <summary>
     /// Apple Music album artist provider ID.
     /// </summary>
-    AlbumArtist = 11448801
+    AlbumArtist = 11448801,
+
+    /// <summary>
+    /// Apple Music artist provider ID.
+    /// </summary>
+    Artist = 11448802,
 }
