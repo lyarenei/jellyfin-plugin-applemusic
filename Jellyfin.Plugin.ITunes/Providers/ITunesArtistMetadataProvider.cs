@@ -114,6 +114,7 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
         var providerUrl = PluginUtils.GetProviderUrl(info, ITunesProviderKey.Artist);
         if (string.IsNullOrEmpty(providerUrl))
         {
+            _logger.LogDebug("Provider URL is empty, falling back to search");
             return await _service.Search(info.Name, ItemType.Artist, cancellationToken).ConfigureAwait(false);
         }
 

@@ -111,6 +111,7 @@ public class ITunesAlbumImageProvider : IRemoteImageProvider
         var providerUrl = PluginUtils.GetProviderUrl(album, ITunesProviderKey.Album);
         if (string.IsNullOrEmpty(providerUrl))
         {
+            _logger.LogDebug("Provider URL is empty, falling back to search");
             var term = GetSearchTerm(album);
             return await _service.Search(term, ItemType.Album, cancellationToken).ConfigureAwait(false);
         }
