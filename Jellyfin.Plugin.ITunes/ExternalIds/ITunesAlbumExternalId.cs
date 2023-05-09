@@ -12,7 +12,7 @@ namespace Jellyfin.Plugin.ITunes.ExternalIds;
 public class ITunesAlbumExternalId : IExternalId
 {
     /// <inheritdoc />
-    public string ProviderName => PluginUtils.PluginName + " (album)";
+    public string ProviderName => PluginUtils.PluginName;
 
     /// <inheritdoc />
     public string Key => ITunesProviderKey.Album.ToString();
