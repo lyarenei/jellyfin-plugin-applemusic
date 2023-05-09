@@ -56,10 +56,21 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
         foreach (var result in results)
         {
             var scrapeResult = await _service.Scrape(result, ItemType.Album).ConfigureAwait(false);
-            if (scrapeResult is ITunesAlbum album)
+            if (scrapeResult is not ITunesAlbum album)
             {
-                searchResults.Add(album.ToRemoteSearchResult());
+                _logger.LogDebug("Scrape result is not an album, ignoring");
+                continue;
             }
+
+            if (searchInfo.Year is not null &&
+                album.ReleaseDate?.Year is not null &&
+                searchInfo.Year != album.ReleaseDate?.Year)
+            {
+                _logger.LogDebug("Album does not match specified year, ignoring");
+                continue;
+            }
+
+            searchResults.Add(album.ToRemoteSearchResult());
         }
 
         return searchResults;
