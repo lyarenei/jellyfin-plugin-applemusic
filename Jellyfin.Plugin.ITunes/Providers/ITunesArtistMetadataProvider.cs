@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Jellyfin.Plugin.ITunes.ExternalIds;
 using Jellyfin.Plugin.ITunes.MetadataServices;
 using Jellyfin.Plugin.ITunes.Utils;
 using MediaBrowser.Common.Net;
@@ -44,21 +45,13 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
     /// <inheritdoc />
     public async Task<MetadataResult<MusicArtist>> GetMetadata(ArtistInfo info, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(info.Name))
+        var results = await GetUrlsForScraping(info, cancellationToken).ConfigureAwait(false);
+        if (!results.Any())
         {
-            _logger.LogDebug("Empty artist name, skipping");
             return EmptyMetadataResult();
         }
 
-        var results = await _service.Search(info.Name, ItemType.Artist, cancellationToken).ConfigureAwait(false);
-        var resultList = results.ToList();
-        if (!resultList.Any())
-        {
-            _logger.LogInformation("No results found for {Artist}", info.Name);
-            return EmptyMetadataResult();
-        }
-
-        var result = resultList.First();
+        var result = results.First();
         var scrapedArtist = await _service.Scrape(result, ItemType.Artist).ConfigureAwait(false);
         if (scrapedArtist is null)
         {
@@ -87,13 +80,7 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
     /// <inheritdoc />
     public async Task<IEnumerable<RemoteSearchResult>> GetSearchResults(ArtistInfo searchInfo, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(searchInfo.Name))
-        {
-            _logger.LogInformation("Empty artist name, cannot search");
-            return Enumerable.Empty<RemoteSearchResult>();
-        }
-
-        var results = await _service.Search(searchInfo.Name, ItemType.Artist, cancellationToken).ConfigureAwait(false);
+        var results = await GetUrlsForScraping(searchInfo, cancellationToken).ConfigureAwait(false);
         var searchResults = new List<RemoteSearchResult>();
         foreach (var result in results)
         {
@@ -119,5 +106,16 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
     private static MetadataResult<MusicArtist> EmptyMetadataResult()
     {
         return new MetadataResult<MusicArtist> { HasMetadata = false };
+    }
+
+    private async Task<ICollection<string>> GetUrlsForScraping(ArtistInfo info, CancellationToken cancellationToken)
+    {
+        var providerUrl = PluginUtils.GetProviderUrl(info, ITunesProviderKey.AlbumArtist);
+        if (string.IsNullOrEmpty(providerUrl))
+        {
+            return await _service.Search(info.Name, ItemType.Artist, cancellationToken).ConfigureAwait(false);
+        }
+
+        return new List<string> { providerUrl };
     }
 }
