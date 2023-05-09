@@ -36,7 +36,7 @@ public class ITunesAlbum : IITunesItem
     /// Gets or sets artists.
     /// The first artist should be also an album artist.
     /// </summary>
-    public ICollection<ITunesArtist> Artists { get; set; }
+    public IEnumerable<ITunesArtist> Artists { get; set; }
 
     /// <summary>
     /// Gets or sets release date.
