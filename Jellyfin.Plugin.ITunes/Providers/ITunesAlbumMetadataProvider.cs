@@ -97,7 +97,7 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
 
         var result = resultList.First();
         var scrapedAlbum = await _service.Scrape(result, ItemType.Album).ConfigureAwait(false);
-        if (scrapedAlbum is null)
+        if (scrapedAlbum is not ITunesAlbum album)
         {
             _logger.LogDebug("Failed to scrape data from {Url}", result);
             return EmptyResult();
@@ -105,13 +105,18 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
 
         var metadataResult = new MetadataResult<MusicAlbum>
         {
-            Item = new MusicAlbum { Name = scrapedAlbum.Name },
-            HasMetadata = scrapedAlbum.HasMetadata()
+            Item = new MusicAlbum
+            {
+                Name = album.Name,
+                Overview = album.About,
+                ProductionYear = album.ReleaseDate?.Year
+            },
+            HasMetadata = album.HasMetadata()
         };
 
-        if (scrapedAlbum.ImageUrl is not null)
+        if (album.ImageUrl is not null)
         {
-            metadataResult.RemoteImages.Add((scrapedAlbum.ImageUrl, ImageType.Primary));
+            metadataResult.RemoteImages.Add((album.ImageUrl, ImageType.Primary));
         }
 
         return metadataResult;
