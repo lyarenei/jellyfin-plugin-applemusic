@@ -32,4 +32,10 @@ public interface IITunesItem
     /// </summary>
     /// <returns>New instance of <see cref="RemoteSearchResult"/>.</returns>
     public RemoteSearchResult ToRemoteSearchResult();
+
+    /// <summary>
+    /// Indicates if this item has metadata or not.
+    /// </summary>
+    /// <returns>Item has metadata.</returns>
+    public bool HasMetadata();
 }

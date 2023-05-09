@@ -106,7 +106,7 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
         var metadataResult = new MetadataResult<MusicAlbum>
         {
             Item = new MusicAlbum { Name = scrapedAlbum.Name },
-            HasMetadata = true
+            HasMetadata = scrapedAlbum.HasMetadata()
         };
 
         if (scrapedAlbum.ImageUrl is not null)

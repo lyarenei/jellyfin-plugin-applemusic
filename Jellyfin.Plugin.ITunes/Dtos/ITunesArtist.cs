@@ -38,4 +38,7 @@ public class ITunesArtist : IITunesItem
             Overview = About
         };
     }
+
+    /// <inheritdoc />
+    public bool HasMetadata() => !string.IsNullOrEmpty(Name) || About is not null;
 }

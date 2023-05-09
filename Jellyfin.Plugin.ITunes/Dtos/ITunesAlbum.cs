@@ -57,4 +57,12 @@ public class ITunesAlbum : IITunesItem
             Artists = (from artist in Artists select artist.ToRemoteSearchResult()).ToArray()
         };
     }
+
+    /// <inheritdoc />
+    public bool HasMetadata()
+    {
+        return !string.IsNullOrEmpty(Name) ||
+               About is not null ||
+               ReleaseDate is not null;
+    }
 }

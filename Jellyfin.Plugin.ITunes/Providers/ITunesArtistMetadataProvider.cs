@@ -73,7 +73,7 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
                 Name = scrapedArtist.Name,
                 Overview = scrapedArtist.About
             },
-            HasMetadata = true
+            HasMetadata = scrapedArtist.HasMetadata()
         };
 
         if (scrapedArtist.ImageUrl is not null)
