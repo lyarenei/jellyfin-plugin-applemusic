@@ -111,7 +111,7 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
 
     private async Task<ICollection<string>> GetUrlsForScraping(ArtistInfo info, CancellationToken cancellationToken)
     {
-        var providerUrl = PluginUtils.GetProviderUrl(info, ITunesProviderKey.AlbumArtist);
+        var providerUrl = PluginUtils.GetProviderUrl(info, ITunesProviderKey.Artist);
         if (string.IsNullOrEmpty(providerUrl))
         {
             return await _service.Search(info.Name, ItemType.Artist, cancellationToken).ConfigureAwait(false);
