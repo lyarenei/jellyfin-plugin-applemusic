@@ -107,6 +107,7 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
         }
 
         metadataResult.Item.SetProviderId(ITunesProviderKey.Album.ToString(), album.Id);
+        metadataResult.Item.SetProviderId(ITunesProviderKey.AlbumArtist.ToString(), album.Artists.First().Id);
         return metadataResult;
     }
 
