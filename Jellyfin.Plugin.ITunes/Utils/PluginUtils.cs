@@ -39,7 +39,7 @@ public static class PluginUtils
     /// <param name="item">Item to get the provider URL for.</param>
     /// <param name="key">Kind of provider URL to get.</param>
     /// <returns>Item provider URL. Empty if not found.</returns>
-    public static string GetProviderUrl(ItemLookupInfo item, ITunesProviderKey key)
+    public static string GetProviderUrl(IHasProviderIds item, ITunesProviderKey key)
     {
         var providerId = item.GetProviderId(key.ToString());
         if (providerId is null)
