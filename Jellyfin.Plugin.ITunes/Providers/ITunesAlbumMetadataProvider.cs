@@ -94,7 +94,9 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
             {
                 Name = album.Name,
                 Overview = album.About,
-                ProductionYear = album.ReleaseDate?.Year
+                ProductionYear = album.ReleaseDate?.Year,
+                Artists = (from artist in album.Artists select artist.Name).ToList(),
+                AlbumArtists = new List<string> { album.Artists.First().Name }
             },
             HasMetadata = album.HasMetadata()
         };
