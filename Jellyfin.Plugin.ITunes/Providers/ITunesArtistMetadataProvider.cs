@@ -74,6 +74,7 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
             metadataResult.RemoteImages.Add((scrapedArtist.ImageUrl, ImageType.Primary));
         }
 
+        metadataResult.Item.SetProviderId(ITunesProviderKey.Artist.ToString(), scrapedArtist.Id);
         return metadataResult;
     }
 
