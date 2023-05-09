@@ -88,6 +88,7 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
             return EmptyResult();
         }
 
+        var artistNames = (from artist in album.Artists select artist.Name).ToList();
         var metadataResult = new MetadataResult<MusicAlbum>
         {
             Item = new MusicAlbum
@@ -95,8 +96,8 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
                 Name = album.Name,
                 Overview = album.About,
                 ProductionYear = album.ReleaseDate?.Year,
-                Artists = (from artist in album.Artists select artist.Name).ToList(),
-                AlbumArtists = new List<string> { album.Artists.First().Name }
+                Artists = artistNames,
+                AlbumArtists = artistNames.Any() ? new List<string> { artistNames.First() } : new List<string>()
             },
             HasMetadata = album.HasMetadata()
         };
