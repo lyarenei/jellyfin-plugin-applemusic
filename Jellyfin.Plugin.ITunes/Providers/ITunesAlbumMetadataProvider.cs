@@ -81,7 +81,7 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
         }
 
         var result = results.First();
-        var scrapedAlbum = await _service.Scrape(results.First(), ItemType.Album).ConfigureAwait(false);
+        var scrapedAlbum = await _service.Scrape(result, ItemType.Album).ConfigureAwait(false);
         if (scrapedAlbum is not ITunesAlbum album)
         {
             _logger.LogDebug("Failed to scrape data from {Url}", result);
