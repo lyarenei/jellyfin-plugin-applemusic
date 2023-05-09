@@ -97,7 +97,7 @@ public class ITunesAlbumImageProvider : IRemoteImageProvider
                 Height = 1200,
                 Width = 1200,
                 ProviderName = Name,
-                ThumbnailUrl = ModifySize(data.ImageUrl, "1200x1200bf", "100x100cc"),
+                ThumbnailUrl = PluginUtils.ModifyImageUrlSize(data.ImageUrl, "1200x1200bf", "100x100cc"),
                 Type = ImageType.Primary,
                 Url = data.ImageUrl
             };
@@ -106,10 +106,5 @@ public class ITunesAlbumImageProvider : IRemoteImageProvider
         }
 
         return infos;
-    }
-
-    private static string ModifySize(string url, string searchSize, string newSize)
-    {
-        return url.Replace(searchSize, newSize, StringComparison.OrdinalIgnoreCase);
     }
 }

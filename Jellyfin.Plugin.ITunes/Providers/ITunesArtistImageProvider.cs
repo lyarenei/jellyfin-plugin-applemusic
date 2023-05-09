@@ -93,9 +93,9 @@ public class ITunesArtistImageProvider : IRemoteImageProvider
                 Height = 1200,
                 Width = 1200,
                 ProviderName = Name,
-                ThumbnailUrl = ModifySize(data.ImageUrl, "1200x630cw", "100x100cc"),
+                ThumbnailUrl = PluginUtils.ModifyImageUrlSize(data.ImageUrl, "1200x630cw", "100x100cc"),
                 Type = ImageType.Primary,
-                Url = ModifySize(data.ImageUrl, "1200x630cw", "1400x1400cc")
+                Url = PluginUtils.ModifyImageUrlSize(data.ImageUrl, "1200x630cw", "1400x1400cc")
             };
 
             infos.Add(info);
@@ -106,9 +106,4 @@ public class ITunesArtistImageProvider : IRemoteImageProvider
 
     /// <inheritdoc />
     public bool Supports(BaseItem item) => item is MusicArtist;
-
-    private static string ModifySize(string url, string searchSize, string newSize)
-    {
-        return url.Replace(searchSize, newSize, StringComparison.OrdinalIgnoreCase);
-    }
 }
