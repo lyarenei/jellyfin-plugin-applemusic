@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - jellyfin-10.8.x
     paths-ignore:
       - build.yaml
   workflow_dispatch:
