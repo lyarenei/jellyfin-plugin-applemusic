@@ -66,7 +66,7 @@ jobs:
           key: ${{ secrets.DEPLOY_KEY }}
           script_stop: true
           script: |-
-            mkdir -p "${JELLYFIN_REPO_PATH}/${{ github.repository }}/${{ inputs.version }}" || exit 1
+            mkdir -p "${{ env.JELLYFIN_REPO_PATH }}/${{ github.repository }}/${{ inputs.version }}" || exit 1
 
       - name: Upload Jellyfin Plugin Repository Assets
         uses: burnett01/rsync-deployments@0dc935cdecc5f5e571865e60d2a6cdc673704823 # tag=5.2
@@ -94,10 +94,10 @@ jobs:
           script_stop: true
           script: |-
             lockfile="/run/lock/jprm.lock"
-            pushd "${JELLYFIN_REPO_PATH}/${{ github.repository }}/${{ inputs.version }}" || exit 1
+            pushd "${{ env.JELLYFIN_REPO_PATH }}/${{ github.repository }}/${{ inputs.version }}" || exit 1
             (
                 flock -x 300
                 jprm --verbosity=debug repo add --url="${JELLYFIN_REPO_URL}" "${JELLYFIN_REPO}" ./*.zip || exit 1
             ) 300>${lockfile}
             popd || exit 1
-            rm -r "${JELLYFIN_REPO_PATH}/${{ github.repository }}/${{ inputs.version }}" || exit 1
+            rm -r "${{ env.JELLYFIN_REPO_PATH }}/${{ github.repository }}/${{ inputs.version }}" || exit 1
