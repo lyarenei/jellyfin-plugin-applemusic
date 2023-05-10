@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Jellyfin.Plugin.ITunes.Dtos;
+using Jellyfin.Plugin.ITunes.ExternalIds;
 using Jellyfin.Plugin.ITunes.MetadataServices;
 using Jellyfin.Plugin.ITunes.Utils;
 using MediaBrowser.Common.Net;
@@ -45,13 +46,7 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
     /// <inheritdoc />
     public async Task<IEnumerable<RemoteSearchResult>> GetSearchResults(AlbumInfo searchInfo, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(searchInfo.Name))
-        {
-            _logger.LogInformation("Empty album name, cannot search");
-            return Enumerable.Empty<RemoteSearchResult>();
-        }
-
-        var results = await _service.Search(searchInfo.Name, ItemType.Album, cancellationToken).ConfigureAwait(false);
+        var results = await GetUrlsForScraping(searchInfo, cancellationToken).ConfigureAwait(false);
         var searchResults = new List<RemoteSearchResult>();
         foreach (var result in results)
         {
@@ -79,23 +74,13 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
     /// <inheritdoc />
     public async Task<MetadataResult<MusicAlbum>> GetMetadata(AlbumInfo info, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(info.Name))
+        var results = await GetUrlsForScraping(info, cancellationToken).ConfigureAwait(false);
+        if (!results.Any())
         {
-            _logger.LogDebug("Empty album name, skipping");
             return EmptyResult();
         }
 
-        var albumArtist = info.AlbumArtists.FirstOrDefault(string.Empty);
-        var term = $"{albumArtist} {info.Name}";
-        var results = await _service.Search(term, ItemType.Album, cancellationToken).ConfigureAwait(false);
-        var resultList = results.ToList();
-        if (!resultList.Any())
-        {
-            _logger.LogInformation("No results found for {Term}", term);
-            return EmptyResult();
-        }
-
-        var result = resultList.First();
+        var result = results.First();
         var scrapedAlbum = await _service.Scrape(result, ItemType.Album).ConfigureAwait(false);
         if (scrapedAlbum is not ITunesAlbum album)
         {
@@ -103,13 +88,16 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
             return EmptyResult();
         }
 
+        var artistNames = (from artist in album.Artists select artist.Name).ToList();
         var metadataResult = new MetadataResult<MusicAlbum>
         {
             Item = new MusicAlbum
             {
                 Name = album.Name,
                 Overview = album.About,
-                ProductionYear = album.ReleaseDate?.Year
+                ProductionYear = album.ReleaseDate?.Year,
+                Artists = artistNames,
+                AlbumArtists = artistNames.Any() ? new List<string> { artistNames.First() } : new List<string>()
             },
             HasMetadata = album.HasMetadata()
         };
@@ -119,6 +107,12 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
             metadataResult.RemoteImages.Add((album.ImageUrl, ImageType.Primary));
         }
 
+        if (album.Artists.Any())
+        {
+            metadataResult.Item.SetProviderId(ITunesProviderKey.AlbumArtist.ToString(), album.Artists.First().Id);
+        }
+
+        metadataResult.Item.SetProviderId(ITunesProviderKey.Album.ToString(), album.Id);
         return metadataResult;
     }
 
@@ -132,5 +126,24 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
     private static MetadataResult<MusicAlbum> EmptyResult()
     {
         return new MetadataResult<MusicAlbum> { HasMetadata = false };
+    }
+
+    private static string GetSearchTerm(AlbumInfo info)
+    {
+        var albumArtist = info.AlbumArtists.FirstOrDefault(string.Empty);
+        return $"{albumArtist} {info.Name}";
+    }
+
+    private async Task<ICollection<string>> GetUrlsForScraping(AlbumInfo searchInfo, CancellationToken cancellationToken)
+    {
+        var providerUrl = PluginUtils.GetProviderUrl(searchInfo, ITunesProviderKey.Album);
+        if (string.IsNullOrEmpty(providerUrl))
+        {
+            _logger.LogDebug("Provider URL is empty, falling back to search");
+            var term = GetSearchTerm(searchInfo);
+            return await _service.Search(term, ItemType.Album, cancellationToken).ConfigureAwait(false);
+        }
+
+        return new List<string> { providerUrl };
     }
 }

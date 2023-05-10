@@ -15,10 +15,14 @@ public class ITunesAlbum : IITunesItem
     /// </summary>
     public ITunesAlbum()
     {
+        Id = string.Empty;
         Name = string.Empty;
         Url = string.Empty;
         Artists = new List<ITunesArtist>();
     }
+
+    /// <inheritdoc />
+    public string Id { get; set; }
 
     /// <inheritdoc />
     public string Name { get; set; }

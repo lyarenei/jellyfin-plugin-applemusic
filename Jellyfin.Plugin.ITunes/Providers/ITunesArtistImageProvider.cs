@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Jellyfin.Plugin.ITunes.ExternalIds;
 using Jellyfin.Plugin.ITunes.MetadataServices;
 using Jellyfin.Plugin.ITunes.Utils;
 using MediaBrowser.Common.Net;
@@ -49,6 +49,9 @@ public class ITunesArtistImageProvider : IRemoteImageProvider
     }
 
     /// <inheritdoc />
+    public bool Supports(BaseItem item) => item is MusicArtist;
+
+    /// <inheritdoc />
     public async Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
     {
         var httpClient = _httpClientFactory.CreateClient(NamedClient.Default);
@@ -64,22 +67,9 @@ public class ITunesArtistImageProvider : IRemoteImageProvider
             return new List<RemoteImageInfo>();
         }
 
-        if (string.IsNullOrEmpty(artist.Name))
-        {
-            _logger.LogInformation("No artist name provided, cannot continue");
-            return new List<RemoteImageInfo>();
-        }
-
-        var artistUrls = await _service.Search(artist.Name, ItemType.Artist, cancellationToken).ConfigureAwait(false);
-        var artistUrlList = artistUrls.ToList();
-        if (!artistUrlList.Any())
-        {
-            _logger.LogInformation("No artists found for {Term}", artist.Name);
-            return new List<RemoteImageInfo>();
-        }
-
+        var results = await GetUrlsForScraping(artist, cancellationToken).ConfigureAwait(false);
         var infos = new List<RemoteImageInfo>();
-        foreach (var url in artistUrlList)
+        foreach (var url in results)
         {
             var data = await _service.Scrape(url, ItemType.Artist).ConfigureAwait(false);
             if (data?.ImageUrl is null)
@@ -104,6 +94,15 @@ public class ITunesArtistImageProvider : IRemoteImageProvider
         return infos;
     }
 
-    /// <inheritdoc />
-    public bool Supports(BaseItem item) => item is MusicArtist;
+    private async Task<ICollection<string>> GetUrlsForScraping(MusicArtist artist, CancellationToken cancellationToken)
+    {
+        var providerUrl = PluginUtils.GetProviderUrl(artist, ITunesProviderKey.Artist);
+        if (string.IsNullOrEmpty(providerUrl))
+        {
+            _logger.LogDebug("Provider URL is empty, falling back to search");
+            return await _service.Search(artist.Name, ItemType.Artist, cancellationToken).ConfigureAwait(false);
+        }
+
+        return new List<string> { providerUrl };
+    }
 }

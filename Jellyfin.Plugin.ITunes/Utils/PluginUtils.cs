@@ -1,4 +1,8 @@
 using System;
+using System.Globalization;
+using Jellyfin.Plugin.ITunes.ExternalIds;
+using MediaBrowser.Controller.Providers;
+using MediaBrowser.Model.Entities;
 
 namespace Jellyfin.Plugin.ITunes.Utils;
 
@@ -13,6 +17,11 @@ public static class PluginUtils
     public static string PluginName => "Apple Music";
 
     /// <summary>
+    /// Gets Apple Music base URL.
+    /// </summary>
+    public static string AppleMusicBaseUrl => "https://music.apple.com/us";
+
+    /// <summary>
     /// Replace size in image URL.
     /// </summary>
     /// <param name="url">URL to work with.</param>
@@ -22,5 +31,30 @@ public static class PluginUtils
     public static string ModifyImageUrlSize(string url, string searchSize, string newSize)
     {
         return url.Replace(searchSize, newSize, StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    /// Get provider URL specified by <see cref="ITunesProviderKey"/>.
+    /// </summary>
+    /// <param name="item">Item to get the provider URL for.</param>
+    /// <param name="key">Kind of provider URL to get.</param>
+    /// <returns>Item provider URL. Empty if not found.</returns>
+    public static string GetProviderUrl(IHasProviderIds item, ITunesProviderKey key)
+    {
+        var providerId = item.GetProviderId(key.ToString());
+        if (providerId is null)
+        {
+            return string.Empty;
+        }
+
+        string? urlFormat = key switch
+        {
+            ITunesProviderKey.Album => new ITunesAlbumExternalId().UrlFormatString,
+            ITunesProviderKey.AlbumArtist => new ITunesAlbumArtistExternalId().UrlFormatString,
+            ITunesProviderKey.Artist => new ITunesArtistExternalId().UrlFormatString,
+            _ => null
+        };
+
+        return urlFormat is not null ? string.Format(CultureInfo.InvariantCulture, urlFormat, providerId) : string.Empty;
     }
 }

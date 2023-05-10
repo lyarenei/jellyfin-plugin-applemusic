@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Jellyfin.Plugin.ITunes.ExternalIds;
 using Jellyfin.Plugin.ITunes.MetadataServices;
 using Jellyfin.Plugin.ITunes.Utils;
 using MediaBrowser.Common.Net;
@@ -67,23 +68,14 @@ public class ITunesAlbumImageProvider : IRemoteImageProvider
             return new List<RemoteImageInfo>();
         }
 
-        if (string.IsNullOrEmpty(album.Name))
+        var results = await GetUrlsForScraping(album, cancellationToken).ConfigureAwait(false);
+        if (!results.Any())
         {
-            _logger.LogInformation("No album name provided, cannot continue");
-            return new List<RemoteImageInfo>();
-        }
-
-        var searchTerm = $"{album.AlbumArtist} {album.Name}";
-        var albumUrls = await _service.Search(searchTerm, ItemType.Album, cancellationToken).ConfigureAwait(false);
-        var albumUrlList = albumUrls.ToList();
-        if (!albumUrlList.Any())
-        {
-            _logger.LogInformation("No albums found for {Term}", searchTerm);
             return new List<RemoteImageInfo>();
         }
 
         var infos = new List<RemoteImageInfo>();
-        foreach (var url in albumUrlList)
+        foreach (var url in results)
         {
             var data = await _service.Scrape(url, ItemType.Album).ConfigureAwait(false);
             if (data?.ImageUrl is null)
@@ -106,5 +98,24 @@ public class ITunesAlbumImageProvider : IRemoteImageProvider
         }
 
         return infos;
+    }
+
+    private static string GetSearchTerm(MusicAlbum album)
+    {
+        var albumArtist = album.AlbumArtists.FirstOrDefault(string.Empty);
+        return $"{albumArtist} {album.Name}";
+    }
+
+    private async Task<ICollection<string>> GetUrlsForScraping(MusicAlbum album, CancellationToken cancellationToken)
+    {
+        var providerUrl = PluginUtils.GetProviderUrl(album, ITunesProviderKey.Album);
+        if (string.IsNullOrEmpty(providerUrl))
+        {
+            _logger.LogDebug("Provider URL is empty, falling back to search");
+            var term = GetSearchTerm(album);
+            return await _service.Search(term, ItemType.Album, cancellationToken).ConfigureAwait(false);
+        }
+
+        return new List<string> { providerUrl };
     }
 }

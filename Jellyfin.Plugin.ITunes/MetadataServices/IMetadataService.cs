@@ -34,7 +34,7 @@ public interface IMetadataService
     /// <param name="type">Item type to search.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Collection of URLs to search results.</returns>
-    public Task<IEnumerable<string>> Search(string searchTerm, ItemType type, CancellationToken cancellationToken);
+    public Task<ICollection<string>> Search(string searchTerm, ItemType type, CancellationToken cancellationToken);
 
     /// <summary>
     /// Scrapes metadata on provided URL.
