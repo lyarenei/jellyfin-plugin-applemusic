@@ -128,10 +128,23 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
         return new MetadataResult<MusicAlbum> { HasMetadata = false };
     }
 
-    private static string GetSearchTerm(AlbumInfo info)
+    private string GetSearchTerm(AlbumInfo info)
     {
-        var albumArtist = info.AlbumArtists.FirstOrDefault(string.Empty);
-        return $"{albumArtist} {info.Name}";
+        var albumName = info.Name;
+        var albumArtist = info.AlbumArtists.Any() ? info.AlbumArtists[0] : string.Empty;
+        if (string.IsNullOrEmpty(albumArtist))
+        {
+            _logger.LogDebug("Album artist name is not available, giving up");
+            return string.Empty;
+        }
+
+        if (string.Equals(info.Name, albumArtist, StringComparison.OrdinalIgnoreCase))
+        {
+            _logger.LogDebug("Album name is the same as album artist name, trying album name from song");
+            albumName = info.SongInfos.FirstOrDefault()?.Album ?? info.Name;
+        }
+
+        return $"{albumArtist} {albumName}";
     }
 
     private async Task<ICollection<string>> GetUrlsForScraping(AlbumInfo searchInfo, CancellationToken cancellationToken)
@@ -142,20 +155,14 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
             return new List<string> { providerUrl };
         }
 
-        // Workaround for Jellyfin putting artist name in album name during automatic search (probably a bug?)
-        string? searchTerm = null;
-        if (searchInfo.IsAutomated)
+        var searchTerm = GetSearchTerm(searchInfo);
+        if (string.IsNullOrEmpty(searchTerm))
         {
-            var albumName = searchInfo.SongInfos.FirstOrDefault()?.Album;
-            if (albumName is not null)
-            {
-                var albumArtist = searchInfo.AlbumArtists.Any() ? searchInfo.AlbumArtists[0] : string.Empty;
-                searchTerm = $"{albumArtist} {albumName}";
-            }
+            _logger.LogInformation("Could not get search term for {Album}", searchInfo.Name);
+            return new List<string>();
         }
 
         _logger.LogDebug("Could not get a provider URL, falling back to search");
-        searchTerm ??= GetSearchTerm(searchInfo);
         return await _service.Search(searchTerm, ItemType.Album, cancellationToken).ConfigureAwait(false);
     }
 }
