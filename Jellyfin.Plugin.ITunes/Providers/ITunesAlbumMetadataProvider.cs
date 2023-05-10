@@ -109,10 +109,10 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
 
         if (album.Artists.Any())
         {
-            metadataResult.Item.SetProviderId(ITunesProviderKey.AlbumArtist.ToString(), album.Artists.First().Id);
+            metadataResult.Item.SetProviderId(ProviderKey.ITunesAlbumArtist.ToString(), album.Artists.First().Id);
         }
 
-        metadataResult.Item.SetProviderId(ITunesProviderKey.Album.ToString(), album.Id);
+        metadataResult.Item.SetProviderId(ProviderKey.ITunesAlbum.ToString(), album.Id);
         return metadataResult;
     }
 
@@ -136,7 +136,7 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
 
     private async Task<ICollection<string>> GetUrlsForScraping(AlbumInfo searchInfo, CancellationToken cancellationToken)
     {
-        var providerUrl = PluginUtils.GetProviderUrl(searchInfo, ITunesProviderKey.Album);
+        var providerUrl = PluginUtils.GetProviderUrl(searchInfo, ProviderKey.ITunesAlbum);
         if (string.IsNullOrEmpty(providerUrl))
         {
             _logger.LogDebug("Provider URL is empty, falling back to search");

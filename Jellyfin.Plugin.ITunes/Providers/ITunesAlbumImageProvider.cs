@@ -108,7 +108,7 @@ public class ITunesAlbumImageProvider : IRemoteImageProvider
 
     private async Task<ICollection<string>> GetUrlsForScraping(MusicAlbum album, CancellationToken cancellationToken)
     {
-        var providerUrl = PluginUtils.GetProviderUrl(album, ITunesProviderKey.Album);
+        var providerUrl = PluginUtils.GetProviderUrl(album, ProviderKey.ITunesAlbum);
         if (string.IsNullOrEmpty(providerUrl))
         {
             _logger.LogDebug("Provider URL is empty, falling back to search");

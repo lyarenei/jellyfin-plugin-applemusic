@@ -6,20 +6,20 @@ namespace Jellyfin.Plugin.ITunes.ExternalIds;
 /// <summary>
 /// Apple Music provider keys.
 /// </summary>
-public enum ITunesProviderKey
+public enum ProviderKey
 {
     /// <summary>
     /// Apple Music album provider ID.
     /// </summary>
-    Album = 11448800,
+    ITunesAlbum = 11448800,
 
     /// <summary>
     /// Apple Music album artist provider ID.
     /// </summary>
-    AlbumArtist = 11448801,
+    ITunesAlbumArtist = 11448801,
 
     /// <summary>
     /// Apple Music artist provider ID.
     /// </summary>
-    Artist = 11448802,
+    ITunesArtist = 11448802,
 }

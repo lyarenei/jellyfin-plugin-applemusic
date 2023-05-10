@@ -74,7 +74,7 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
             metadataResult.RemoteImages.Add((scrapedArtist.ImageUrl, ImageType.Primary));
         }
 
-        metadataResult.Item.SetProviderId(ITunesProviderKey.Artist.ToString(), scrapedArtist.Id);
+        metadataResult.Item.SetProviderId(ProviderKey.ITunesArtist.ToString(), scrapedArtist.Id);
         return metadataResult;
     }
 
@@ -111,7 +111,7 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
 
     private async Task<ICollection<string>> GetUrlsForScraping(ArtistInfo info, CancellationToken cancellationToken)
     {
-        var providerUrl = PluginUtils.GetProviderUrl(info, ITunesProviderKey.Artist);
+        var providerUrl = PluginUtils.GetProviderUrl(info, ProviderKey.ITunesArtist);
         if (string.IsNullOrEmpty(providerUrl))
         {
             _logger.LogDebug("Provider URL is empty, falling back to search");

@@ -15,7 +15,7 @@ public class ITunesAlbumExternalId : IExternalId
     public string ProviderName => PluginUtils.PluginName;
 
     /// <inheritdoc />
-    public string Key => ITunesProviderKey.Album.ToString();
+    public string Key => ProviderKey.ITunesAlbum.ToString();
 
     /// <inheritdoc />
     public ExternalIdMediaType? Type => ExternalIdMediaType.Album;
