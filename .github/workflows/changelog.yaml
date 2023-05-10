@@ -15,6 +15,6 @@ jobs:
   call:
     uses: jellyfin/jellyfin-meta-plugins/.github/workflows/changelog.yaml@master
     with:
-      repository-name: Shadowghost/jellyfin-plugin-itunes
+      repository-name: lyarenei/jellyfin-plugin-itunes
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
