@@ -1,4 +1,4 @@
-name: '🏗️ Build Plugin'
+name: 'Build Plugin'
 
 on:
   push:
@@ -9,6 +9,7 @@ on:
   pull_request:
     branches:
       - master
+      - jellyfin-10.8.x
     paths-ignore:
       - '**/*.md'
   workflow_dispatch:

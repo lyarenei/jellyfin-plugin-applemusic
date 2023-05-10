@@ -1,14 +1,16 @@
-name: '🧪 Test Plugin'
+name: 'Test Plugin'
 
 on:
   push:
     branches:
       - master
+      - jellyfin-10.8.x
     paths-ignore:
       - '**/*.md'
   pull_request:
     branches:
       - master
+      - jellyfin-10.8.x
     paths-ignore:
       - '**/*.md'
   workflow_dispatch:

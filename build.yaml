@@ -1,18 +1,18 @@
 ---
-name: "iTunes"
+name: "Apple Music"
 guid: "eb5d7894-8eef-4b36-aa6f-5d124e828ce1"
-version: "2.0.0.0"
-targetAbi: "10.9.0.0"
-framework: "net7.0"
-overview: "Fetch artist and album images from iTunes."
+version: "1.0.0.0"
+targetAbi: "10.8.0.0"
+framework: "net6.0"
+overview: "Fetch images and metadata from Apple Music."
 description: >
-  Fetch artist and album images from iTunes
+  Apple Music artist and album images and metadata provider.
 category: "Metadata"
-owner: "Shadowghost"
+owner: "lyarenei"
 artifacts:
-- "HtmlAgilityPack.dll"
+- "AngleSharp.dll"
+- "AngleSharp.XPath.dll"
 - "Jellyfin.Plugin.ITunes.dll"
 changelog: >
-  1.1.0.0:
-    * .NET 7 compatiblity
-    * Don't crash if nothing is found
+  1.0.0.0:
+    * First release
