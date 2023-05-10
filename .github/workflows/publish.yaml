@@ -65,7 +65,6 @@ jobs:
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_KEY }}
           script_stop: true
-          envs: JELLYFIN_REPO_PATH
           script: |-
             mkdir -p "${JELLYFIN_REPO_PATH}/${{ github.repository }}/${{ inputs.version }}" || exit 1
 
@@ -75,7 +74,6 @@ jobs:
         with:
           switches: -vrptz
           path: ./*.zip
-          envs: JELLYFIN_REPO_PATH
           remote_path: ${{ env.JELLYFIN_REPO_PATH }}/${{ github.repository }}/${{ inputs.version }}
           remote_host: ${{ secrets.DEPLOY_HOST }}
           remote_user: ${{ secrets.DEPLOY_USER }}
@@ -86,9 +84,6 @@ jobs:
       - upload
     runs-on: ubuntu-latest
     if: ${{ contains(github.repository, 'jellyfin/') }}
-    env:
-      JELLYFIN_REPO: "/srv/repository/mirror/releases/plugin/manifest-stable.json"
-      JELLYFIN_REPO_URL: "https://repo.jellyfin.org/releases/plugin/"
     steps:
       - name: Update Plugin Manifest
         uses: appleboy/ssh-action@334f9259f2f8eb3376d33fa4c684fff373f2c2a6 # v0.1.10
@@ -97,7 +92,6 @@ jobs:
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_KEY }}
           script_stop: true
-          envs: JELLYFIN_REPO,JELLYFIN_REPO_URL,JELLYFIN_REPO_PATH
           script: |-
             lockfile="/run/lock/jprm.lock"
             pushd "${JELLYFIN_REPO_URL}/${{ github.repository }}/${{ inputs.version }}" || exit 1
