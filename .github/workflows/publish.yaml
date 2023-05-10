@@ -76,7 +76,7 @@ jobs:
           switches: -vrptz
           path: ./*.zip
           envs: JELLYFIN_REPO_PATH
-          remote_path: ${{ JELLYFIN_REPO_URL }}/${{ github.repository }}/${{ inputs.version }}
+          remote_path: ${{ env.JELLYFIN_REPO_URL }}/${{ github.repository }}/${{ inputs.version }}
           remote_host: ${{ secrets.DEPLOY_HOST }}
           remote_user: ${{ secrets.DEPLOY_USER }}
           remote_key: ${{ secrets.DEPLOY_KEY }}
