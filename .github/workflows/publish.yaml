@@ -67,7 +67,7 @@ jobs:
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_KEY }}
           script_stop: true
-          envs: JELLYFIN_REPO
+          envs: REPO_PATH
           script: |-
             mkdir -p "${REPO_PATH}/${{ github.repository }}/${{ inputs.version }}" || exit 1
 
