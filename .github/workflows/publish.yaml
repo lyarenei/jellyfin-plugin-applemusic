@@ -99,7 +99,7 @@ jobs:
           envs: JELLYFIN_REPO,JELLYFIN_REPO_URL,JELLYFIN_REPO_PATH
           script: |-
             lockfile="/run/lock/jprm.lock"
-            pushd "${{ JELLYFIN_REPO_URL }}/${{ github.repository }}/${{ inputs.version }}" || exit 1
+            pushd "${JELLYFIN_REPO_URL}/${{ github.repository }}/${{ inputs.version }}" || exit 1
             (
                 flock -x 300
                 jprm --verbosity=debug repo add --url="${JELLYFIN_REPO_URL}" "${JELLYFIN_REPO}" ./*.zip || exit 1
