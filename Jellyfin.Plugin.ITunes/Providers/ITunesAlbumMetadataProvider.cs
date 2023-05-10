@@ -137,13 +137,25 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
     private async Task<ICollection<string>> GetUrlsForScraping(AlbumInfo searchInfo, CancellationToken cancellationToken)
     {
         var providerUrl = PluginUtils.GetProviderUrl(searchInfo, ProviderKey.ITunesAlbum);
-        if (string.IsNullOrEmpty(providerUrl))
+        if (!string.IsNullOrEmpty(providerUrl))
         {
-            _logger.LogDebug("Provider URL is empty, falling back to search");
-            var term = GetSearchTerm(searchInfo);
-            return await _service.Search(term, ItemType.Album, cancellationToken).ConfigureAwait(false);
+            return new List<string> { providerUrl };
         }
 
-        return new List<string> { providerUrl };
+        // Workaround for Jellyfin putting artist name in album name during automatic search (probably a bug?)
+        string? searchTerm = null;
+        if (searchInfo.IsAutomated)
+        {
+            var albumName = searchInfo.SongInfos.FirstOrDefault()?.Album;
+            if (albumName is not null)
+            {
+                var albumArtist = searchInfo.AlbumArtists.Any() ? searchInfo.AlbumArtists[0] : string.Empty;
+                searchTerm = $"{albumArtist} {albumName}";
+            }
+        }
+
+        _logger.LogDebug("Could not get a provider URL, falling back to search");
+        searchTerm ??= GetSearchTerm(searchInfo);
+        return await _service.Search(searchTerm, ItemType.Album, cancellationToken).ConfigureAwait(false);
     }
 }
