@@ -1,4 +1,4 @@
-name: '🚀 Publish Plugin'
+name: 'Publish Plugin'
 
 on:
   release:

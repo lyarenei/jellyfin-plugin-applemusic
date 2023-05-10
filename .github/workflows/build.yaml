@@ -1,4 +1,4 @@
-name: '🏗️ Build Plugin'
+name: 'Build Plugin'
 
 on:
   push:

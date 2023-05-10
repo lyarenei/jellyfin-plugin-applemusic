@@ -1,4 +1,4 @@
-name: '🧪 Test Plugin'
+name: 'Test Plugin'
 
 on:
   push:

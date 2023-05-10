@@ -1,4 +1,4 @@
-name: "🆙 Bump Version"
+name: "Bump Version"
 
 on:
   release:
