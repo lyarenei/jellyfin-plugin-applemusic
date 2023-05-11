@@ -91,7 +91,7 @@ public class ITunesAlbumImageProvider : IRemoteImageProvider
                 ProviderName = Name,
                 ThumbnailUrl = PluginUtils.ModifyImageUrlSize(data.ImageUrl, "1200x1200bf", "100x100cc"),
                 Type = ImageType.Primary,
-                Url = data.ImageUrl
+                Url = PluginUtils.ModifyImageUrlSize(data.ImageUrl, "1200x1200bf", "1200x1200cc")
             };
 
             infos.Add(info);
