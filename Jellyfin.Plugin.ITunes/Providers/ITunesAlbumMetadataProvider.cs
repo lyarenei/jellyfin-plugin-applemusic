@@ -130,21 +130,41 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
 
     private string GetSearchTerm(AlbumInfo info)
     {
-        var albumName = info.Name;
-        var albumArtist = info.AlbumArtists.Any() ? info.AlbumArtists[0] : string.Empty;
+        var albumName = GetAlbumName(info);
+        var albumArtist = GetArtistName(info);
         if (string.IsNullOrEmpty(albumArtist))
         {
-            _logger.LogDebug("Album artist name is not available, giving up");
+            _logger.LogDebug("Album artist name is not available");
             return string.Empty;
         }
 
-        if (string.Equals(info.Name, albumArtist, StringComparison.OrdinalIgnoreCase))
+        return $"{albumArtist} {albumName}";
+    }
+
+    private string? GetAlbumName(AlbumInfo info)
+    {
+        var albumName = info.Name;
+        var albumArtist = GetArtistName(info);
+        if (string.Equals(albumName, albumArtist, StringComparison.OrdinalIgnoreCase))
         {
-            _logger.LogDebug("Album name is the same as album artist name, trying album name from song");
-            albumName = info.SongInfos.FirstOrDefault()?.Album ?? info.Name;
+            _logger.LogDebug("Album name is the same as album artist name, trying song info");
+            return info.SongInfos.FirstOrDefault()?.Album ?? info.Name;
         }
 
-        return $"{albumArtist} {albumName}";
+        return albumName;
+    }
+
+    private string? GetArtistName(AlbumInfo info)
+    {
+        var albumArtist = info.AlbumArtists.Any() ? info.AlbumArtists[0] : null;
+        if (!string.IsNullOrEmpty(albumArtist))
+        {
+            return albumArtist;
+        }
+
+        _logger.LogDebug("No artist name found in album artists, trying song info");
+        var albumArtists = info.SongInfos.FirstOrDefault()?.AlbumArtists;
+        return albumArtists is not null && albumArtists.Any() ? albumArtists[0] : null;
     }
 
     private async Task<ICollection<string>> GetUrlsForScraping(AlbumInfo searchInfo, CancellationToken cancellationToken)
@@ -158,6 +178,7 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
         var searchTerm = GetSearchTerm(searchInfo);
         if (string.IsNullOrEmpty(searchTerm))
         {
+            _logger.LogDebug("Either album name or artist name could not be obtained, giving up search due to poor accuracy");
             _logger.LogInformation("Could not get search term for {Album}", searchInfo.Name);
             return new List<string>();
         }
