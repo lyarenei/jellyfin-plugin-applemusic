@@ -13,12 +13,31 @@ Currently supported features:
 * Album image and metadata provider
 * Artist image and metadata provider
 
+Please note, that since the plugin must do a search like a person does (instead of direct ID matching like for example MusicBrainz plugin does),
+the results can be a hit or miss.
+
+Because of that, personally, I'd only recommend to use this plugin manually or at most as a backup to more 'reliable' sources,
+especially if you have somewhat less known stuff in your library.
+
+This however, mostly applies only to automatic identification.
+Once there are `Apple Music` IDs available in the metadata, the plugin will use them for getting/refreshing metadata.
+
 ## Installation
 
-There are no releases yet, as I wanted to focus on the functionality and evaluate how much would be possible to implement with Apple Music scraping.
-Once the plugin will be ready for general use, I'll provide automated releases and a Jellyfin repository to install from.
+As always, the plugin can be installed via repository or manually.
 
-With that said, you can always compile and install the plugin manually. Check out the [Build section](#build) for more details.
+#### Repository
+
+The plugin is available on `https://repo.xkrivo.net/jellyfin/manifest.json`.
+
+Head over to `Repositories` tab in Jellyfin server settings > Plugins (advanced section), and add the repository there.
+
+#### Manual
+
+To install the plugin manually, either compile the plugin yourself or grab a release from the
+[releases page](https://github.com/lyarenei/jellyfin-plugin-itunes/releases).
+
+For more details on how to build and install the plugin, check out the [Build section](#build).
 
 ## Configuration
 
@@ -37,7 +56,7 @@ Debugging requires additional setup - documented in the [jellyfin plugin templat
 Run `dotnet publish --configuration Release --output bin` command.
 After successfully compiling, you'll find few files in the output directory.
 
-To install the plugin, copy the following files into the `${CONFIG_DIR}/plugins/itunes` directory (create it first):
+To install the plugin, copy the following files into the `${CONFIG_DIR}/plugins/apple-music` directory (create it first):
 - Jellyfin.Plugin.ITunes.dll
 - AngleSharp.dll
 - AngleSharp.XPath.dll
