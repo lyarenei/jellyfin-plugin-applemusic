@@ -80,8 +80,8 @@ public class ITunesArtistImageProvider : IRemoteImageProvider
 
             var info = new RemoteImageInfo
             {
-                Height = 1200,
-                Width = 1200,
+                Height = 1400,
+                Width = 1400,
                 ProviderName = Name,
                 ThumbnailUrl = PluginUtils.ModifyImageUrlSize(data.ImageUrl, "1200x630cw", "100x100cc"),
                 Type = ImageType.Primary,
@@ -96,7 +96,7 @@ public class ITunesArtistImageProvider : IRemoteImageProvider
 
     private async Task<ICollection<string>> GetUrlsForScraping(MusicArtist artist, CancellationToken cancellationToken)
     {
-        var providerUrl = PluginUtils.GetProviderUrl(artist, ITunesProviderKey.Artist);
+        var providerUrl = PluginUtils.GetProviderUrl(artist, ProviderKey.ITunesArtist);
         if (string.IsNullOrEmpty(providerUrl))
         {
             _logger.LogDebug("Provider URL is empty, falling back to search");

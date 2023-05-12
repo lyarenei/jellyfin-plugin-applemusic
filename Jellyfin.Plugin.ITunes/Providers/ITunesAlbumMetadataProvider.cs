@@ -109,10 +109,10 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
 
         if (album.Artists.Any())
         {
-            metadataResult.Item.SetProviderId(ITunesProviderKey.AlbumArtist.ToString(), album.Artists.First().Id);
+            metadataResult.Item.SetProviderId(ProviderKey.ITunesAlbumArtist.ToString(), album.Artists.First().Id);
         }
 
-        metadataResult.Item.SetProviderId(ITunesProviderKey.Album.ToString(), album.Id);
+        metadataResult.Item.SetProviderId(ProviderKey.ITunesAlbum.ToString(), album.Id);
         return metadataResult;
     }
 
@@ -128,22 +128,62 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
         return new MetadataResult<MusicAlbum> { HasMetadata = false };
     }
 
-    private static string GetSearchTerm(AlbumInfo info)
+    private string GetSearchTerm(AlbumInfo info)
     {
-        var albumArtist = info.AlbumArtists.FirstOrDefault(string.Empty);
-        return $"{albumArtist} {info.Name}";
+        var albumName = GetAlbumName(info);
+        var albumArtist = GetArtistName(info);
+        if (string.IsNullOrEmpty(albumArtist))
+        {
+            _logger.LogDebug("Album artist name is not available");
+            return string.Empty;
+        }
+
+        return $"{albumArtist} {albumName}";
+    }
+
+    private string? GetAlbumName(AlbumInfo info)
+    {
+        var albumName = info.Name;
+        var albumArtist = GetArtistName(info);
+        if (string.Equals(albumName, albumArtist, StringComparison.OrdinalIgnoreCase))
+        {
+            _logger.LogDebug("Album name is the same as album artist name, trying song info");
+            return info.SongInfos.FirstOrDefault()?.Album ?? info.Name;
+        }
+
+        return albumName;
+    }
+
+    private string? GetArtistName(AlbumInfo info)
+    {
+        var albumArtist = info.AlbumArtists.Any() ? info.AlbumArtists[0] : null;
+        if (!string.IsNullOrEmpty(albumArtist))
+        {
+            return albumArtist;
+        }
+
+        _logger.LogDebug("No artist name found in album artists, trying song info");
+        var albumArtists = info.SongInfos.FirstOrDefault()?.AlbumArtists;
+        return albumArtists is not null && albumArtists.Any() ? albumArtists[0] : null;
     }
 
     private async Task<ICollection<string>> GetUrlsForScraping(AlbumInfo searchInfo, CancellationToken cancellationToken)
     {
-        var providerUrl = PluginUtils.GetProviderUrl(searchInfo, ITunesProviderKey.Album);
-        if (string.IsNullOrEmpty(providerUrl))
+        var providerUrl = PluginUtils.GetProviderUrl(searchInfo, ProviderKey.ITunesAlbum);
+        if (!string.IsNullOrEmpty(providerUrl))
         {
-            _logger.LogDebug("Provider URL is empty, falling back to search");
-            var term = GetSearchTerm(searchInfo);
-            return await _service.Search(term, ItemType.Album, cancellationToken).ConfigureAwait(false);
+            return new List<string> { providerUrl };
         }
 
-        return new List<string> { providerUrl };
+        var searchTerm = GetSearchTerm(searchInfo);
+        if (string.IsNullOrEmpty(searchTerm))
+        {
+            _logger.LogDebug("Either album name or artist name could not be obtained, giving up search due to poor accuracy");
+            _logger.LogInformation("Could not get search term for {Album}", searchInfo.Name);
+            return new List<string>();
+        }
+
+        _logger.LogDebug("Could not get a provider URL, falling back to search");
+        return await _service.Search(searchTerm, ItemType.Album, cancellationToken).ConfigureAwait(false);
     }
 }
