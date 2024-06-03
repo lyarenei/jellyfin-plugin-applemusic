@@ -1,10 +1,12 @@
-# Apple Music _metadata_ plugin for Jellyfin
-
-<img alt="Plugin Banner" src="https://raw.githubusercontent.com/lyarenei/jellyfin-plugin-itunes/master/image.png?sanitize=true"/>
+<div align=center>
+<h1>Apple Music <i>metadata</i> plugin for Jellyfin</h1>
+<img alt="Plugin Banner" width=50% height=50% src="https://raw.githubusercontent.com/lyarenei/jellyfin-plugin-itunes/master/image.png?sanitize=true"/>
 
 [![Build](https://github.com/lyarenei/jellyfin-plugin-itunes/actions/workflows/build.yaml/badge.svg)](https://github.com/lyarenei/jellyfin-plugin-itunes/actions/workflows/build.yaml)
 [![GPLv3 License](https://img.shields.io/github/license/lyarenei/jellyfin-plugin-itunes.svg)](https://github.com/lyarenei/jellyfin-plugin-itunes)
 [![Current Release](https://img.shields.io/github/release/lyarenei/jellyfin-plugin-itunes.svg)](https://github.com/lyarenei/jellyfin-plugin-itunes/releases)
+
+</div>
 
 ## About
 This plugin scrapes metadata from Apple Music and saves them in Jellyfin database.
@@ -13,13 +15,13 @@ Currently supported features:
 * Album image and metadata provider
 * Artist image and metadata provider
 
-Please note, that since the plugin must do a search like a person does (instead of direct ID matching like for example MusicBrainz plugin does),
+Please note that since the plugin must do a search like a person does (instead of direct ID matching like for example MusicBrainz plugin does),
 the results can be a hit or miss.
 
 Because of that, personally, I'd only recommend to use this plugin manually or at most as a backup to more 'reliable' sources,
 especially if you have somewhat less known stuff in your library.
 
-This however, mostly applies only to automatic identification.
+This, however, mostly applies only to automatic identification.
 Once there are `Apple Music` IDs available in the metadata, the plugin will use them for getting/refreshing metadata.
 
 ## Installation
@@ -47,7 +49,7 @@ However, don't forget to enable `Apple Music` sources in library settings.
 
 ## Development
 
-There is nothing special to set up. You obviously need the [.Net 6.x SDK](https://dotnet.microsoft.com/download/dotnet/6.0) installed on your system.
+There is nothing special to set up. You obviously need the [.Net 8.x SDK](https://dotnet.microsoft.com/download/dotnet/8.0) installed on your system.
 Then clone the repo, open it in your favorite editor, restore dependencies and you should be good to go.
 Debugging requires additional setup - documented in the [jellyfin plugin template](https://github.com/jellyfin/jellyfin-plugin-template#6-set-up-debugging).
 
