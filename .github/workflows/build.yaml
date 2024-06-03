@@ -10,6 +10,7 @@ on:
     branches:
       - master
       - jellyfin-10.8.x
+      - jellyfin-10.9.x
     paths-ignore:
       - '**/*.md'
   workflow_dispatch:
