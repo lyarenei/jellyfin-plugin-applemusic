@@ -69,7 +69,7 @@ public class ITunesAlbumImageProvider : IRemoteImageProvider
         }
 
         var results = await GetUrlsForScraping(album, cancellationToken).ConfigureAwait(false);
-        if (!results.Any())
+        if (results.Count == 0)
         {
             return new List<RemoteImageInfo>();
         }

@@ -56,7 +56,7 @@ public class AlbumScraper : IScraper<MusicAlbum>
         }
 
         var artistNodes = document.Body.SelectNodes(AlbumDetailXPath + AlbumArtistXPath);
-        if (artistNodes is null || !artistNodes.Any())
+        if (artistNodes is null || artistNodes.Count == 0)
         {
             _logger.LogDebug("No album artists found");
             return null;

@@ -46,7 +46,7 @@ public class ITunesArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist,
     public async Task<MetadataResult<MusicArtist>> GetMetadata(ArtistInfo info, CancellationToken cancellationToken)
     {
         var results = await GetUrlsForScraping(info, cancellationToken).ConfigureAwait(false);
-        if (!results.Any())
+        if (results.Count == 0)
         {
             return EmptyMetadataResult();
         }

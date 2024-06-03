@@ -75,7 +75,7 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
     public async Task<MetadataResult<MusicAlbum>> GetMetadata(AlbumInfo info, CancellationToken cancellationToken)
     {
         var results = await GetUrlsForScraping(info, cancellationToken).ConfigureAwait(false);
-        if (!results.Any())
+        if (results.Count == 0)
         {
             return EmptyResult();
         }
@@ -97,7 +97,7 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
                 Overview = album.About,
                 ProductionYear = album.ReleaseDate?.Year,
                 Artists = artistNames,
-                AlbumArtists = artistNames.Any() ? new List<string> { artistNames.First() } : new List<string>()
+                AlbumArtists = artistNames.Count != 0 ? new List<string> { artistNames.First() } : new List<string>()
             },
             HasMetadata = album.HasMetadata()
         };
