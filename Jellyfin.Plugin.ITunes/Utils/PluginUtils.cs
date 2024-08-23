@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using Jellyfin.Plugin.ITunes.ExternalIds;
+using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 
@@ -36,14 +37,25 @@ public static class PluginUtils
     /// <summary>
     /// Get provider URL specified by <see cref="ProviderKey"/>.
     /// </summary>
+    /// <param name="info">Info of an item to get the provider URL for.</param>
+    /// <param name="key">Kind of provider URL to get.</param>
+    /// <returns>Item provider URL. Empty if not found.</returns>
+    public static string GetProviderUrl(ItemLookupInfo info, ProviderKey key)
+    {
+        var providerId = info.GetProviderId(key.ToString());
+        return GetProviderUrl(providerId, key, info.MetadataCountryCode);
+    }
+
+    /// <summary>
+    /// Get provider URL specified by <see cref="ProviderKey"/>.
+    /// </summary>
     /// <param name="item">Item to get the provider URL for.</param>
     /// <param name="key">Kind of provider URL to get.</param>
     /// <returns>Item provider URL. Empty if not found.</returns>
-    public static string GetProviderUrl(IHasProviderIds item, ProviderKey key)
+    public static string GetProviderUrl(BaseItem item, ProviderKey key)
     {
         var providerId = item.GetProviderId(key.ToString());
-        // TODO: country code
-        return GetProviderUrl(providerId, key, "us");
+        return GetProviderUrl(providerId, key, item.PreferredMetadataCountryCode);
     }
 
     /// <summary>
