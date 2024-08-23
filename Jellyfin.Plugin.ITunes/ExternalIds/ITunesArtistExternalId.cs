@@ -11,6 +11,28 @@ namespace Jellyfin.Plugin.ITunes.ExternalIds;
 /// </summary>
 public class ITunesArtistExternalId : IExternalId
 {
+    /// <summary>
+    /// Apple Music country code.
+    /// </summary>
+    private string _countryCode;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ITunesArtistExternalId"/> class.
+    /// </summary>
+    public ITunesArtistExternalId()
+    {
+        _countryCode = "us";
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ITunesArtistExternalId"/> class.
+    /// </summary>
+    /// <param name="countryCode">Country code for Apple Music.</param>
+    public ITunesArtistExternalId(string countryCode)
+    {
+        _countryCode = countryCode;
+    }
+
     /// <inheritdoc />
     public string ProviderName => PluginUtils.PluginName;
 
