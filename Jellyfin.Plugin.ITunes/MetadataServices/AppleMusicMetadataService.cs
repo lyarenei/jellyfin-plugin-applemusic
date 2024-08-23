@@ -9,6 +9,7 @@ using AngleSharp.Html.Dom;
 using AngleSharp.XPath;
 using Jellyfin.Plugin.ITunes.Dtos;
 using Jellyfin.Plugin.ITunes.Scrapers;
+using Jellyfin.Plugin.ITunes.Utils;
 using MediaBrowser.Controller.Entities.Audio;
 using Microsoft.Extensions.Logging;
 
@@ -42,7 +43,7 @@ public class AppleMusicMetadataService : IMetadataService
     public async Task<ICollection<string>> Search(string searchTerm, ItemType type, CancellationToken cancellationToken)
     {
         var encodedTerm = Uri.EscapeDataString(searchTerm);
-        var searchUrl = $"http://music.apple.com/us/search?term={encodedTerm}";
+        var searchUrl = $"{PluginUtils.AppleMusicBaseUrl}/us/search?term={encodedTerm}";
 
         _logger.LogDebug("Using {Url} for search", searchUrl);
 
