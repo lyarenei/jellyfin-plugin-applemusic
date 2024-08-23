@@ -184,6 +184,6 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
         }
 
         _logger.LogDebug("Could not get a provider URL, falling back to search");
-        return await _service.Search(searchTerm, ItemType.Album, cancellationToken).ConfigureAwait(false);
+        return await _service.Search(searchTerm, searchInfo.MetadataCountryCode, ItemType.Album, cancellationToken).ConfigureAwait(false);
     }
 }

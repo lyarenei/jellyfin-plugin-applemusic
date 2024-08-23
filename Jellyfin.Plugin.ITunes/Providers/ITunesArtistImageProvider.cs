@@ -100,7 +100,7 @@ public class ITunesArtistImageProvider : IRemoteImageProvider
         if (string.IsNullOrEmpty(providerUrl))
         {
             _logger.LogDebug("Provider URL is empty, falling back to search");
-            return await _service.Search(artist.Name, ItemType.Artist, cancellationToken).ConfigureAwait(false);
+            return await _service.Search(artist.Name, artist.PreferredMetadataCountryCode, ItemType.Artist, cancellationToken).ConfigureAwait(false);
         }
 
         return new List<string> { providerUrl };
