@@ -42,6 +42,19 @@ public static class PluginUtils
     public static string GetProviderUrl(IHasProviderIds item, ProviderKey key)
     {
         var providerId = item.GetProviderId(key.ToString());
+        // TODO: country code
+        return GetProviderUrl(providerId, key, "us");
+    }
+
+    /// <summary>
+    /// Get provider URL specified by <see cref="ProviderKey"/>.
+    /// </summary>
+    /// <param name="providerId">ID of the provider.</param>
+    /// <param name="key">Kind of provider URL to get.</param>
+    /// <param name="countryCode">Country code to use in URL.</param>
+    /// <returns>Item provider URL. Empty if not found.</returns>
+    private static string GetProviderUrl(string? providerId, ProviderKey key, string countryCode)
+    {
         if (providerId is null)
         {
             return string.Empty;
@@ -49,9 +62,9 @@ public static class PluginUtils
 
         string? urlFormat = key switch
         {
-            ProviderKey.ITunesAlbum => new ITunesAlbumExternalId().UrlFormatString,
-            ProviderKey.ITunesAlbumArtist => new ITunesAlbumArtistExternalId().UrlFormatString,
-            ProviderKey.ITunesArtist => new ITunesArtistExternalId().UrlFormatString,
+            ProviderKey.ITunesAlbum => new ITunesAlbumExternalId(countryCode).UrlFormatString,
+            ProviderKey.ITunesAlbumArtist => new ITunesAlbumArtistExternalId(countryCode).UrlFormatString,
+            ProviderKey.ITunesArtist => new ITunesArtistExternalId(countryCode).UrlFormatString,
             _ => null
         };
 
