@@ -45,7 +45,7 @@ jobs:
           name: build-artifact
 
       - name: Ensure Destination Path Exists
-        uses: appleboy/ssh-action@334f9259f2f8eb3376d33fa4c684fff373f2c2a6 # v0.1.10
+        uses: appleboy/ssh-action@029f5b4aeeeb58fdfe1410a5d17f967dacf36262 # v1.0.3
         if: ${{ contains(github.repository, 'lyarenei/') }}
         with:
           host: ${{ secrets.DEPLOY_HOST }}
@@ -77,7 +77,7 @@ jobs:
       REPO_URL: "https://repo.xkrivo.net/jellyfin-dev"
     steps:
       - name: Update Plugin Manifest
-        uses: appleboy/ssh-action@334f9259f2f8eb3376d33fa4c684fff373f2c2a6 # v0.1.10
+        uses: appleboy/ssh-action@029f5b4aeeeb58fdfe1410a5d17f967dacf36262 # v1.0.3
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
