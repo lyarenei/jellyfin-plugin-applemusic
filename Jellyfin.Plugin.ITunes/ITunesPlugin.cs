@@ -22,6 +22,8 @@ public class ITunesPlugin : BasePlugin<PluginConfiguration>
         Instance = this;
     }
 
+    // TODO: dummy change
+
     /// <inheritdoc />
     public override string Name => "Apple Music";
 
