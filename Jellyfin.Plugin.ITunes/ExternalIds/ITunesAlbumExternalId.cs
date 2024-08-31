@@ -43,7 +43,7 @@ public class ITunesAlbumExternalId : IExternalId
     public ExternalIdMediaType? Type => ExternalIdMediaType.Album;
 
     /// <inheritdoc />
-    public string UrlFormatString => PluginUtils.AppleMusicBaseUrl + $"/{_countryCode}" + "/album/{0}";
+    public string UrlFormatString => PluginUtils.AppleMusicBaseUrl + $"/{_countryCode}/album/{0}";
 
     /// <inheritdoc />
     public bool Supports(IHasProviderIds item) => item is Audio or MusicAlbum;
