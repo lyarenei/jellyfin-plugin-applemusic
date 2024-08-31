@@ -24,7 +24,7 @@ jobs:
         uses: oddstr13/jellyfin-plugin-repository-manager@eabb903cdac8a7f6d94df887c6910b5720ec48f9 # v1.0.11
         id: jprm
         with:
-          dotnet-target: "8.0"
+          dotnet-target: "net8.0"
 
       - name: Upload Artifact
         uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
