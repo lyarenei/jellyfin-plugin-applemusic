@@ -24,8 +24,8 @@ especially if you have somewhat less known stuff in your library.
 This, however, mostly applies only to automatic identification.
 Once there are `Apple Music` IDs available in the metadata, the plugin will use them for getting/refreshing metadata.
 
-Note: For localized metadata, the plugin uses metadata **region** instead of language, as Apple Music uses country
-codes in the web URLs.
+Note: For localized metadata, the plugin uses metadata **region** instead of language, as Apple Music appears to be region based
+rather than language based.
 
 ## Installation
 
