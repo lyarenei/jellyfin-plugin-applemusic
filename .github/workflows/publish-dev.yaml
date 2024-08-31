@@ -1,10 +1,11 @@
-name: 'Publish Plugin'
+name: 'Publish Plugin (development)'
 
 on:
-  release:
-    types:
-      - released
-      - prereleased
+  push:
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.yml'
+      - '**/*.yaml'
   workflow_dispatch:
 
 jobs:
@@ -29,7 +30,7 @@ jobs:
         uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
         with:
           name: build-artifact
-          retention-days: 30
+          retention-days: 14
           if-no-files-found: error
           path: ${{ steps.jprm.outputs.artifact }}
 
@@ -43,22 +44,8 @@ jobs:
         with:
           name: build-artifact
 
-      - name: Prepare GH Release Assets
-        run: |-
-          for file in ./*; do
-            md5sum ${file#./} >> ${file%.*}.md5
-            sha256sum ${file#./} >> ${file%.*}.sha256
-          done
-          ls -l
-
-      - name: Upload GH Release Assets
-        uses: shogo82148/actions-upload-release-asset@b016af922a61601d647ff60226adadbe146b7651 # v1.6.4
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./*
-
       - name: Ensure Destination Path Exists
-        uses: appleboy/ssh-action@334f9259f2f8eb3376d33fa4c684fff373f2c2a6 # v0.1.10
+        uses: appleboy/ssh-action@029f5b4aeeeb58fdfe1410a5d17f967dacf36262 # v1.0.3
         if: ${{ contains(github.repository, 'lyarenei/') }}
         with:
           host: ${{ secrets.DEPLOY_HOST }}
@@ -66,7 +53,7 @@ jobs:
           key: ${{ secrets.DEPLOY_KEY }}
           script_stop: true
           script: |-
-            mkdir -p "/var/www/repos/jellyfin/${{ github.repository }}/${{ inputs.version }}" || exit 1
+            mkdir -p "/var/www/repos/jellyfin-dev/${{ github.repository }}/${{ inputs.version }}" || exit 1
 
       - name: Upload Jellyfin Plugin Repository Assets
         uses: burnett01/rsync-deployments@0dc935cdecc5f5e571865e60d2a6cdc673704823 # tag=5.2
@@ -74,7 +61,7 @@ jobs:
         with:
           switches: -vrptz
           path: ./*.zip
-          remote_path: /var/www/repos/jellyfin/${{ github.repository }}/${{ inputs.version }}
+          remote_path: /var/www/repos/jellyfin-dev/${{ github.repository }}/${{ inputs.version }}
           remote_host: ${{ secrets.DEPLOY_HOST }}
           remote_user: ${{ secrets.DEPLOY_USER }}
           remote_key: ${{ secrets.DEPLOY_KEY }}
@@ -85,12 +72,12 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ contains(github.repository, 'lyarenei/') }}
     env:
-      MANIFEST_FILE: "/var/www/repos/jellyfin/manifest.json"
-      REPO_PATH: "/var/www/repos/jellyfin"
-      REPO_URL: "https://repo.xkrivo.net/jellyfin"
+      MANIFEST_FILE: "/var/www/repos/jellyfin-dev/manifest.json"
+      REPO_PATH: "/var/www/repos/jellyfin-dev"
+      REPO_URL: "https://repo.xkrivo.net/jellyfin-dev"
     steps:
       - name: Update Plugin Manifest
-        uses: appleboy/ssh-action@334f9259f2f8eb3376d33fa4c684fff373f2c2a6 # v0.1.10
+        uses: appleboy/ssh-action@029f5b4aeeeb58fdfe1410a5d17f967dacf36262 # v1.0.3
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
