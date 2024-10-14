@@ -4,7 +4,7 @@ name: 'Build and release plugin (dev)'
 on:
   pull_request:
     branches:
-      - main
+      - jellyfin-10.9.x
     paths-ignore:
       - '**/*.md'
       - '**/*.yml'
