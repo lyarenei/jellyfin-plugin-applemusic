@@ -31,10 +31,11 @@ public interface IMetadataService
     /// Performs a search on service using the specified term.
     /// </summary>
     /// <param name="searchTerm">Search term.</param>
+    /// <param name="countryCode">Country code (used to search data in specified language).</param>
     /// <param name="type">Item type to search.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Collection of URLs to search results.</returns>
-    public Task<ICollection<string>> Search(string searchTerm, ItemType type, CancellationToken cancellationToken);
+    public Task<ICollection<string>> Search(string searchTerm, string countryCode, ItemType type, CancellationToken cancellationToken);
 
     /// <summary>
     /// Scrapes metadata on provided URL.

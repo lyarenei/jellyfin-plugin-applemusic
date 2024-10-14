@@ -1,7 +1,7 @@
 ---
 name: "Apple Music"
 guid: "eb5d7894-8eef-4b36-aa6f-5d124e828ce1"
-version: "2.0.0.1"
+version: "2.1.0.1"
 targetAbi: "10.9.0.0"
 framework: "net8.0"
 overview: "Fetch images and metadata from Apple Music."
@@ -14,4 +14,4 @@ artifacts:
 - "AngleSharp.XPath.dll"
 - "Jellyfin.Plugin.ITunes.dll"
 changelog: >
-  Compatibility for Jellyfin 10.9.x
+  Add support for metadata regions - ability to fetch metadata in other languages

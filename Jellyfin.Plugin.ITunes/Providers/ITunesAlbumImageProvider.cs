@@ -113,7 +113,7 @@ public class ITunesAlbumImageProvider : IRemoteImageProvider
         {
             _logger.LogDebug("Provider URL is empty, falling back to search");
             var term = GetSearchTerm(album);
-            return await _service.Search(term, ItemType.Album, cancellationToken).ConfigureAwait(false);
+            return await _service.Search(term, album.PreferredMetadataCountryCode, ItemType.Album, cancellationToken).ConfigureAwait(false);
         }
 
         return new List<string> { providerUrl };

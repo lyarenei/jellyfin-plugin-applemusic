@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using Jellyfin.Plugin.ITunes.ExternalIds;
+using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 
@@ -19,7 +20,7 @@ public static class PluginUtils
     /// <summary>
     /// Gets Apple Music base URL.
     /// </summary>
-    public static string AppleMusicBaseUrl => "https://music.apple.com/us";
+    public static string AppleMusicBaseUrl => "https://music.apple.com";
 
     /// <summary>
     /// Replace size in image URL.
@@ -36,12 +37,36 @@ public static class PluginUtils
     /// <summary>
     /// Get provider URL specified by <see cref="ProviderKey"/>.
     /// </summary>
+    /// <param name="info">Info of an item to get the provider URL for.</param>
+    /// <param name="key">Kind of provider URL to get.</param>
+    /// <returns>Item provider URL. Empty if not found.</returns>
+    public static string GetProviderUrl(ItemLookupInfo info, ProviderKey key)
+    {
+        var providerId = info.GetProviderId(key.ToString());
+        return GetProviderUrl(providerId, key, info.MetadataCountryCode);
+    }
+
+    /// <summary>
+    /// Get provider URL specified by <see cref="ProviderKey"/>.
+    /// </summary>
     /// <param name="item">Item to get the provider URL for.</param>
     /// <param name="key">Kind of provider URL to get.</param>
     /// <returns>Item provider URL. Empty if not found.</returns>
-    public static string GetProviderUrl(IHasProviderIds item, ProviderKey key)
+    public static string GetProviderUrl(BaseItem item, ProviderKey key)
     {
         var providerId = item.GetProviderId(key.ToString());
+        return GetProviderUrl(providerId, key, item.PreferredMetadataCountryCode);
+    }
+
+    /// <summary>
+    /// Get provider URL specified by <see cref="ProviderKey"/>.
+    /// </summary>
+    /// <param name="providerId">ID of the provider.</param>
+    /// <param name="key">Kind of provider URL to get.</param>
+    /// <param name="countryCode">Country code to use in URL.</param>
+    /// <returns>Item provider URL. Empty if not found.</returns>
+    private static string GetProviderUrl(string? providerId, ProviderKey key, string countryCode)
+    {
         if (providerId is null)
         {
             return string.Empty;
@@ -49,9 +74,9 @@ public static class PluginUtils
 
         string? urlFormat = key switch
         {
-            ProviderKey.ITunesAlbum => new ITunesAlbumExternalId().UrlFormatString,
-            ProviderKey.ITunesAlbumArtist => new ITunesAlbumArtistExternalId().UrlFormatString,
-            ProviderKey.ITunesArtist => new ITunesArtistExternalId().UrlFormatString,
+            ProviderKey.ITunesAlbum => new ITunesAlbumExternalId(countryCode).UrlFormatString,
+            ProviderKey.ITunesAlbumArtist => new ITunesAlbumArtistExternalId(countryCode).UrlFormatString,
+            ProviderKey.ITunesArtist => new ITunesArtistExternalId(countryCode).UrlFormatString,
             _ => null
         };
 
