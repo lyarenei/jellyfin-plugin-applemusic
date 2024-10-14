@@ -4,7 +4,7 @@ name: 'Build and release plugin (dev)'
 on:
   pull_request:
     branches:
-      - jellyfin-10.9.x
+      - main
     paths-ignore:
       - '**/*.md'
       - '**/*.yml'
@@ -22,12 +22,12 @@ jobs:
       dotnet-version: ${{ env.DOTNET_VERSION }}
 
   build:
-    uses: lyarenei/jellyfin-plugin-listenbrainz/.github/workflows/build.yml@main
+    uses: ./.github/workflows/build.yml
 
   upload-repo:
     if: ${{ contains(github.repository, 'lyarenei/') }}
     needs: build
-    uses: lyarenei/jellyfin-plugin-listenbrainz/.github/workflows/upload-repo.yml@main
+    uses: ./.github/workflows/upload-repo.yml
     with:
       repo: ${{ env.REPO_NAME }}
     secrets:
@@ -38,7 +38,7 @@ jobs:
   update-manifest:
     if: ${{ contains(github.repository, 'lyarenei/') }}
     needs: upload-repo
-    uses: lyarenei/jellyfin-plugin-listenbrainz/.github/workflows/publish.yml@main
+    uses: ./.github/workflows/publish.yml
     with:
       repo: ${{ env.REPO_NAME }}
     secrets:
