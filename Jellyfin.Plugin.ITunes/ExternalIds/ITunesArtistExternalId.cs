@@ -43,7 +43,7 @@ public class ITunesArtistExternalId : IExternalId
     public ExternalIdMediaType? Type => ExternalIdMediaType.Artist;
 
     /// <inheritdoc />
-    public string UrlFormatString => PluginUtils.AppleMusicBaseUrl + $"/{_countryCode}/artist/{0}";
+    public string UrlFormatString => PluginUtils.AppleMusicBaseUrl + $"/{_countryCode}" + "/artist/{0}";
 
     /// <inheritdoc />
     public bool Supports(IHasProviderIds item) => item is MusicArtist;
