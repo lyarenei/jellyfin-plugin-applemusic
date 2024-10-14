@@ -13,24 +13,24 @@ env:
 
 jobs:
   test:
-    uses: jellyfin/jellyfin-meta-plugins/.github/workflows/test.yaml@master
+    uses: jellyfin/jellyfin-meta-plugins/.github/workflows/test.yml@master
     with:
       dotnet-version: ${{ env.DOTNET_VERSION }}
 
   build:
     needs: test
-    uses: lyarenei/jellyfin-plugin-listenbrainz/.github/workflows/build.yaml@main
+    uses: lyarenei/jellyfin-plugin-listenbrainz/.github/workflows/build.yml@main
     with:
       dotnet-version: ${{ env.DOTNET_VERSION }}
 
   upload:
     needs: build
-    uses: lyarenei/jellyfin-plugin-listenbrainz/.github/workflows/upload.yaml@main
+    uses: lyarenei/jellyfin-plugin-listenbrainz/.github/workflows/upload.yml@main
 
   upload-repo:
     if: ${{ contains(github.repository, 'lyarenei/') }}
     needs: build
-    uses: lyarenei/jellyfin-plugin-listenbrainz/.github/workflows/upload-repo.yaml@main
+    uses: lyarenei/jellyfin-plugin-listenbrainz/.github/workflows/upload-repo.yml@main
     with:
       repo: ${{ env.REPO_NAME }}
     secrets:
@@ -41,7 +41,7 @@ jobs:
   update-manifest:
     if: ${{ contains(github.repository, 'lyarenei/') }}
     needs: upload-repo
-    uses: lyarenei/jellyfin-plugin-listenbrainz/.github/workflows/publish.yaml@main
+    uses: lyarenei/jellyfin-plugin-listenbrainz/.github/workflows/publish.yml@main
     with:
       repo: ${{ env.REPO_NAME }}
     secrets:
