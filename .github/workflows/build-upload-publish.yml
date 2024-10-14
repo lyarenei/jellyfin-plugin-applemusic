@@ -1,0 +1,50 @@
+# $schema: https://json.schemastore.org/github-workflow
+name: 'Build and release plugin'
+
+on:
+  release:
+    types:
+      - released
+  workflow_dispatch:
+
+env:
+  DOTNET_VERSION: "8.0"
+  REPO_NAME: "jellyfin"
+
+jobs:
+  test:
+    uses: jellyfin/jellyfin-meta-plugins/.github/workflows/test.yaml@master
+    with:
+      dotnet-version: ${{ env.DOTNET_VERSION }}
+
+  build:
+    needs: test
+    uses: lyarenei/jellyfin-plugin-listenbrainz/.github/workflows/build.yaml@main
+    with:
+      dotnet-version: ${{ env.DOTNET_VERSION }}
+
+  upload:
+    needs: build
+    uses: lyarenei/jellyfin-plugin-listenbrainz/.github/workflows/upload.yaml@main
+
+  upload-repo:
+    if: ${{ contains(github.repository, 'lyarenei/') }}
+    needs: build
+    uses: lyarenei/jellyfin-plugin-listenbrainz/.github/workflows/upload-repo.yaml@main
+    with:
+      repo: ${{ env.REPO_NAME }}
+    secrets:
+      host: ${{ secrets.DEPLOY_HOST }}
+      user: ${{ secrets.DEPLOY_USER }}
+      key: ${{ secrets.DEPLOY_KEY }}
+
+  update-manifest:
+    if: ${{ contains(github.repository, 'lyarenei/') }}
+    needs: upload-repo
+    uses: lyarenei/jellyfin-plugin-listenbrainz/.github/workflows/publish.yaml@main
+    with:
+      repo: ${{ env.REPO_NAME }}
+    secrets:
+      host: ${{ secrets.DEPLOY_HOST }}
+      user: ${{ secrets.DEPLOY_USER }}
+      key: ${{ secrets.DEPLOY_KEY }}
