@@ -23,7 +23,7 @@ public class ITunesPlugin : BasePlugin<PluginConfiguration>
     }
 
     /// <inheritdoc />
-    public override string Name => "Apple Music";
+    public override string Name => "Apple Musicc";
 
     /// <inheritdoc />
     public override Guid Id => Guid.Parse("a9f62a44-fea5-46c3-ac26-55abba29c7c8");
