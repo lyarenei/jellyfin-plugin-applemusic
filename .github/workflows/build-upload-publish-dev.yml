@@ -2,6 +2,7 @@
 name: 'Build and release plugin (dev)'
 
 on:
+  workflow_dispatch:
   pull_request:
     branches:
       - jellyfin-10.9.x
@@ -9,17 +10,22 @@ on:
       - '**/*.md'
       - '**/*.yml'
       - '**/*.yaml'
-  workflow_dispatch:
-
-env:
-  DOTNET_VERSION: "8.0"
-  REPO_NAME: "jellyfin-dev"
+  workflow_call:
+    inputs:
+      dotnet-version:
+        type: string
+        required: false
+        default: "8.0"
+      repo-name:
+        type: string
+        required: false
+        default: "jellyfin-dev"
 
 jobs:
   test:
     uses: jellyfin/jellyfin-meta-plugins/.github/workflows/test.yaml@master
     with:
-      dotnet-version: ${{ env.DOTNET_VERSION }}
+      dotnet-version: ${{ inputs.dotnet-version }}
 
   build:
     uses: ./.github/workflows/build.yml
@@ -29,7 +35,7 @@ jobs:
     needs: build
     uses: ./.github/workflows/upload-repo.yml
     with:
-      repo: ${{ env.REPO_NAME }}
+      repo: ${{ inputs.repo-name }}
     secrets:
       host: ${{ secrets.DEPLOY_HOST }}
       user: ${{ secrets.DEPLOY_USER }}
@@ -40,7 +46,7 @@ jobs:
     needs: upload-repo
     uses: ./.github/workflows/publish.yml
     with:
-      repo: ${{ env.REPO_NAME }}
+      repo: ${{ inputs.repo-name }}
     secrets:
       host: ${{ secrets.DEPLOY_HOST }}
       user: ${{ secrets.DEPLOY_USER }}
