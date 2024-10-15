@@ -15,11 +15,12 @@ on:
         type: string
         required: false
         default: "8.0"
-      repo-name:
+        description: Dotnet version.
+      repo-slug:
         type: string
         required: false
         default: "jellyfin-dev"
-
+        description: Repository slug.
 jobs:
   test:
     uses: jellyfin/jellyfin-meta-plugins/.github/workflows/test.yaml@master
@@ -34,7 +35,7 @@ jobs:
     needs: build
     uses: ./.github/workflows/upload-repo.yml
     with:
-      repo: ${{ inputs.repo-name || 'jellyfin-dev' }}
+      repo: ${{ inputs.repo-slug || 'jellyfin-dev' }}
     secrets:
       host: ${{ secrets.DEPLOY_HOST }}
       user: ${{ secrets.DEPLOY_USER }}
@@ -45,7 +46,7 @@ jobs:
     needs: upload-repo
     uses: ./.github/workflows/publish.yml
     with:
-      repo: ${{ inputs.repo-name || 'jellyfin-dev' }}
+      repo: ${{ inputs.repo-slug || 'jellyfin-dev' }}
     secrets:
       host: ${{ secrets.DEPLOY_HOST }}
       user: ${{ secrets.DEPLOY_USER }}
