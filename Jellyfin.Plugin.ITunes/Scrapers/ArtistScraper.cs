@@ -13,7 +13,7 @@ namespace Jellyfin.Plugin.ITunes.Scrapers;
 /// </summary>
 public class ArtistScraper : IScraper<MusicArtist>
 {
-    private const string ImageXPath = "//meta[@property='og:image']/@content";
+    private const string ImageXPath = "//meta[@property='og:image' and not(contains(@content, 'apple-music.png'))]/@content";
     private const string ArtistNameXPath = "//h1[@data-testid='artist-header-name']";
     private const string OverviewXPath = "//p[@data-testid='truncate-text']";
 
