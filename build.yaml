@@ -14,4 +14,4 @@ artifacts:
 - "AngleSharp.XPath.dll"
 - "Jellyfin.Plugin.ITunes.dll"
 changelog: >
-  Do not fetch Apple Music generic image for artists without image.
+  Fix album images having black background.
