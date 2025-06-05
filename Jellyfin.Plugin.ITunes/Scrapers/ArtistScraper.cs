@@ -52,7 +52,7 @@ public class ArtistScraper : IScraper<MusicArtist>
         }
         else
         {
-            imageUrl = PluginUtils.ModifyImageUrlSize(imageUrl, "1200x630cw", "1400x1400cc");
+            imageUrl = PluginUtils.UpdateImageSize(imageUrl, "1400x1400cc");
         }
 
         return new ITunesArtist

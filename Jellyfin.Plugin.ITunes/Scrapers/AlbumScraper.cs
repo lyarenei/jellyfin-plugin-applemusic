@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text.RegularExpressions;
 using AngleSharp;
 using AngleSharp.Dom;
@@ -18,7 +17,7 @@ namespace Jellyfin.Plugin.ITunes.Scrapers;
 /// </summary>
 public class AlbumScraper : IScraper<MusicAlbum>
 {
-    private const string ImageXPath = "//meta[@property='og:image']/@content";
+    private const string ImageXPath = "//meta[@property='og:image' and not(contains(@content, 'apple-music.png'))]/@content";
     private const string AlbumDetailXPath = "//div[@data-testid='container-detail-header']";
     private const string AlbumNameXPath = "//h1[@data-testid='non-editable-product-title']";
     private const string AlbumArtistXPath = "//a[@data-testid='click-action']";

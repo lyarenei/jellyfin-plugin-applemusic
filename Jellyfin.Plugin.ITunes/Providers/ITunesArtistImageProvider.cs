@@ -83,9 +83,9 @@ public class ITunesArtistImageProvider : IRemoteImageProvider
                 Height = 1400,
                 Width = 1400,
                 ProviderName = Name,
-                ThumbnailUrl = PluginUtils.ModifyImageUrlSize(data.ImageUrl, "1200x630cw", "100x100cc"),
+                ThumbnailUrl = PluginUtils.UpdateImageSize(data.ImageUrl, "100x100cc"),
                 Type = ImageType.Primary,
-                Url = PluginUtils.ModifyImageUrlSize(data.ImageUrl, "1200x630cw", "1400x1400cc")
+                Url = PluginUtils.UpdateImageSize(data.ImageUrl, "1400x1400cc")
             };
 
             infos.Add(info);

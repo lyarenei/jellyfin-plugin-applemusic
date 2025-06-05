@@ -1,7 +1,6 @@
 using System;
 using System.Globalization;
 using Jellyfin.Plugin.ITunes.ExternalIds;
-using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 
 namespace Jellyfin.Plugin.ITunes.Utils;
@@ -22,15 +21,21 @@ public static class PluginUtils
     public static string AppleMusicBaseUrl => "https://music.apple.com/us";
 
     /// <summary>
-    /// Replace size in image URL.
+    /// Update image resolution (width)x(height)(opts) in image URL.
+    /// For example 1440x1440cc is an image with 1440x1440 resolution with ?center crop? from the source image.
     /// </summary>
     /// <param name="url">URL to work with.</param>
-    /// <param name="searchSize">Size to be replaced.</param>
-    /// <param name="newSize">Size to replace with.</param>
-    /// <returns>URL with new size..</returns>
-    public static string ModifyImageUrlSize(string url, string searchSize, string newSize)
+    /// <param name="newImageRes">New image resolution.</param>
+    /// <returns>Updated URL.</returns>
+    public static string UpdateImageSize(string url, string newImageRes)
     {
-        return url.Replace(searchSize, newSize, StringComparison.OrdinalIgnoreCase);
+        var idx = url.LastIndexOf('/');
+        if (idx < 0)
+        {
+            return url;
+        }
+
+        return string.Concat(url.AsSpan(0, idx + 1), newImageRes, ".jpg");
     }
 
     /// <summary>
