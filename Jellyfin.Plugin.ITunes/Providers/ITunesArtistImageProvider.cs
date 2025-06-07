@@ -90,7 +90,19 @@ public class ITunesArtistImageProvider : IRemoteImageProvider
                 Url = PluginUtils.UpdateImageSize(data.ImageUrl, defaultImageSize.ToString())
             };
 
+            var backdropImageSize = PluginUtils.BackdropImageSize;
+            var backdropImageInfo = new RemoteImageInfo
+            {
+                Height = backdropImageSize.Height,
+                Width = backdropImageSize.Width,
+                ProviderName = Name,
+                ThumbnailUrl = thumbnailUrl,
+                Type = ImageType.Backdrop,
+                Url = PluginUtils.UpdateImageSize(data.ImageUrl, backdropImageSize.ToString())
+            };
+
             infos.Add(primaryImageInfo);
+            infos.Add(backdropImageInfo);
         }
 
         return infos;
