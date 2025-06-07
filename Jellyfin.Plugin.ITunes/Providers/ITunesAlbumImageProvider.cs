@@ -84,17 +84,19 @@ public class ITunesAlbumImageProvider : IRemoteImageProvider
                 continue;
             }
 
-            var info = new RemoteImageInfo
+            var thumbnailUrl = PluginUtils.UpdateImageSize(data.ImageUrl, PluginUtils.ThumbnailImageSize.ToString());
+            var defaultImageSize = PluginUtils.DefaultImageSize;
+            var primaryImageInfo = new RemoteImageInfo
             {
-                Height = 1400,
-                Width = 1400,
+                Height = defaultImageSize.Height,
+                Width = defaultImageSize.Width,
                 ProviderName = Name,
-                ThumbnailUrl = PluginUtils.UpdateImageSize(data.ImageUrl, "100x100cc"),
+                ThumbnailUrl = thumbnailUrl,
                 Type = ImageType.Primary,
-                Url = PluginUtils.UpdateImageSize(data.ImageUrl, "1400x1400cc")
+                Url = PluginUtils.UpdateImageSize(data.ImageUrl, defaultImageSize.ToString())
             };
 
-            infos.Add(info);
+            infos.Add(primaryImageInfo);
         }
 
         return infos;
