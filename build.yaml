@@ -14,4 +14,4 @@ artifacts:
 - "AngleSharp.XPath.dll"
 - "Jellyfin.Plugin.ITunes.dll"
 changelog: >
-  Fix album images having black background.
+  Provide backdrop images for albums and artists.
