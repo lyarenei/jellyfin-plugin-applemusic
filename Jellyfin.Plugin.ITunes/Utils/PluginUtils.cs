@@ -21,6 +21,21 @@ public static class PluginUtils
     public static string AppleMusicBaseUrl => "https://music.apple.com/us";
 
     /// <summary>
+    /// Gets thumbnail image size.
+    /// </summary>
+    public static ImageSize ThumbnailImageSize => new() { Width = 100, Height = 100 };
+
+    /// <summary>
+    /// Gets default image size.
+    /// </summary>
+    public static ImageSize DefaultImageSize => new() { Width = 1400, Height = 1400 };
+
+    /// <summary>
+    /// Gets backdrop image size.
+    /// </summary>
+    public static ImageSize BackdropImageSize => new() { Width = 1920, Height = 1080 };
+
+    /// <summary>
     /// Update image resolution (width)x(height)(opts) in image URL.
     /// For example 1440x1440cc is an image with 1440x1440 resolution with ?center crop? from the source image.
     /// </summary>
@@ -62,4 +77,23 @@ public static class PluginUtils
 
         return urlFormat is not null ? string.Format(CultureInfo.InvariantCulture, urlFormat, providerId) : string.Empty;
     }
+}
+
+/// <summary>
+/// Image size class.
+/// </summary>
+public class ImageSize
+{
+    /// <summary>
+    /// Gets or sets image width.
+    /// </summary>
+    public int Width { get; set; }
+
+    /// <summary>
+    /// Gets or sets image height.
+    /// </summary>
+    public int Height { get; set; }
+
+    /// <inheritdoc />
+    public override string ToString() => $"{Width}x{Height}cc";
 }
