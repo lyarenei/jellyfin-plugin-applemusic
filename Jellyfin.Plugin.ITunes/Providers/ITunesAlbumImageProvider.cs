@@ -84,8 +84,8 @@ public class ITunesAlbumImageProvider : IRemoteImageProvider
                 continue;
             }
 
-            var thumbnailUrl = PluginUtils.UpdateImageSize(data.ImageUrl, ImageSize.ThumbnailImageSize.ToString());
-            var defaultImageSize = ImageSize.DefaultImageSize;
+            var thumbnailUrl = PluginUtils.UpdateImageSize(data.ImageUrl, ImageSize.Thumbnail.ToString());
+            var defaultImageSize = ImageSize.Default;
             var primaryImageInfo = new RemoteImageInfo
             {
                 Height = defaultImageSize.Height,
@@ -96,7 +96,7 @@ public class ITunesAlbumImageProvider : IRemoteImageProvider
                 Url = PluginUtils.UpdateImageSize(data.ImageUrl, defaultImageSize.ToString())
             };
 
-            var backdropImageSize = ImageSize.BackdropImageSize;
+            var backdropImageSize = ImageSize.Backdrop;
             var backdropImageInfo = new RemoteImageInfo
             {
                 Height = backdropImageSize.Height,
