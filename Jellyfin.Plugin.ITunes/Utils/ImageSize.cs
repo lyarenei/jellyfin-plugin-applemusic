@@ -28,7 +28,7 @@ public class ImageSize
     /// <summary>
     /// Gets backdrop image size.
     /// </summary>
-    public static ImageSize Backdrop => new() { Width = 1920, Height = 1080 };
+    public static ImageSize Backdrop => new() { Width = 1280, Height = 720 };
 
     /// <inheritdoc />
     public override string ToString() => $"{Width}x{Height}cc";
