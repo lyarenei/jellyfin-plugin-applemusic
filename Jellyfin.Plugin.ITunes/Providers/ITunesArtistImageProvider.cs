@@ -45,7 +45,7 @@ public class ITunesArtistImageProvider : IRemoteImageProvider
     /// <inheritdoc />
     public IEnumerable<ImageType> GetSupportedImages(BaseItem item)
     {
-        return new List<ImageType> { ImageType.Primary };
+        return new List<ImageType> { ImageType.Backdrop, ImageType.Primary };
     }
 
     /// <inheritdoc />
