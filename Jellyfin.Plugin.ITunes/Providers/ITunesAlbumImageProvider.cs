@@ -49,7 +49,7 @@ public class ITunesAlbumImageProvider : IRemoteImageProvider
     /// <inheritdoc />
     public IEnumerable<ImageType> GetSupportedImages(BaseItem item)
     {
-        return new List<ImageType> { ImageType.Primary };
+        return new List<ImageType> { ImageType.Backdrop, ImageType.Primary };
     }
 
     /// <inheritdoc />
@@ -84,17 +84,31 @@ public class ITunesAlbumImageProvider : IRemoteImageProvider
                 continue;
             }
 
-            var info = new RemoteImageInfo
+            var thumbnailUrl = PluginUtils.UpdateImageSize(data.ImageUrl, ImageSize.Thumbnail.ToString());
+            var defaultImageSize = ImageSize.Default;
+            var primaryImageInfo = new RemoteImageInfo
             {
-                Height = 1400,
-                Width = 1400,
+                Height = defaultImageSize.Height,
+                Width = defaultImageSize.Width,
                 ProviderName = Name,
-                ThumbnailUrl = PluginUtils.UpdateImageSize(data.ImageUrl, "100x100cc"),
+                ThumbnailUrl = thumbnailUrl,
                 Type = ImageType.Primary,
-                Url = PluginUtils.UpdateImageSize(data.ImageUrl, "1400x1400cc")
+                Url = PluginUtils.UpdateImageSize(data.ImageUrl, defaultImageSize.ToString())
             };
 
-            infos.Add(info);
+            var backdropImageSize = ImageSize.Backdrop;
+            var backdropImageInfo = new RemoteImageInfo
+            {
+                Height = backdropImageSize.Height,
+                Width = backdropImageSize.Width,
+                ProviderName = Name,
+                ThumbnailUrl = thumbnailUrl,
+                Type = ImageType.Backdrop,
+                Url = PluginUtils.UpdateImageSize(data.ImageUrl, backdropImageSize.ToString())
+            };
+
+            infos.Add(primaryImageInfo);
+            infos.Add(backdropImageInfo);
         }
 
         return infos;
