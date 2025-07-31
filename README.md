@@ -1,10 +1,10 @@
 <div align=center>
 <h1>Apple Music <i>metadata</i> plugin for Jellyfin</h1>
-<img alt="Plugin Banner" width=50% height=50% src="https://raw.githubusercontent.com/lyarenei/jellyfin-plugin-itunes/master/image.png?sanitize=true"/>
+<img alt="Plugin Banner" width=50% height=50% src="https://raw.githubusercontent.com/lyarenei/jellyfin-plugin-applemusic/master/image.png?sanitize=true"/>
 
-[![Build](https://github.com/lyarenei/jellyfin-plugin-itunes/actions/workflows/build.yaml/badge.svg)](https://github.com/lyarenei/jellyfin-plugin-itunes/actions/workflows/build.yaml)
-[![GPLv3 License](https://img.shields.io/github/license/lyarenei/jellyfin-plugin-itunes.svg)](https://github.com/lyarenei/jellyfin-plugin-itunes)
-[![Current Release](https://img.shields.io/github/release/lyarenei/jellyfin-plugin-itunes.svg)](https://github.com/lyarenei/jellyfin-plugin-itunes/releases)
+[![Build](https://github.com/lyarenei/jellyfin-plugin-applemusic/actions/workflows/build.yaml/badge.svg)](https://github.com/lyarenei/jellyfin-plugin-applemusic/actions/workflows/build.yml)
+[![GPLv3 License](https://img.shields.io/github/license/lyarenei/jellyfin-plugin-applemusic.svg)](https://github.com/lyarenei/jellyfin-plugin-applemusic)
+[![Current Release](https://img.shields.io/github/release/lyarenei/jellyfin-plugin-applemusic.svg)](https://github.com/lyarenei/jellyfin-plugin-applemusic/releases)
 
 </div>
 
@@ -37,7 +37,7 @@ Head over to `Repositories` tab in Jellyfin server settings > Plugins (advanced 
 #### Manual
 
 To install the plugin manually, either compile the plugin yourself or grab a release from the
-[releases page](https://github.com/lyarenei/jellyfin-plugin-itunes/releases).
+[releases page](https://github.com/lyarenei/jellyfin-plugin-applemusic/releases).
 
 For more details on how to build and install the plugin, check out the [Build section](#build).
 
@@ -59,7 +59,7 @@ Run `dotnet publish --configuration Release --output bin` command.
 After successfully compiling, you'll find few files in the output directory.
 
 To install the plugin, copy the following files into the `${CONFIG_DIR}/plugins/apple-music` directory (create it first):
-- Jellyfin.Plugin.ITunes.dll
+- Jellyfin.Plugin.AppleMusic.dll
 - AngleSharp.dll
 - AngleSharp.XPath.dll
 
