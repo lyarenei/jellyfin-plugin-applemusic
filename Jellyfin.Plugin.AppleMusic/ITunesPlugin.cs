@@ -1,10 +1,10 @@
 using System;
-using Jellyfin.Plugin.ITunes.Configuration;
+using Jellyfin.Plugin.AppleMusic.Configuration;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Plugins;
 using MediaBrowser.Model.Serialization;
 
-namespace Jellyfin.Plugin.ITunes;
+namespace Jellyfin.Plugin.AppleMusic;
 
 /// <summary>
 /// The iTunes (Apple Music) metadata plugin.

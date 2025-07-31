@@ -4,19 +4,20 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Jellyfin.Plugin.ITunes.Dtos;
-using Jellyfin.Plugin.ITunes.ExternalIds;
-using Jellyfin.Plugin.ITunes.MetadataServices;
-using Jellyfin.Plugin.ITunes.Utils;
+using Jellyfin.Plugin.AppleMusic.Dtos;
+using Jellyfin.Plugin.AppleMusic.ExternalIds;
+using Jellyfin.Plugin.AppleMusic.MetadataServices;
+using Jellyfin.Plugin.AppleMusic.Utils;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
 using Microsoft.Extensions.Logging;
-using IMetadataService = Jellyfin.Plugin.ITunes.MetadataServices.IMetadataService;
+using IMetadataService = Jellyfin.Plugin.AppleMusic.MetadataServices.IMetadataService;
+using MetadataServices_IMetadataService = Jellyfin.Plugin.AppleMusic.MetadataServices.IMetadataService;
 
-namespace Jellyfin.Plugin.ITunes.Providers;
+namespace Jellyfin.Plugin.AppleMusic.Providers;
 
 /// <summary>
 /// The iTunes album metadata provider.
@@ -25,7 +26,7 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<ITunesAlbumMetadataProvider> _logger;
-    private readonly IMetadataService _service;
+    private readonly MetadataServices_IMetadataService _service;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ITunesAlbumMetadataProvider"/> class.
@@ -33,7 +34,7 @@ public class ITunesAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, A
     /// <param name="httpClientFactory">HTTP client factory.</param>
     /// <param name="loggerFactory">Logger factory.</param>
     /// <param name="service">Metadata service instance. If null, a default instance will be used.</param>
-    public ITunesAlbumMetadataProvider(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory, IMetadataService? service = null)
+    public ITunesAlbumMetadataProvider(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory, MetadataServices_IMetadataService? service = null)
     {
         _httpClientFactory = httpClientFactory;
         _logger = loggerFactory.CreateLogger<ITunesAlbumMetadataProvider>();

@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Jellyfin.Plugin.ITunes.Dtos;
+using Jellyfin.Plugin.AppleMusic.Dtos;
 using MediaBrowser.Model.Providers;
 
-namespace Jellyfin.Plugin.ITunes.MetadataServices;
+namespace Jellyfin.Plugin.AppleMusic.MetadataServices;
 
 /// <summary>
 /// Item types.

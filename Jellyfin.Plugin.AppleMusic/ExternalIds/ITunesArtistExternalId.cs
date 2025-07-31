@@ -1,24 +1,24 @@
-using Jellyfin.Plugin.ITunes.Utils;
+using Jellyfin.Plugin.AppleMusic.Utils;
 using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
 
-namespace Jellyfin.Plugin.ITunes.ExternalIds;
+namespace Jellyfin.Plugin.AppleMusic.ExternalIds;
 
 /// <summary>
 /// Apple Music album artist external ID.
 /// </summary>
-public class ITunesAlbumArtistExternalId : IExternalId
+public class ITunesArtistExternalId : IExternalId
 {
     /// <inheritdoc />
     public string ProviderName => PluginUtils.PluginName;
 
     /// <inheritdoc />
-    public string Key => ProviderKey.ITunesAlbumArtist.ToString();
+    public string Key => ProviderKey.ITunesArtist.ToString();
 
     /// <inheritdoc />
-    public ExternalIdMediaType? Type => ExternalIdMediaType.AlbumArtist;
+    public ExternalIdMediaType? Type => ExternalIdMediaType.Artist;
 
     /// <inheritdoc />
     public string UrlFormatString => PluginUtils.AppleMusicBaseUrl + "/artist/{0}";
