@@ -21,6 +21,11 @@ public static class PluginUtils
     public static string AppleMusicBaseUrl => "https://music.apple.com/us";
 
     /// <summary>
+    /// Gets Apple Music API base URL.
+    /// </summary>
+    public static string AppleMusicApiBaseUrl => "https://api.music.apple.com/v1";
+
+    /// <summary>
     /// Update image resolution (width)x(height)(opts) in image URL.
     /// For example 1440x1440cc is an image with 1440x1440 resolution with ?center crop? from the source image.
     /// </summary>
