@@ -12,6 +12,6 @@ owner: "lyarenei"
 artifacts:
 - "AngleSharp.dll"
 - "AngleSharp.XPath.dll"
-- "Jellyfin.Plugin.ITunes.dll"
+- "Jellyfin.Plugin.AppleMusic.dll"
 changelog: >
   Maintenance release: rename `iTunes` to `Apple Music`
