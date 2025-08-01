@@ -1,6 +1,6 @@
 using MediaBrowser.Model.Plugins;
 
-namespace Jellyfin.Plugin.ITunes.Configuration
+namespace Jellyfin.Plugin.AppleMusic.Configuration
 {
     /// <summary>
     /// The (empty) plugin configuration.

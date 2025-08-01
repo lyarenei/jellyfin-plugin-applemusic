@@ -1,4 +1,4 @@
-namespace Jellyfin.Plugin.ITunes.ExternalIds;
+namespace Jellyfin.Plugin.AppleMusic.ExternalIds;
 
 // Disable warning for missing enum item with value 0.
 #pragma warning disable CA1008

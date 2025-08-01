@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MediaBrowser.Model.Providers;
 
-namespace Jellyfin.Plugin.ITunes.Dtos;
+namespace Jellyfin.Plugin.AppleMusic.Dtos;
 
 /// <summary>
 /// Apple music album item.

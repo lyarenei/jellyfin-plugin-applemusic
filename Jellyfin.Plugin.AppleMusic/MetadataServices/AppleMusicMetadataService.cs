@@ -7,12 +7,12 @@ using AngleSharp;
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using AngleSharp.XPath;
-using Jellyfin.Plugin.ITunes.Dtos;
-using Jellyfin.Plugin.ITunes.Scrapers;
+using Jellyfin.Plugin.AppleMusic.Dtos;
+using Jellyfin.Plugin.AppleMusic.Scrapers;
 using MediaBrowser.Controller.Entities.Audio;
 using Microsoft.Extensions.Logging;
 
-namespace Jellyfin.Plugin.ITunes.MetadataServices;
+namespace Jellyfin.Plugin.AppleMusic.MetadataServices;
 
 /// <summary>
 /// Service wrapper for interacting with Apple Music website.

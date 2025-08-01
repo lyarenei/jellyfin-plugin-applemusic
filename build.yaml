@@ -1,7 +1,7 @@
 ---
 name: "Apple Music"
 guid: "eb5d7894-8eef-4b36-aa6f-5d124e828ce1"
-version: "3.0.2.1"
+version: "3.0.3.2"
 targetAbi: "10.10.0.0"
 framework: "net8.0"
 overview: "Fetch images and metadata from Apple Music."
@@ -12,6 +12,6 @@ owner: "lyarenei"
 artifacts:
 - "AngleSharp.dll"
 - "AngleSharp.XPath.dll"
-- "Jellyfin.Plugin.ITunes.dll"
+- "Jellyfin.Plugin.AppleMusic.dll"
 changelog: >
-  Fix album images having black background.
+  Maintenance release: rename `iTunes` to `Apple Music`

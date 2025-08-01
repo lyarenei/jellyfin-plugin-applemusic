@@ -1,6 +1,6 @@
 using MediaBrowser.Model.Providers;
 
-namespace Jellyfin.Plugin.ITunes.Dtos;
+namespace Jellyfin.Plugin.AppleMusic.Dtos;
 
 /// <summary>
 /// Apple music item interface.

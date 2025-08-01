@@ -1,7 +1,7 @@
 using AngleSharp.Dom;
-using Jellyfin.Plugin.ITunes.Dtos;
+using Jellyfin.Plugin.AppleMusic.Dtos;
 
-namespace Jellyfin.Plugin.ITunes.Scrapers;
+namespace Jellyfin.Plugin.AppleMusic.Scrapers;
 
 /// <summary>
 /// Scraper interface for getting various metadata.

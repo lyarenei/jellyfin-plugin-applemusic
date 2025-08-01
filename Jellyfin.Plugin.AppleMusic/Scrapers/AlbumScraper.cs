@@ -6,11 +6,11 @@ using AngleSharp;
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using AngleSharp.XPath;
-using Jellyfin.Plugin.ITunes.Dtos;
+using Jellyfin.Plugin.AppleMusic.Dtos;
 using MediaBrowser.Controller.Entities.Audio;
 using Microsoft.Extensions.Logging;
 
-namespace Jellyfin.Plugin.ITunes.Scrapers;
+namespace Jellyfin.Plugin.AppleMusic.Scrapers;
 
 /// <summary>
 /// Apple Music album metadata scraper.
