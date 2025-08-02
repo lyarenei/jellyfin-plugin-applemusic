@@ -2,16 +2,18 @@
 <h1>Apple Music <i>metadata</i> plugin for Jellyfin</h1>
 <img alt="Plugin Banner" width=50% height=50% src="https://raw.githubusercontent.com/lyarenei/jellyfin-plugin-applemusic/master/image.png?sanitize=true"/>
 
-[![Build](https://github.com/lyarenei/jellyfin-plugin-applemusic/actions/workflows/build.yaml/badge.svg)](https://github.com/lyarenei/jellyfin-plugin-applemusic/actions/workflows/build.yml)
+[![Build](https://github.com/lyarenei/jellyfin-plugin-applemusic/actions/workflows/build-upload-publish.yml/badge.svg)](https://github.com/lyarenei/jellyfin-plugin-applemusic/actions/workflows/build-upload-publish.yml)
 [![GPLv3 License](https://img.shields.io/github/license/lyarenei/jellyfin-plugin-applemusic.svg)](https://github.com/lyarenei/jellyfin-plugin-applemusic)
 [![Current Release](https://img.shields.io/github/release/lyarenei/jellyfin-plugin-applemusic.svg)](https://github.com/lyarenei/jellyfin-plugin-applemusic/releases)
 
 </div>
 
 ## About
+
 This plugin scrapes metadata from Apple Music and saves them in Jellyfin database.
 
 Currently supported features:
+
 * Album image and metadata provider
 * Artist image and metadata provider
 
@@ -59,6 +61,7 @@ Run `dotnet publish --configuration Release --output bin` command.
 After successfully compiling, you'll find few files in the output directory.
 
 To install the plugin, copy the following files into the `${CONFIG_DIR}/plugins/apple-music` directory (create it first):
+
 - Jellyfin.Plugin.AppleMusic.dll
 - AngleSharp.dll
 - AngleSharp.XPath.dll
@@ -67,9 +70,11 @@ After restarting Jellyfin, the plugin should be recognized by the server and act
 
 ## Licence
 
-The plugin code and packages are distributed under the GPLv3 License. See [LICENSE](./LICENSE) for more information.
+As this plugin has been forked from https://github.com/Shadowghost/jellyfin-plugin-itunes, the plugin code and packages
+are distributed under the GPLv3 License. See [LICENSE](./LICENSE) for more information.
 
 Per the licence requirements, the following modifications were made:
+
 - Plugin code restructure/cleanup/refactor
 - Use Apple Music for search instead of iTunes JSON API
 - Support for fetching metadata instead of only images
