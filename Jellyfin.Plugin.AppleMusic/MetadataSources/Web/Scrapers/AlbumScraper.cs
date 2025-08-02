@@ -10,7 +10,7 @@ using Jellyfin.Plugin.AppleMusic.Dtos;
 using MediaBrowser.Controller.Entities.Audio;
 using Microsoft.Extensions.Logging;
 
-namespace Jellyfin.Plugin.AppleMusic.Scrapers;
+namespace Jellyfin.Plugin.AppleMusic.MetadataSources.Web.Scrapers;
 
 /// <summary>
 /// Apple Music album metadata scraper.

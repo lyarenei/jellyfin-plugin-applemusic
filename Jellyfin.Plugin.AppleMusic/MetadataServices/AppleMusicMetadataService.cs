@@ -8,7 +8,7 @@ using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using AngleSharp.XPath;
 using Jellyfin.Plugin.AppleMusic.Dtos;
-using Jellyfin.Plugin.AppleMusic.Scrapers;
+using Jellyfin.Plugin.AppleMusic.MetadataSources.Web.Scrapers;
 using MediaBrowser.Controller.Entities.Audio;
 using Microsoft.Extensions.Logging;
 
