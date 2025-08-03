@@ -59,7 +59,9 @@ public class ArtistScraper : IScraper<MusicArtist>
         {
             ImageUrl = imageUrl,
             Name = artistName.Trim(),
-            About = overview
+            About = overview,
+            Url = document.Url,
+            Id = PluginUtils.GetIdFromUrl(document.Url),
         };
     }
 }

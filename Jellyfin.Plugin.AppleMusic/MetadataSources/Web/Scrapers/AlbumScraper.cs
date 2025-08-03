@@ -7,6 +7,7 @@ using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using AngleSharp.XPath;
 using Jellyfin.Plugin.AppleMusic.Dtos;
+using Jellyfin.Plugin.AppleMusic.Utils;
 using MediaBrowser.Controller.Entities.Audio;
 using Microsoft.Extensions.Logging;
 
@@ -83,7 +84,9 @@ public class AlbumScraper : IScraper<MusicAlbum>
             Artists = artists,
             ImageUrl = imageUrl,
             ReleaseDate = parsedDesc?.Date,
-            About = aboutText
+            About = aboutText,
+            Url = document.Url,
+            Id = PluginUtils.GetIdFromUrl(document.Url),
         };
     }
 

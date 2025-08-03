@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.Linq;
 using Jellyfin.Plugin.AppleMusic.ExternalIds;
 using MediaBrowser.Model.Entities;
 
@@ -66,5 +67,16 @@ public static class PluginUtils
         };
 
         return urlFormat is not null ? string.Format(CultureInfo.InvariantCulture, urlFormat, providerId) : string.Empty;
+    }
+
+    /// <summary>
+    /// Get Apple Music ID from Apple Music URL.
+    /// The URL format is always "https://music.apple.com/us/[item type]/[ID].
+    /// </summary>
+    /// <param name="url">Apple Music URL.</param>
+    /// <returns>Item ID.</returns>
+    public static string GetIdFromUrl(string url)
+    {
+        return url.Split('/').LastOrDefault(string.Empty);
     }
 }
