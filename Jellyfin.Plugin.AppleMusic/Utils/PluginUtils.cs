@@ -73,7 +73,7 @@ public static class PluginUtils
 
     /// <summary>
     /// Get Apple Music ID from Apple Music URL.
-    /// The URL format is always "https://music.apple.com/us/[item type]/[ID].
+    /// The URL format is always "https://music.apple.com/us/[item type]/[ID]".
     /// </summary>
     /// <param name="url">Apple Music URL.</param>
     /// <returns>Item ID.</returns>
