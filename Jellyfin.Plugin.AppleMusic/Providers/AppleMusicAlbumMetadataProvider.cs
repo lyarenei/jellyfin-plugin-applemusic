@@ -24,7 +24,7 @@ namespace Jellyfin.Plugin.AppleMusic.Providers;
 public class AppleMusicAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, AlbumInfo>
 {
     private readonly HttpClient _httpClient;
-    private readonly ILogger<ITunesAlbumMetadataProvider> _logger;
+    private readonly ILogger<AppleMusicAlbumMetadataProvider> _logger;
     private readonly IMetadataSource _metadataSource;
 
     /// <summary>
@@ -39,7 +39,7 @@ public class AppleMusicAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbu
         IMetadataSource? source = null)
     {
         _httpClient = httpClientFactory.CreateClient(NamedClient.Default);
-        _logger = loggerFactory.CreateLogger<ITunesAlbumMetadataProvider>();
+        _logger = loggerFactory.CreateLogger<AppleMusicAlbumMetadataProvider>();
         _metadataSource = source ?? new WebMetadataSource(loggerFactory);
     }
 
