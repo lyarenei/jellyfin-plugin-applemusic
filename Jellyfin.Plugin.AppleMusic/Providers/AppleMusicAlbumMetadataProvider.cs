@@ -153,9 +153,7 @@ public class AppleMusicAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbu
     /// <inheritdoc />
     public async Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
-        // var httpClient = _httpClientFactory.CreateClient(NamedClient.Default);
-        // return await httpClient.GetAsync(new Uri(url), cancellationToken).ConfigureAwait(false);
+        return await _httpClient.GetAsync(new Uri(url), cancellationToken);
     }
 
     private string GetSearchTerm(AlbumInfo info)
