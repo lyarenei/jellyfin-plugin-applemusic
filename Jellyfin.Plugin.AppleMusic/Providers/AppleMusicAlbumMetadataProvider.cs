@@ -109,7 +109,45 @@ public class AppleMusicAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbu
     /// <inheritdoc />
     public async Task<MetadataResult<MusicAlbum>> GetMetadata(AlbumInfo info, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        ITunesAlbum? albumData = null;
+        var appleMusicId = info.GetProviderId(nameof(ProviderKey.ITunesAlbum));
+        if (!string.IsNullOrEmpty(appleMusicId))
+        {
+            albumData = await _metadataSource.GetAlbumAsync(appleMusicId, cancellationToken);
+        }
+
+        if (albumData is null)
+        {
+            _logger.LogDebug("No album data found using ID {Id}", appleMusicId);
+            return PluginUtils.EmptyResult<MusicAlbum>();
+        }
+
+        var artistNames = albumData.Artists.Select(ad => ad.Name).ToList();
+        var metadataResult = new MetadataResult<MusicAlbum>
+        {
+            Item = new MusicAlbum
+            {
+                Name = albumData.Name,
+                Overview = albumData.About,
+                ProductionYear = albumData.ReleaseDate?.Year,
+                Artists = artistNames,
+                AlbumArtists = artistNames.Count != 0 ? new List<string> { artistNames.First() } : new List<string>(),
+            },
+            HasMetadata = albumData.HasMetadata(),
+        };
+
+        if (albumData.ImageUrl is not null)
+        {
+            metadataResult.RemoteImages.Add((albumData.ImageUrl, ImageType.Primary));
+        }
+
+        if (albumData.Artists.Any())
+        {
+            metadataResult.Item.SetProviderId(nameof(ProviderKey.ITunesAlbumArtist), albumData.Artists.First().Id);
+        }
+
+        metadataResult.Item.SetProviderId(nameof(ProviderKey.ITunesAlbum), albumData.Id);
+        return metadataResult;
     }
 
     /// <inheritdoc />

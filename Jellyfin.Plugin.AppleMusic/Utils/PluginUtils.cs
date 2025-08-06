@@ -2,6 +2,8 @@ using System;
 using System.Globalization;
 using System.Linq;
 using Jellyfin.Plugin.AppleMusic.ExternalIds;
+using MediaBrowser.Controller.Entities;
+using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 
 namespace Jellyfin.Plugin.AppleMusic.Utils;
@@ -78,5 +80,16 @@ public static class PluginUtils
     public static string GetIdFromUrl(string url)
     {
         return url.Split('/').LastOrDefault(string.Empty);
+    }
+
+    /// <summary>
+    /// A shorthand for creating an empty metadata result.
+    /// </summary>
+    /// <typeparam name="T">Result type. Must implement <see cref="IMetadataContainer"/> interface.</typeparam>
+    /// <returns>Empty result of specified type.</returns>
+    public static MetadataResult<T> EmptyResult<T>()
+        where T : IMetadataContainer
+    {
+        return new MetadataResult<T> { HasMetadata = false };
     }
 }
