@@ -21,25 +21,25 @@ namespace Jellyfin.Plugin.AppleMusic.Providers;
 /// <summary>
 /// Apple Music album metadata provider.
 /// </summary>
-public class AppleMusicAlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, AlbumInfo>
+public class AlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, AlbumInfo>
 {
     private readonly HttpClient _httpClient;
-    private readonly ILogger<AppleMusicAlbumMetadataProvider> _logger;
+    private readonly ILogger<AlbumMetadataProvider> _logger;
     private readonly IMetadataSource _metadataSource;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AppleMusicAlbumMetadataProvider"/> class.
+    /// Initializes a new instance of the <see cref="AlbumMetadataProvider"/> class.
     /// </summary>
     /// <param name="httpClientFactory">HTTP client factory.</param>
     /// <param name="loggerFactory">Logger factory.</param>
     /// <param name="source">Metadata source instance. If null, a default instance will be used.</param>
-    public AppleMusicAlbumMetadataProvider(
+    public AlbumMetadataProvider(
         IHttpClientFactory httpClientFactory,
         ILoggerFactory loggerFactory,
         IMetadataSource? source = null)
     {
         _httpClient = httpClientFactory.CreateClient(NamedClient.Default);
-        _logger = loggerFactory.CreateLogger<AppleMusicAlbumMetadataProvider>();
+        _logger = loggerFactory.CreateLogger<AlbumMetadataProvider>();
         _metadataSource = source ?? new WebMetadataSource(loggerFactory);
     }
 
