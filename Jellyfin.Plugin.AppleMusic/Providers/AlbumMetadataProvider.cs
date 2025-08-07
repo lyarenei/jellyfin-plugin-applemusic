@@ -32,7 +32,7 @@ public class AlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, AlbumIn
     /// </summary>
     /// <param name="httpClientFactory">HTTP client factory.</param>
     /// <param name="loggerFactory">Logger factory.</param>
-    /// <param name="source">Metadata source instance. If null, a default instance will be used.</param>
+    /// <param name="source">Metadata source. If null, a default source will be used.</param>
     public AlbumMetadataProvider(
         IHttpClientFactory httpClientFactory,
         ILoggerFactory loggerFactory,

@@ -33,7 +33,7 @@ public class AlbumImageProvider : IRemoteImageProvider
     /// </summary>
     /// <param name="httpClientFactory">HTTP client factory.</param>
     /// <param name="loggerFactory">Logger factory.</param>
-    /// <param name="source">Metadata service provider. If null, a default instance will be used.</param>
+    /// <param name="source">Metadata source. If null, a default source will be used.</param>
     public AlbumImageProvider(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory, IMetadataSource? source = null)
     {
         _httpClient = httpClientFactory.CreateClient(NamedClient.Default);
