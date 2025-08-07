@@ -74,7 +74,7 @@ public class AlbumImageProvider : IRemoteImageProvider
             var albumData = await _metadataSource.GetAlbumAsync(appleMusicId, cancellationToken);
             if (albumData?.ImageUrl is not null)
             {
-                _logger.LogDebug("Found album by ID {Id}", appleMusicId);
+                _logger.LogDebug("Found album image by ID {Id}", appleMusicId);
                 return new List<RemoteImageInfo>
                 {
                     new()
@@ -90,7 +90,7 @@ public class AlbumImageProvider : IRemoteImageProvider
             }
         }
 
-        _logger.LogDebug("Could not obtain Apple Music ID, falling back to search");
+        _logger.LogDebug("Could not obtain Apple Music album ID, falling back to search");
         var term = GetSearchTerm(album);
         var searchResults = await _metadataSource.SearchAsync(term, cancellationToken);
         if (searchResults.Count == 0)
