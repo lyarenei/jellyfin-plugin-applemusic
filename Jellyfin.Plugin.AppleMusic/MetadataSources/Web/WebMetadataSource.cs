@@ -8,7 +8,6 @@ using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using AngleSharp.XPath;
 using Jellyfin.Plugin.AppleMusic.Dtos;
-using Jellyfin.Plugin.AppleMusic.MetadataServices;
 using Jellyfin.Plugin.AppleMusic.MetadataSources.Web.Scrapers;
 using Jellyfin.Plugin.AppleMusic.Utils;
 using MediaBrowser.Controller.Entities.Audio;
@@ -42,6 +41,12 @@ public class WebMetadataSource : IMetadataSource
         _config = AngleSharp.Configuration.Default.WithDefaultLoader();
         _albumScraper = albumScraper ?? new AlbumScraper(loggerFactory.CreateLogger<AlbumScraper>());
         _artistScraper = artistScraper ?? new ArtistScraper(loggerFactory.CreateLogger<ArtistScraper>());
+    }
+
+    private enum ItemType
+    {
+        Album,
+        Artist,
     }
 
     /// <inheritdoc />
