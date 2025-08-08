@@ -119,7 +119,7 @@ public class AlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, AlbumIn
         if (albumData is null)
         {
             _logger.LogDebug("No album data found using ID {Id}", appleMusicId);
-            return PluginUtils.EmptyResult<MusicAlbum>();
+            return EmptyMetadataResult();
         }
 
         var artistNames = albumData.Artists.Select(ad => ad.Name).ToList();
@@ -193,5 +193,10 @@ public class AlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, AlbumIn
         _logger.LogDebug("No artist name found in album artists, trying song info");
         var albumArtists = info.SongInfos.FirstOrDefault()?.AlbumArtists;
         return albumArtists is not null && albumArtists.Any() ? albumArtists[0] : null;
+    }
+
+    private static MetadataResult<MusicAlbum> EmptyMetadataResult()
+    {
+        return new MetadataResult<MusicAlbum> { HasMetadata = false };
     }
 }
