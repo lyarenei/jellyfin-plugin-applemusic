@@ -162,7 +162,7 @@ public class AlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, AlbumIn
         if (string.IsNullOrEmpty(albumArtist))
         {
             _logger.LogDebug("Album artist name is not available");
-            return string.Empty;
+            return albumName ?? string.Empty;
         }
 
         return $"{albumArtist} {albumName}";
