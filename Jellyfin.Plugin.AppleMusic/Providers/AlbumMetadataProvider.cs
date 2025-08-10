@@ -59,10 +59,9 @@ public class AlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, AlbumIn
             {
                 _logger.LogDebug("Found album by ID {Id}", appleMusicId);
                 searchResults.Add(albumData.ToRemoteSearchResult());
+                return searchResults;
             }
         }
-
-        // TODO: maybe add an option to continue with search even if album ID is available?
 
         var searchTerm = GetSearchTerm(searchInfo);
         if (string.IsNullOrEmpty(searchTerm))
