@@ -167,14 +167,24 @@ public class WebMetadataSource : IMetadataSource
         return album;
     }
 
-    private Task<ITunesArtist?> ScrapeArtist(IDocument document, CancellationToken cancellationToken)
+    private async Task<ITunesArtist?> ScrapeArtist(IDocument document, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        return new Task<ITunesArtist?>(() =>
+        var task = new Task<ITunesArtist?>(() =>
         {
+            _logger.LogDebug("Scraping artist from {Url}", document.Url);
             var scrapedArtist = _artistScraper.Scrape(document);
-            return scrapedArtist as ITunesArtist;
+            if (scrapedArtist is ITunesArtist artist)
+            {
+                return artist;
+            }
+
+            _logger.LogDebug("Scraping artist failed");
+            return null;
         });
+
+        task.Start();
+        return await task.WaitAsync(cancellationToken);
     }
 
     private static string SearchResultXPath(ItemType type)
