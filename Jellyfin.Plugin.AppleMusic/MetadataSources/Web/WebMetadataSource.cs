@@ -129,8 +129,20 @@ public class WebMetadataSource : IMetadataSource
             .Select(node => PluginUtils.GetIdFromUrl(node.Href))
             .Select(artistId => GetArtistAsync(artistId, cancellationToken));
 
-        var artists = await Task.WhenAll(tasks);
-        return artists.Where(artist => artist is not null).Cast<ITunesArtist>().ToList();
+        var results = new List<ITunesArtist>();
+        foreach (var task in tasks)
+        {
+            _logger.LogDebug("Starting artist scrape task, task ID {TaskId}", task.Id);
+            cancellationToken.ThrowIfCancellationRequested();
+            var result = await task;
+            _logger.LogDebug("Finished artist scrape task, task ID {TaskId}", task.Id);
+            if (result is not null)
+            {
+                results.Add(result);
+            }
+        }
+
+        return results;
     }
 
     private async Task<ITunesAlbum?> ScrapeAlbum(IDocument document, CancellationToken cancellationToken)

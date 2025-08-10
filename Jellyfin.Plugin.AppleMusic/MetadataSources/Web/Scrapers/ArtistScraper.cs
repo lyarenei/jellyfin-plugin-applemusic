@@ -39,11 +39,15 @@ public class ArtistScraper : IScraper<MusicArtist>
             return null;
         }
 
+        _logger.LogDebug("Found artist name");
+
         var overview = document.Body.SelectSingleNode(OverviewXPath)?.TextContent;
         if (overview is null)
         {
             _logger.LogDebug("Artist overview not found");
         }
+
+        _logger.LogDebug("Found artist overview");
 
         var imageUrl = document.Head.SelectSingleNode(ImageXPath)?.TextContent;
         if (imageUrl is null)
@@ -52,8 +56,11 @@ public class ArtistScraper : IScraper<MusicArtist>
         }
         else
         {
+            _logger.LogDebug("Found artist image");
             imageUrl = PluginUtils.UpdateImageSize(imageUrl, "1400x1400cc");
         }
+
+        _logger.LogDebug("Artist scraping completed");
 
         return new ITunesArtist
         {
