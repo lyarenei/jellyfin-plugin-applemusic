@@ -63,15 +63,7 @@ public class AlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, AlbumIn
             }
         }
 
-        var searchTerm = GetSearchTerm(searchInfo);
-        if (string.IsNullOrEmpty(searchTerm))
-        {
-            _logger.LogInformation("Album name or artist name could not be obtained, giving up search due to poor accuracy");
-            return searchResults;
-        }
-
-        _logger.LogInformation("Using search term {SearchTerm} for album {AlbumName}", searchTerm, searchInfo.Name);
-
+        var searchTerm = searchInfo.Name;
         var results = await _metadataSource.SearchAsync(searchTerm, cancellationToken);
         if (results.Count == 0)
         {
@@ -153,45 +145,6 @@ public class AlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, AlbumIn
     public async Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
     {
         return await _httpClient.GetAsync(new Uri(url), cancellationToken);
-    }
-
-    private string GetSearchTerm(AlbumInfo info)
-    {
-        var albumName = GetAlbumName(info);
-        var albumArtist = GetArtistName(info);
-        if (string.IsNullOrEmpty(albumArtist))
-        {
-            _logger.LogDebug("Album artist name is not available");
-            return albumName ?? string.Empty;
-        }
-
-        return $"{albumArtist} {albumName}";
-    }
-
-    private string? GetAlbumName(AlbumInfo info)
-    {
-        var albumName = info.Name;
-        var albumArtist = GetArtistName(info);
-        if (string.Equals(albumName, albumArtist, StringComparison.OrdinalIgnoreCase))
-        {
-            _logger.LogDebug("Album name is the same as album artist name, trying song info");
-            return info.SongInfos.FirstOrDefault()?.Album ?? info.Name;
-        }
-
-        return albumName;
-    }
-
-    private string? GetArtistName(AlbumInfo info)
-    {
-        var albumArtist = info.AlbumArtists.Any() ? info.AlbumArtists[0] : null;
-        if (!string.IsNullOrEmpty(albumArtist))
-        {
-            return albumArtist;
-        }
-
-        _logger.LogDebug("No artist name found in album artists, trying song info");
-        var albumArtists = info.SongInfos.FirstOrDefault()?.AlbumArtists;
-        return albumArtists is not null && albumArtists.Any() ? albumArtists[0] : null;
     }
 
     private static MetadataResult<MusicAlbum> EmptyMetadataResult()
