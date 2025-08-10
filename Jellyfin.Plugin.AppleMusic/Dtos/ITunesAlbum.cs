@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Jellyfin.Plugin.AppleMusic.ExternalIds;
 using MediaBrowser.Model.Providers;
 
 namespace Jellyfin.Plugin.AppleMusic.Dtos;
@@ -57,8 +58,9 @@ public class ITunesAlbum : IITunesItem
             Overview = About,
             PremiereDate = ReleaseDate,
             ProductionYear = ReleaseDate?.Year,
-            AlbumArtist = Artists.FirstOrDefault()?.ToRemoteSearchResult(),
-            Artists = (from artist in Artists select artist.ToRemoteSearchResult()).ToArray()
+            AlbumArtist = Artists.FirstOrDefault()?.ToRemoteSearchAlbumArtistResult(),
+            Artists = (from artist in Artists select artist.ToRemoteSearchResult()).ToArray(),
+            ProviderIds = new Dictionary<string, string> { { nameof(ProviderKey.ITunesAlbum), Id } },
         };
     }
 

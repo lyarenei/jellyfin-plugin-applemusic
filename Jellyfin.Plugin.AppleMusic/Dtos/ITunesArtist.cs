@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Jellyfin.Plugin.AppleMusic.ExternalIds;
 using MediaBrowser.Model.Providers;
 
 namespace Jellyfin.Plugin.AppleMusic.Dtos;
@@ -39,7 +41,24 @@ public class ITunesArtist : IITunesItem
         {
             ImageUrl = ImageUrl,
             Name = Name,
-            Overview = About
+            Overview = About,
+            ProviderIds = new Dictionary<string, string> { { nameof(ProviderKey.ITunesArtist), Id } },
+        };
+    }
+
+    /// <summary>
+    /// Convert this item to a <see cref="RemoteSearchResult"/>.
+    /// Provider IDs are set as the album artist instead of artist.
+    /// </summary>
+    /// <returns>Instance of <see cref="RemoteSearchResult"/>.</returns>
+    public RemoteSearchResult ToRemoteSearchAlbumArtistResult()
+    {
+        return new RemoteSearchResult
+        {
+            ImageUrl = ImageUrl,
+            Name = Name,
+            Overview = About,
+            ProviderIds = new Dictionary<string, string> { { nameof(ProviderKey.ITunesAlbumArtist), Id } },
         };
     }
 
