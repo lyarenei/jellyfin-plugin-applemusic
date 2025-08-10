@@ -94,6 +94,7 @@ public class WebMetadataSource : IMetadataSource
 
     private async Task<IDocument> OpenPage(string url, CancellationToken cancellationToken)
     {
+        _logger.LogDebug("Opening page: {Url}", url);
         var context = BrowsingContext.New(_config);
         return await context.OpenAsync(url, cancellationToken);
     }
@@ -122,6 +123,7 @@ public class WebMetadataSource : IMetadataSource
 
     private async Task<ITunesAlbum?> ScrapeAlbum(IDocument document, CancellationToken cancellationToken)
     {
+        _logger.LogDebug("Scraping album from {Url}", document.Url);
         var scrapedAlbum = _albumScraper.Scrape(document);
         if (scrapedAlbum is not ITunesAlbum album)
         {
