@@ -82,9 +82,8 @@ public class AlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, AlbumIn
                 continue;
             }
 
-            if (searchInfo.Year is null ||
-                album.ReleaseDate?.Year is null ||
-                searchInfo.Year != album.ReleaseDate?.Year)
+            // Check year only if the year was specified in the search form
+            if (searchInfo.Year is not null && searchInfo.Year != album.ReleaseDate?.Year)
             {
                 _logger.LogDebug("Album {AlbumName} does not match specified year, ignoring", album.Name);
                 continue;
