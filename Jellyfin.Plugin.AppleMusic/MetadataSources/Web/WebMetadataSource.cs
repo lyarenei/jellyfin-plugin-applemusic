@@ -55,19 +55,19 @@ public class WebMetadataSource : IMetadataSource
         var encodedTerm = Uri.EscapeDataString(searchTerm);
         var searchUrl = $"{PluginUtils.AppleMusicBaseUrl}/search?term={encodedTerm}";
 
-        _logger.LogDebug("Using {Url} for search", searchUrl);
+        _logger.LogDebug("Search url: {Url}", searchUrl);
 
         var document = await OpenPage(searchUrl, cancellationToken);
 
         var albumNodes = document.Body.SelectNodes(SearchResultXPath(ItemType.Album));
         var albums = await ScrapeAlbums(albumNodes, cancellationToken);
 
-        _logger.LogDebug("Found {Count} albums for search term {SearchTerm}", albums.Count, searchTerm);
+        _logger.LogInformation("Found {Count} albums for search term {SearchTerm}", albums.Count, searchTerm);
 
         var artistNodes = document.Body.SelectNodes(SearchResultXPath(ItemType.Artist));
         var artists = await ScrapeArtists(artistNodes, cancellationToken);
 
-        _logger.LogDebug("Found {Count} artists for search term {SearchTerm}", artists.Count, searchTerm);
+        _logger.LogInformation("Found {Count} artists for search term {SearchTerm}", artists.Count, searchTerm);
 
         return albums.Concat<IITunesItem>(artists).ToList();
     }
