@@ -147,6 +147,7 @@ public class WebMetadataSource : IMetadataSource
 
     private async Task<ITunesAlbum?> ScrapeAlbum(IDocument document, CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         _logger.LogDebug("Scraping album from {Url}", document.Url);
         var scrapedAlbum = _albumScraper.Scrape(document);
         if (scrapedAlbum is not ITunesAlbum album)
