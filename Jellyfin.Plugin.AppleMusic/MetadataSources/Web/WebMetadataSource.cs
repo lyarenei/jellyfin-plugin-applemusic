@@ -127,6 +127,7 @@ public class WebMetadataSource : IMetadataSource
         var scrapedAlbum = _albumScraper.Scrape(document);
         if (scrapedAlbum is not ITunesAlbum album)
         {
+            _logger.LogDebug("Scraping album failed");
             return null;
         }
 

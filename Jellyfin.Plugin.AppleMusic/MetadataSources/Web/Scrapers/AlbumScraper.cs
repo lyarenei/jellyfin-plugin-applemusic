@@ -49,11 +49,15 @@ public class AlbumScraper : IScraper<MusicAlbum>
             return null;
         }
 
+        _logger.LogDebug("Found album name");
+
         var imageUrl = document.Head.SelectSingleNode(ImageXPath)?.TextContent;
         if (imageUrl is null)
         {
             _logger.LogError("No album image found");
         }
+
+        _logger.LogDebug("Found album image");
 
         var artistNodes = document.Body.SelectNodes(AlbumDetailXPath + AlbumArtistXPath);
         if (artistNodes is null || artistNodes.Count == 0)
@@ -62,22 +66,34 @@ public class AlbumScraper : IScraper<MusicAlbum>
             return null;
         }
 
+        _logger.LogDebug("Found {Count} artist nodes in album", artistNodes.Count);
+
         var artists = new List<ITunesArtist>();
         foreach (var node in artistNodes)
         {
-            if (node is IHtmlAnchorElement artistElem)
+            if (node is not IHtmlAnchorElement artistElem)
             {
-                artists.Add(new ITunesArtist
-                {
-                    Name = artistElem.TextContent,
-                    Url = artistElem.Href
-                });
+                _logger.LogDebug("Node is not an anchor element, skipping");
+                continue;
             }
+
+            _logger.LogDebug("Adding artist with url {Url}", artistElem.Href);
+            artists.Add(new ITunesArtist
+            {
+                Name = artistElem.TextContent,
+                Url = artistElem.Href,
+            });
         }
+
+        _logger.LogDebug("Parsed {Count} artists from album", artists.Count);
+        _logger.LogDebug("Processing optional album details");
 
         var aboutText = document.Body.SelectSingleNode(AlbumDetailXPath + AboutXPath)?.TextContent;
         var descString = document.Body.SelectSingleNode(AlbumDescriptionXPath)?.TextContent;
         var parsedDesc = ParseDescription(descString);
+
+        _logger.LogDebug("Album scraping completed");
+
         return new ITunesAlbum
         {
             Name = albumName.Trim(),
