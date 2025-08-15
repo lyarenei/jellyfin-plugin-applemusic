@@ -43,14 +43,8 @@ public class WebMetadataSource : IMetadataSource
         _artistScraper = artistScraper ?? new ArtistScraper(loggerFactory.CreateLogger<ArtistScraper>());
     }
 
-    private enum ItemType
-    {
-        Album,
-        Artist,
-    }
-
     /// <inheritdoc />
-    public async Task<List<IITunesItem>> SearchAsync(string searchTerm, CancellationToken cancellationToken)
+    public async Task<List<IITunesItem>> SearchAsync(string searchTerm, ItemType itemType, CancellationToken cancellationToken)
     {
         var encodedTerm = Uri.EscapeDataString(searchTerm);
         var searchUrl = $"{PluginUtils.AppleMusicBaseUrl}/search?term={encodedTerm}";
@@ -59,17 +53,23 @@ public class WebMetadataSource : IMetadataSource
 
         var document = await OpenPage(searchUrl, cancellationToken);
 
-        var albumNodes = document.Body.SelectNodes(SearchResultXPath(ItemType.Album));
-        var albums = await ScrapeAlbums(albumNodes, cancellationToken);
+        if (itemType is ItemType.Album)
+        {
+            var albumNodes = document.Body.SelectNodes(SearchResultXPath(ItemType.Album));
+            var albums = await ScrapeAlbums(albumNodes, cancellationToken);
+            _logger.LogInformation("Found {Count} albums for search term {SearchTerm}", albums.Count, searchTerm);
+            return albums.Cast<IITunesItem>().ToList();
+        }
 
-        _logger.LogInformation("Found {Count} albums for search term {SearchTerm}", albums.Count, searchTerm);
+        if (itemType is ItemType.Artist)
+        {
+            var artistNodes = document.Body.SelectNodes(SearchResultXPath(ItemType.Artist));
+            var artists = await ScrapeArtists(artistNodes, cancellationToken);
+            _logger.LogInformation("Found {Count} artists for search term {SearchTerm}", artists.Count, searchTerm);
+            return artists.Cast<IITunesItem>().ToList();
+        }
 
-        var artistNodes = document.Body.SelectNodes(SearchResultXPath(ItemType.Artist));
-        var artists = await ScrapeArtists(artistNodes, cancellationToken);
-
-        _logger.LogInformation("Found {Count} artists for search term {SearchTerm}", artists.Count, searchTerm);
-
-        return albums.Concat<IITunesItem>(artists).ToList();
+        return new List<IITunesItem>();
     }
 
     /// <inheritdoc />

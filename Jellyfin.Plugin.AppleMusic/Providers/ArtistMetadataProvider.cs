@@ -67,7 +67,7 @@ public class ArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist, Artis
 
         _logger.LogInformation("Searching for artist {Name}", searchInfo.Name);
 
-        var results = await _metadataSource.SearchAsync(searchInfo.Name, cancellationToken);
+        var results = await _metadataSource.SearchAsync(searchInfo.Name, ItemType.Artist, cancellationToken);
         if (results.Count == 0)
         {
             _logger.LogInformation("No search results found for artist {Name}", searchInfo.Name);

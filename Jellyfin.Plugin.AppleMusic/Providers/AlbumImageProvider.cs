@@ -92,7 +92,7 @@ public class AlbumImageProvider : IRemoteImageProvider
 
         _logger.LogDebug("Could not obtain Apple Music album ID, falling back to search");
         var term = GetSearchTerm(album);
-        var searchResults = await _metadataSource.SearchAsync(term, cancellationToken);
+        var searchResults = await _metadataSource.SearchAsync(term, ItemType.Album, cancellationToken);
         if (searchResults.Count == 0)
         {
             _logger.LogDebug("No search results found for term {SearchTerm}", term);

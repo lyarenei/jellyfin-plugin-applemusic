@@ -64,7 +64,7 @@ public class AlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, AlbumIn
         }
 
         var searchTerm = searchInfo.Name;
-        var results = await _metadataSource.SearchAsync(searchTerm, cancellationToken);
+        var results = await _metadataSource.SearchAsync(searchTerm, ItemType.Album, cancellationToken);
         if (results.Count == 0)
         {
             _logger.LogInformation("No search results found for term {SearchTerm}", searchTerm);

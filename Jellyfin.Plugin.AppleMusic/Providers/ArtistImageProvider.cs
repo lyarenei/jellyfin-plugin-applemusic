@@ -91,7 +91,7 @@ public class ArtistImageProvider : IRemoteImageProvider
         }
 
         _logger.LogDebug("Could not obtain Apple Music artist ID, falling back to search");
-        var searchResults = await _metadataSource.SearchAsync(artist.Name, cancellationToken);
+        var searchResults = await _metadataSource.SearchAsync(artist.Name, ItemType.Artist, cancellationToken);
         if (searchResults.Count == 0)
         {
             _logger.LogDebug("No search results found for term {SearchTerm}", artist.Name);
