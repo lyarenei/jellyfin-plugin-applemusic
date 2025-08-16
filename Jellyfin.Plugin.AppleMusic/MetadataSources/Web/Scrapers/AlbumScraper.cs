@@ -45,24 +45,24 @@ public class AlbumScraper : IScraper<MusicAlbum>
         var albumName = document.Body.SelectSingleNode(AlbumDetailXPath + AlbumNameXPath)?.TextContent;
         if (albumName is null)
         {
-            _logger.LogDebug("Album name not found");
+            _logger.LogTrace("Album name not found");
             return null;
         }
 
-        _logger.LogDebug("Found album name");
+        _logger.LogTrace("Found album name");
 
         var imageUrl = document.Head.SelectSingleNode(ImageXPath)?.TextContent;
         if (imageUrl is null)
         {
-            _logger.LogError("No album image found");
+            _logger.LogTrace("No album image found");
         }
 
-        _logger.LogDebug("Found album image");
+        _logger.LogTrace("Found album image");
 
         var artistNodes = document.Body.SelectNodes(AlbumDetailXPath + AlbumArtistXPath);
         if (artistNodes is null || artistNodes.Count == 0)
         {
-            _logger.LogDebug("No album artists found");
+            _logger.LogTrace("No album artists found");
             return null;
         }
 
@@ -73,11 +73,11 @@ public class AlbumScraper : IScraper<MusicAlbum>
         {
             if (node is not IHtmlAnchorElement artistElem)
             {
-                _logger.LogDebug("Node is not an anchor element, skipping");
+                _logger.LogTrace("Node is not an anchor element, skipping");
                 continue;
             }
 
-            _logger.LogDebug("Adding artist with url {Url}", artistElem.Href);
+            _logger.LogTrace("Adding artist with url {Url}", artistElem.Href);
             artists.Add(new ITunesArtist
             {
                 Name = artistElem.TextContent,

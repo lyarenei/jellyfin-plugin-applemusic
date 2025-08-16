@@ -109,10 +109,10 @@ public class WebMetadataSource : IMetadataSource
         var results = new List<ITunesAlbum>();
         foreach (var task in tasks)
         {
-            _logger.LogDebug("Starting album scrape task, task ID {TaskId}", task.Id);
+            _logger.LogTrace("Starting album scrape task, task ID {TaskId}", task.Id);
             cancellationToken.ThrowIfCancellationRequested();
             var result = await task;
-            _logger.LogDebug("Finished album scrape task, task ID {TaskId}", task.Id);
+            _logger.LogTrace("Finished album scrape task, task ID {TaskId}", task.Id);
             if (result is not null)
             {
                 results.Add(result);
@@ -132,10 +132,10 @@ public class WebMetadataSource : IMetadataSource
         var results = new List<ITunesArtist>();
         foreach (var task in tasks)
         {
-            _logger.LogDebug("Starting artist scrape task, task ID {TaskId}", task.Id);
+            _logger.LogTrace("Starting artist scrape task, task ID {TaskId}", task.Id);
             cancellationToken.ThrowIfCancellationRequested();
             var result = await task;
-            _logger.LogDebug("Finished artist scrape task, task ID {TaskId}", task.Id);
+            _logger.LogTrace("Finished artist scrape task, task ID {TaskId}", task.Id);
             if (result is not null)
             {
                 results.Add(result);

@@ -35,28 +35,28 @@ public class ArtistScraper : IScraper<MusicArtist>
         var artistName = document.Body.SelectSingleNode(ArtistNameXPath)?.TextContent;
         if (artistName is null)
         {
-            _logger.LogDebug("Artist name not found");
+            _logger.LogTrace("Artist name not found");
             return null;
         }
 
-        _logger.LogDebug("Found artist name");
+        _logger.LogTrace("Found artist name");
 
         var overview = document.Body.SelectSingleNode(OverviewXPath)?.TextContent;
         if (overview is null)
         {
-            _logger.LogDebug("Artist overview not found");
+            _logger.LogTrace("Artist overview not found");
         }
 
-        _logger.LogDebug("Found artist overview");
+        _logger.LogTrace("Found artist overview");
 
         var imageUrl = document.Head.SelectSingleNode(ImageXPath)?.TextContent;
         if (imageUrl is null)
         {
-            _logger.LogDebug("Artist image not found");
+            _logger.LogTrace("Artist image not found");
         }
         else
         {
-            _logger.LogDebug("Found artist image");
+            _logger.LogTrace("Found artist image");
             imageUrl = PluginUtils.UpdateImageSize(imageUrl, "1400x1400cc");
         }
 
