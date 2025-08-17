@@ -45,66 +45,56 @@ public class ArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist, Artis
     /// <inheritdoc />
     public async Task<IEnumerable<RemoteSearchResult>> GetSearchResults(ArtistInfo searchInfo, CancellationToken cancellationToken)
     {
-        var searchResults = new List<RemoteSearchResult>();
-
         var appleMusicId = searchInfo.GetProviderId(nameof(ProviderKey.ITunesArtist));
         if (!string.IsNullOrEmpty(appleMusicId))
         {
-            _logger.LogDebug("Found artist by ID {Id}", appleMusicId);
-            var artistData = await _metadataSource.GetArtistAsync(appleMusicId, cancellationToken);
-            if (artistData is not null)
-            {
-                _logger.LogDebug("Found artist by ID {Id}", appleMusicId);
-                searchResults.Add(artistData.ToRemoteSearchResult());
-            }
+            _logger.LogInformation("Using ID {Id} for artist lookup", appleMusicId);
+            var results = await GetArtistById(appleMusicId, cancellationToken);
+            _logger.LogInformation("Found {Count} results for ID {Id}", results.Count, appleMusicId);
+            return results;
         }
 
-        if (string.IsNullOrEmpty(searchInfo.Name))
-        {
-            _logger.LogInformation("Artist name is empty, cannot search");
-            return searchResults;
-        }
+        _logger.LogInformation("Apple Music artist ID was not provided, using search");
 
-        _logger.LogInformation("Searching for artist {Name}", searchInfo.Name);
+        var searchTerm = searchInfo.Name;
+        var searchResults = await _metadataSource.SearchAsync(searchTerm, ItemType.Artist, cancellationToken);
 
-        var results = await _metadataSource.SearchAsync(searchInfo.Name, ItemType.Artist, cancellationToken);
-        if (results.Count == 0)
-        {
-            _logger.LogInformation("No search results found for artist {Name}", searchInfo.Name);
-            return searchResults;
-        }
+        _logger.LogInformation("Found {Count} search results using term {SearchTerm}", searchResults.Count, searchTerm);
 
-        _logger.LogDebug("Found {Count} search results for artist {Name}", results.Count, searchInfo.Name);
-
-        foreach (var result in results)
+        var allResults = new List<RemoteSearchResult>();
+        foreach (var result in searchResults)
         {
             _logger.LogDebug("Processing search result: {ResultName}", result.Name);
             if (result is not ITunesArtist artist)
             {
-                _logger.LogWarning("Search result is not artist, ignoring");
+                _logger.LogDebug("Search result is not artist, ignoring");
                 continue;
             }
 
-            searchResults.Add(artist.ToRemoteSearchResult());
+            allResults.Add(artist.ToRemoteSearchResult());
         }
 
-        _logger.LogInformation("Total search results for artist {Name}: {Count}", searchInfo.Name, searchResults.Count);
-        return searchResults;
+        _logger.LogInformation("Total search results after processing: {Count}", searchResults.Count);
+        return allResults;
     }
 
     /// <inheritdoc />
     public async Task<MetadataResult<MusicArtist>> GetMetadata(ArtistInfo info, CancellationToken cancellationToken)
     {
-        ITunesArtist? artistData = null;
+        ITunesArtist? artistData;
         var appleMusicId = info.GetProviderId(nameof(ProviderKey.ITunesArtist));
         if (!string.IsNullOrEmpty(appleMusicId))
         {
             artistData = await _metadataSource.GetArtistAsync(appleMusicId, cancellationToken);
+            if (artistData is null)
+            {
+                _logger.LogDebug("No artist data found using ID {Id}", appleMusicId);
+                return EmptyMetadataResult();
+            }
         }
-
-        if (artistData is null)
+        else
         {
-            _logger.LogDebug("No artist data using ID {Id}", appleMusicId);
+            _logger.LogInformation("Apple Music artist ID is not available, cannot continue");
             return EmptyMetadataResult();
         }
 
@@ -120,9 +110,11 @@ public class ArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist, Artis
 
         if (artistData.ImageUrl is not null)
         {
+            _logger.LogTrace("Adding image for artist {ArtistName}", artistData.Name);
             metadataResult.RemoteImages.Add((artistData.ImageUrl, ImageType.Primary));
         }
 
+        _logger.LogDebug("Setting provider ID {Id} for artist {ArtistName}", artistData.Id, artistData.Name);
         metadataResult.Item.SetProviderId(nameof(ProviderKey.ITunesArtist), artistData.Id);
         return metadataResult;
     }
@@ -136,5 +128,19 @@ public class ArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist, Artis
     private static MetadataResult<MusicArtist> EmptyMetadataResult()
     {
         return new MetadataResult<MusicArtist> { HasMetadata = false };
+    }
+
+    private async Task<List<RemoteSearchResult>> GetArtistById(string appleMusicId, CancellationToken cancellationToken)
+    {
+        _logger.LogDebug("Getting artist by ID {Id}", appleMusicId);
+        var artistData = await _metadataSource.GetArtistAsync(appleMusicId, cancellationToken);
+        if (artistData is not null)
+        {
+            _logger.LogDebug("Found artist by ID {Id}", appleMusicId);
+            return new List<RemoteSearchResult> { artistData.ToRemoteSearchResult() };
+        }
+
+        _logger.LogDebug("No artist found for ID {Id}", appleMusicId);
+        return new List<RemoteSearchResult>();
     }
 }
