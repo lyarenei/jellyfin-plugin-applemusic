@@ -71,35 +71,18 @@ public class AlbumImageProvider : IRemoteImageProvider
         var appleMusicId = album.GetProviderId(nameof(ProviderKey.ITunesAlbum));
         if (!string.IsNullOrEmpty(appleMusicId))
         {
-            var albumData = await _metadataSource.GetAlbumAsync(appleMusicId, cancellationToken);
-            if (albumData?.ImageUrl is not null)
-            {
-                _logger.LogDebug("Found album image by ID {Id}", appleMusicId);
-                return new List<RemoteImageInfo>
-                {
-                    new()
-                    {
-                        Height = 1400,
-                        Width = 1400,
-                        ProviderName = Name,
-                        ThumbnailUrl = PluginUtils.UpdateImageSize(albumData.ImageUrl, "100x100cc"),
-                        Type = ImageType.Primary,
-                        Url = PluginUtils.UpdateImageSize(albumData.ImageUrl, "1400x1400cc"),
-                    },
-                };
-            }
+            _logger.LogInformation("Using ID {Id} for album lookup", appleMusicId);
+            var results = await GetImageById(appleMusicId, cancellationToken);
+            _logger.LogInformation("Found {Count} images for album ID {Id}", results.Count, appleMusicId);
+            return results;
         }
 
-        _logger.LogDebug("Could not obtain Apple Music album ID, falling back to search");
+        _logger.LogInformation("Apple Music album ID was not provided, using search");
+
         var term = GetSearchTerm(album);
         var searchResults = await _metadataSource.SearchAsync(term, ItemType.Album, cancellationToken);
-        if (searchResults.Count == 0)
-        {
-            _logger.LogDebug("No search results found for term {SearchTerm}", term);
-            return new List<RemoteImageInfo>();
-        }
 
-        _logger.LogDebug("Found {Count} search results for term {SearchTerm}", searchResults.Count, term);
+        _logger.LogInformation("Found {Count} search results using term {SearchTerm}", searchResults.Count, term);
 
         return searchResults
             .Where(sr => sr is ITunesAlbum amAlbum && !string.IsNullOrEmpty(amAlbum.ImageUrl))
@@ -118,5 +101,30 @@ public class AlbumImageProvider : IRemoteImageProvider
     {
         var albumArtist = album.AlbumArtists.FirstOrDefault(string.Empty);
         return $"{albumArtist} {album.Name}";
+    }
+
+    private async Task<List<RemoteImageInfo>> GetImageById(string appleMusicId, CancellationToken cancellationToken)
+    {
+        _logger.LogDebug("Looking up album by ID {Id}", appleMusicId);
+        var albumData = await _metadataSource.GetAlbumAsync(appleMusicId, cancellationToken);
+        if (albumData?.ImageUrl is not null)
+        {
+            _logger.LogDebug("Found image for album ID {Id}", appleMusicId);
+            return
+            [
+                new RemoteImageInfo
+                {
+                    Height = 1400,
+                    Width = 1400,
+                    ProviderName = Name,
+                    ThumbnailUrl = PluginUtils.UpdateImageSize(albumData.ImageUrl, "100x100cc"),
+                    Type = ImageType.Primary,
+                    Url = PluginUtils.UpdateImageSize(albumData.ImageUrl, "1400x1400cc"),
+                },
+            ];
+        }
+
+        _logger.LogDebug("Could not find image for album ID {Id}", appleMusicId);
+        return new List<RemoteImageInfo>();
     }
 }
