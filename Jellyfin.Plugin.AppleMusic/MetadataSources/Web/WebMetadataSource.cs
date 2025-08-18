@@ -46,15 +46,16 @@ public class WebMetadataSource : IMetadataSource
     /// <inheritdoc />
     public async Task<List<IITunesItem>> SearchAsync(string searchTerm, ItemType itemType, CancellationToken cancellationToken)
     {
+        _logger.LogDebug("Searching for {ItemType} with term: {SearchTerm}", itemType, searchTerm);
         var encodedTerm = Uri.EscapeDataString(searchTerm);
         var searchUrl = $"{PluginUtils.AppleMusicBaseUrl}/search?term={encodedTerm}";
 
-        _logger.LogDebug("Search url: {Url}", searchUrl);
-
+        _logger.LogDebug("Opening url: {Url}", searchUrl);
         var document = await OpenPage(searchUrl, cancellationToken);
 
         if (itemType is ItemType.Album)
         {
+            _logger.LogInformation("Searching for albums with term {SearchTerm}", searchTerm);
             var albumNodes = document.Body.SelectNodes(SearchResultXPath(ItemType.Album));
             var albums = await ScrapeAlbums(albumNodes, cancellationToken);
             _logger.LogInformation("Found {Count} albums for search term {SearchTerm}", albums.Count, searchTerm);
@@ -63,12 +64,14 @@ public class WebMetadataSource : IMetadataSource
 
         if (itemType is ItemType.Artist)
         {
+            _logger.LogInformation("Searching for artists with term {SearchTerm}", searchTerm);
             var artistNodes = document.Body.SelectNodes(SearchResultXPath(ItemType.Artist));
             var artists = await ScrapeArtists(artistNodes, cancellationToken);
             _logger.LogInformation("Found {Count} artists for search term {SearchTerm}", artists.Count, searchTerm);
             return artists.Cast<IITunesItem>().ToList();
         }
 
+        _logger.LogWarning("Unsupported item type {ItemType} for search", itemType);
         return new List<IITunesItem>();
     }
 
@@ -76,7 +79,7 @@ public class WebMetadataSource : IMetadataSource
     public async Task<ITunesAlbum?> GetAlbumAsync(string albumId, CancellationToken cancellationToken)
     {
         var albumUrl = $"{PluginUtils.AppleMusicBaseUrl}/album/{albumId}";
-        _logger.LogDebug("Fetching album from {Url}", albumUrl);
+        _logger.LogDebug("Getting album data from {Url}", albumUrl);
 
         var document = await OpenPage(albumUrl, cancellationToken);
         return await ScrapeAlbum(document, cancellationToken);
@@ -86,7 +89,7 @@ public class WebMetadataSource : IMetadataSource
     public async Task<ITunesArtist?> GetArtistAsync(string artistId, CancellationToken cancellationToken)
     {
         var artistUrl = $"{PluginUtils.AppleMusicBaseUrl}/artist/{artistId}";
-        _logger.LogDebug("Fetching artist from {Url}", artistUrl);
+        _logger.LogDebug("Getting artist data from {Url}", artistUrl);
 
         var document = await OpenPage(artistUrl, cancellationToken);
         return await ScrapeArtist(document, cancellationToken);
@@ -155,6 +158,8 @@ public class WebMetadataSource : IMetadataSource
             _logger.LogDebug("Scraping album failed");
             return null;
         }
+
+        _logger.LogDebug("Scraped album from url {Url}", document.Url);
 
         var artistTasks = album.Artists
             .Select(artist => PluginUtils.GetIdFromUrl(artist.Url))
