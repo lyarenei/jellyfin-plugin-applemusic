@@ -77,9 +77,8 @@ public class AlbumImageProvider : IRemoteImageProvider
             return results;
         }
 
-        _logger.LogInformation("Apple Music album ID was not provided, using search");
-
         var term = GetSearchTerm(album);
+        _logger.LogInformation("Apple Music album ID is not available, using search with term {SearchTerm}", term);
         var searchResults = await _metadataSource.SearchAsync(term, ItemType.Album, cancellationToken);
 
         _logger.LogInformation("Found {Count} search results using term {SearchTerm}", searchResults.Count, term);

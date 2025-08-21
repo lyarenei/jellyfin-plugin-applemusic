@@ -77,7 +77,7 @@ public class ArtistImageProvider : IRemoteImageProvider
             return results;
         }
 
-        _logger.LogInformation("Apple Music artist ID was not provided, using search");
+        _logger.LogInformation("Apple Music artist ID is not available, using search with artist name");
 
         var searchResults = await _metadataSource.SearchAsync(artist.Name, ItemType.Artist, cancellationToken);
 
