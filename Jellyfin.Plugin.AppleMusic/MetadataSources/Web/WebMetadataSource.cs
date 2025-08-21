@@ -46,7 +46,7 @@ public class WebMetadataSource : IMetadataSource
     /// <inheritdoc />
     public async Task<List<IITunesItem>> SearchAsync(string searchTerm, ItemType itemType, CancellationToken cancellationToken)
     {
-        _logger.LogDebug("Searching for {ItemType} with term: {SearchTerm}", itemType, searchTerm);
+        _logger.LogInformation("Searching for {ItemType} with term: {SearchTerm}", itemType, searchTerm);
         var encodedTerm = Uri.EscapeDataString(searchTerm);
         var searchUrl = $"{PluginUtils.AppleMusicBaseUrl}/search?term={encodedTerm}";
 
@@ -55,7 +55,6 @@ public class WebMetadataSource : IMetadataSource
 
         if (itemType is ItemType.Album)
         {
-            _logger.LogInformation("Searching for albums with term {SearchTerm}", searchTerm);
             var albumNodes = document.Body.SelectNodes(SearchResultXPath(ItemType.Album));
             var albums = await ScrapeAlbums(albumNodes, cancellationToken);
             _logger.LogInformation("Found {Count} albums for search term {SearchTerm}", albums.Count, searchTerm);
@@ -64,7 +63,6 @@ public class WebMetadataSource : IMetadataSource
 
         if (itemType is ItemType.Artist)
         {
-            _logger.LogInformation("Searching for artists with term {SearchTerm}", searchTerm);
             var artistNodes = document.Body.SelectNodes(SearchResultXPath(ItemType.Artist));
             var artists = await ScrapeArtists(artistNodes, cancellationToken);
             _logger.LogInformation("Found {Count} artists for search term {SearchTerm}", artists.Count, searchTerm);
