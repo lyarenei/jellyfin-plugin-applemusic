@@ -85,6 +85,7 @@ public class ArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist, Artis
         var appleMusicId = info.GetProviderId(nameof(ProviderKey.ITunesArtist));
         if (!string.IsNullOrEmpty(appleMusicId))
         {
+            _logger.LogDebug("Using ID {Id} for artist metadata lookup", appleMusicId);
             artistData = await _metadataSource.GetArtistAsync(appleMusicId, cancellationToken);
             if (artistData is null)
             {
@@ -94,7 +95,7 @@ public class ArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist, Artis
         }
         else
         {
-            _logger.LogInformation("Apple Music artist ID is not available, cannot continue");
+            _logger.LogDebug("Apple Music artist ID is not available, cannot continue");
             return EmptyMetadataResult();
         }
 

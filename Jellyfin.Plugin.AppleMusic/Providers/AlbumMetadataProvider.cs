@@ -96,17 +96,17 @@ public class AlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, AlbumIn
         var appleMusicId = info.GetProviderId(nameof(ProviderKey.ITunesAlbum));
         if (!string.IsNullOrEmpty(appleMusicId))
         {
-            _logger.LogInformation("Using ID {Id} for album metadata lookup", appleMusicId);
+            _logger.LogDebug("Using ID {Id} for album metadata lookup", appleMusicId);
             albumData = await _metadataSource.GetAlbumAsync(appleMusicId, cancellationToken);
             if (albumData is null)
             {
-                _logger.LogInformation("No album data found using ID {Id}", appleMusicId);
+                _logger.LogDebug("No album data found using ID {Id}", appleMusicId);
                 return EmptyMetadataResult();
             }
         }
         else
         {
-            _logger.LogInformation("Apple Music album ID is not available, cannot continue");
+            _logger.LogDebug("Apple Music album ID is not available, cannot continue");
             return EmptyMetadataResult();
         }
 
