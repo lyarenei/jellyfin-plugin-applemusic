@@ -68,7 +68,7 @@ public class ArtistImageProvider : IRemoteImageProvider
             return new List<RemoteImageInfo>();
         }
 
-        var appleMusicId = artist.GetProviderId(nameof(ProviderKey.ITunesAlbum));
+        var appleMusicId = artist.GetProviderId(nameof(ProviderKey.ITunesArtist));
         if (!string.IsNullOrEmpty(appleMusicId))
         {
             _logger.LogInformation("Using ID {Id} for artist lookup", appleMusicId);
