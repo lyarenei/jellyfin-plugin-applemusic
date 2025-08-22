@@ -14,4 +14,7 @@ artifacts:
 - "AngleSharp.XPath.dll"
 - "Jellyfin.Plugin.AppleMusic.dll"
 changelog: >
-  Maintenance release: Clean up web scraping implementation
+  Maintenance:
+    - Rename `iTunes` to `Apple Music` in code
+    - Clean up web scraping implementation (should now be more reliable)
+    - Update dependencies
