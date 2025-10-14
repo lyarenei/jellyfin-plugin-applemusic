@@ -51,8 +51,10 @@ public class ArtistScraper : IScraper<MusicArtist>
         {
             _logger.LogTrace("Artist overview not found");
         }
-
-        _logger.LogTrace("Found artist overview");
+        else
+        {
+            _logger.LogTrace("Found artist overview");
+        }
 
         var imageUrl = GetImageUrl(document.Body);
         if (imageUrl is null)
