@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 using AngleSharp;
 using AngleSharp.Dom;
@@ -18,7 +19,10 @@ namespace Jellyfin.Plugin.AppleMusic.MetadataSources.Web.Scrapers;
 /// </summary>
 public class AlbumScraper : IScraper<MusicAlbum>
 {
-    private const string ImageXPath = "//meta[@property='og:image' and not(contains(@content, 'apple-music.png'))]/@content";
+    private const string ImageXPath = "//div[@data-testid='container-detail-header']" +
+                                      "//div[@data-testid='artwork-component']" +
+                                      "//source[@type='image/jpeg']/@srcset";
+
     private const string AlbumDetailXPath = "//div[@data-testid='container-detail-header']";
     private const string AlbumNameXPath = "//h1[@data-testid='non-editable-product-title']";
     private const string AlbumArtistXPath = "//a[@data-testid='click-action']";
@@ -51,7 +55,7 @@ public class AlbumScraper : IScraper<MusicAlbum>
 
         _logger.LogTrace("Found album name");
 
-        var imageUrl = document.Head.SelectSingleNode(ImageXPath)?.TextContent;
+        var imageUrl = GetImageUrl(document.Body);
         if (imageUrl is null)
         {
             _logger.LogTrace("No album image found");
@@ -78,11 +82,7 @@ public class AlbumScraper : IScraper<MusicAlbum>
             }
 
             _logger.LogTrace("Adding artist with url {Url}", artistElem.Href);
-            artists.Add(new ITunesArtist
-            {
-                Name = artistElem.TextContent,
-                Url = artistElem.Href,
-            });
+            artists.Add(new ITunesArtist { Name = artistElem.TextContent, Url = artistElem.Href, });
         }
 
         _logger.LogDebug("Parsed {Count} artists from album", artists.Count);
@@ -122,5 +122,11 @@ public class AlbumScraper : IScraper<MusicAlbum>
         var date = DateTime.ParseExact(match.Groups["date"].Value, "MMMM d, yyyy", DateTimeFormatInfo.InvariantInfo);
         var prodYear = int.Parse(match.Groups["productionYear"].Value, NumberStyles.Any, NumberFormatInfo.InvariantInfo);
         return (date, prodYear);
+    }
+
+    private static string? GetImageUrl(IHtmlElement? body)
+    {
+        var content = body?.SelectSingleNode(ImageXPath)?.TextContent;
+        return content?.Split(' ').FirstOrDefault();
     }
 }
