@@ -13,7 +13,10 @@ namespace Jellyfin.Plugin.AppleMusic.MetadataSources.Web.Scrapers;
 /// </summary>
 public class ArtistScraper : IScraper<MusicArtist>
 {
-    private const string ImageXPath = "//meta[@property='og:image' and not(contains(@content, 'apple-music.png'))]/@content";
+    private const string ImageXPath = "//div[@data-testid='artist-detail-header']" +
+                                      "//div[@data-testid='artwork-component']" +
+                                      "//source[@type='image/jpeg']/@srcset";
+
     private const string ArtistNameXPath = "//h1[@data-testid='artist-header-name']";
     private const string OverviewXPath = "//p[@data-testid='truncate-text']";
 
@@ -49,7 +52,7 @@ public class ArtistScraper : IScraper<MusicArtist>
 
         _logger.LogTrace("Found artist overview");
 
-        var imageUrl = document.Head.SelectSingleNode(ImageXPath)?.TextContent;
+        var imageUrl = document.Body.SelectSingleNode(ImageXPath)?.TextContent;
         if (imageUrl is null)
         {
             _logger.LogTrace("Artist image not found");
