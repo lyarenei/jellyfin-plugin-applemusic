@@ -60,8 +60,10 @@ public class AlbumScraper : IScraper<MusicAlbum>
         {
             _logger.LogTrace("No album image found");
         }
-
-        _logger.LogTrace("Found album image");
+        else
+        {
+            _logger.LogTrace("Found album image");
+        }
 
         var artistNodes = document.Body.SelectNodes(AlbumDetailXPath + AlbumArtistXPath);
         if (artistNodes is null || artistNodes.Count == 0)
