@@ -1,5 +1,7 @@
+using System.Linq;
 using AngleSharp;
 using AngleSharp.Dom;
+using AngleSharp.Html.Dom;
 using AngleSharp.XPath;
 using Jellyfin.Plugin.AppleMusic.Dtos;
 using Jellyfin.Plugin.AppleMusic.Utils;
@@ -52,7 +54,7 @@ public class ArtistScraper : IScraper<MusicArtist>
 
         _logger.LogTrace("Found artist overview");
 
-        var imageUrl = document.Body.SelectSingleNode(ImageXPath)?.TextContent;
+        var imageUrl = GetImageUrl(document.Body);
         if (imageUrl is null)
         {
             _logger.LogTrace("Artist image not found");
@@ -73,5 +75,11 @@ public class ArtistScraper : IScraper<MusicArtist>
             Url = document.Url,
             Id = PluginUtils.GetIdFromUrl(document.Url),
         };
+    }
+
+    private static string? GetImageUrl(IHtmlElement? body)
+    {
+        var content = body?.SelectSingleNode(ImageXPath)?.TextContent;
+        return content?.Split(' ').FirstOrDefault();
     }
 }
