@@ -15,4 +15,4 @@ artifacts:
 - "Jellyfin.Plugin.AppleMusic.dll"
 changelog: >
   Fix:
-    - Artwork URLs are parsed from HTML body (instead of head)
+    - Album artwork being pulled if artist did not have one
