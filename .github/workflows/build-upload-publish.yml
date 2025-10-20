@@ -10,7 +10,7 @@ on:
       dotnet-version:
         type: string
         required: false
-        default: "8.0"
+        default: "9.0"
         description: Dotnet version.
       repo-slug:
         type: string
@@ -22,7 +22,7 @@ jobs:
   test:
     uses: jellyfin/jellyfin-meta-plugins/.github/workflows/test.yaml@master
     with:
-      dotnet-version: ${{ inputs.dotnet-version || '8.0' }}
+      dotnet-version: ${{ inputs.dotnet-version || '9.0' }}
 
   build:
     needs: test
