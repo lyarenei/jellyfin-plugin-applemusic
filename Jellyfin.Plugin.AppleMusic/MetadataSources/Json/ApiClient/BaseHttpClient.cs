@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
@@ -10,7 +11,7 @@ namespace Jellyfin.Plugin.AppleMusic.MetadataSources.Json.ApiClient;
 /// <summary>
 /// Base HTTP client.
 /// </summary>
-public class BaseHttpClient : IDisposable
+public class BaseHttpClient : IHttpClient, IDisposable
 {
     private readonly ILogger _logger;
     private readonly HttpClient _httpClient;
@@ -34,18 +35,20 @@ public class BaseHttpClient : IDisposable
         _logger = logger;
     }
 
-    /// <summary>
-    /// Send a basic GET request and deserialize the response.
-    /// </summary>
-    /// <param name="url">Request URL.</param>
-    /// <param name="cancellationToken">Cancellation token.</param>
-    /// <typeparam name="T">Response type.</typeparam>
-    /// <returns>Response. Null on error.</returns>
-    public async Task<T?> GetAsync<T>(string url, CancellationToken cancellationToken = default)
+    /// <inheritdoc />
+    public async Task<T?> GetAsync<T>(string url, Dictionary<string, string>? headers = null, CancellationToken cancellationToken = default)
     {
-        // TODO auth header
-        // TODO error handling
-        using var response = await _httpClient.GetAsync(url, cancellationToken);
+        using var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+        if (headers is not null)
+        {
+            foreach (var header in headers)
+            {
+                request.Headers.TryAddWithoutValidation(header.Key, header.Value);
+            }
+        }
+
+        using var response = await _httpClient.SendAsync(request, cancellationToken);
         response.EnsureSuccessStatusCode();
         var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
         return await JsonSerializer.DeserializeAsync<T>(stream, _serializerOptions, cancellationToken);
