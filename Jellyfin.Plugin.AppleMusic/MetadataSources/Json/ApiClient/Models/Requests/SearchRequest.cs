@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Jellyfin.Plugin.AppleMusic.MetadataSources.Json.ApiClient.Models.Requests;
@@ -66,4 +67,27 @@ public class SearchRequest
     /// Gets or sets types to search for.
     /// </summary>
     public IEnumerable<string> Types { get; set; }
+
+    /// <summary>
+    /// Builds the query string for this search request.
+    /// </summary>
+    /// <returns>Query string without leading '?'.</returns>
+    public string ToQueryString()
+    {
+        var parameters = new List<string>
+        {
+            $"term={Uri.EscapeDataString(Term)}",
+            $"types={string.Join(",", Types)}",
+            $"limit={Limit}",
+            $"l={Language}",
+            $"platform={Platform}",
+            $"fields[albums]={string.Join(",", AlbumFields)}",
+            $"fields[artists]={string.Join(",", ArtistFields)}",
+            $"include[albums]={string.Join(",", IncludeInAlbums)}",
+            $"relate[albums]={string.Join(",", RelateInAlbums)}",
+            $"omit[resource]={string.Join(",", OmitResources)}",
+        };
+
+        return string.Join("&", parameters);
+    }
 }
