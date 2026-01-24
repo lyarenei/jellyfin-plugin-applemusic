@@ -25,8 +25,4 @@
     <PackageReference Include="SmartAnalyzers.MultithreadingAnalyzer" Version="1.1.31" PrivateAssets="All" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="MetadataSources\Json\ApiClient\Models\Requests\" />
-  </ItemGroup>
-
 </Project>
