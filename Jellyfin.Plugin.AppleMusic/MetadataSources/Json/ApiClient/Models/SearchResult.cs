@@ -35,4 +35,9 @@ public class SearchResult
     /// Gets or sets the attributes of the result.
     /// </summary>
     public Attributes Attributes { get; set; }
+
+    /// <summary>
+    /// Gets or sets the relationships (e.g., artists for albums).
+    /// </summary>
+    public Relationships? Relationships { get; set; }
 }

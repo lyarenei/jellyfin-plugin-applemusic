@@ -41,4 +41,14 @@ public class Attributes
     /// Gets or sets the artwork information.
     /// </summary>
     public Artwork Artwork { get; set; }
+
+    /// <summary>
+    /// Gets or sets the release date (format: "2025-11-12").
+    /// </summary>
+    public string? ReleaseDate { get; set; }
+
+    /// <summary>
+    /// Gets or sets the editorial notes.
+    /// </summary>
+    public EditorialNotes? EditorialNotes { get; set; }
 }
