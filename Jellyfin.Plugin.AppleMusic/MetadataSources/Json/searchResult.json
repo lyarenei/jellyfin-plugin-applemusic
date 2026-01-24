@@ -1,0 +1,1335 @@
+{
+    "results": {
+        "albums": {
+            "href": "/v1/catalog/us/search?l=en-US&limit=21&term=aimer&types=albums",
+            "data": [
+                {
+                    "id": "1827140070",
+                    "type": "albums",
+                    "href": "/v1/catalog/us/albums/1827140070?l=en-US",
+                    "attributes": {
+                        "artistName": "Aimer",
+                        "artistUrl": "https://music.apple.com/us/artist/aimer/569972619",
+                        "artwork": {
+                            "url": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/f2/73/7a/f2737a09-1580-cff2-e402-fa3fe730163c/4547366760002.jpg/{w}x{h}bb.{f}",
+                            "width": 3000
+                        },
+                        "name": "A World Where the Sun Never Rises - Single",
+                        "url": "https://music.apple.com/us/album/%E5%A4%AA%E9%99%BD%E3%81%8C%E6%98%87%E3%82%89%E3%81%AA%E3%81%84%E4%B8%96%E7%95%8C-a-world-where-the-sun-never-rises-single/1827140070"
+                    },
+                    "relationships": {
+                        "artists": {
+                            "href": "/v1/catalog/us/albums/1827140070/artists?l=en-US",
+                            "data": [
+                                {
+                                    "id": "569972619",
+                                    "type": "artists",
+                                    "href": "/v1/catalog/us/artists/569972619?l=en-US",
+                                    "attributes": {
+                                        "artwork": {
+                                            "bgColor": "e6ebe3",
+                                            "hasP3": false,
+                                            "height": 2400,
+                                            "textColor1": "25221f",
+                                            "textColor2": "2d2f2c",
+                                            "textColor3": "4c4a46",
+                                            "textColor4": "525451",
+                                            "url": "https://is1-ssl.mzstatic.com/image/thumb/AMCArtistImages211/v4/d8/15/23/d8152345-7d8b-226e-79e0-3599da275c6e/ami-identity-54f701b8b197c76a0b9fa55ea5989664-2025-06-28T14-13-25.583Z_cropped.png/{w}x{h}bb.{f}",
+                                            "width": 2400
+                                        },
+                                        "name": "Aimer",
+                                        "url": "https://music.apple.com/us/artist/aimer/569972619"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "meta": {
+                        "contentVersion": {
+                            "MZ_INDEXER": 1762627397434,
+                            "RTCI": 0
+                        }
+                    }
+                },
+                {
+                    "id": "1849172484",
+                    "type": "albums",
+                    "href": "/v1/catalog/us/albums/1849172484?l=en-US",
+                    "attributes": {
+                        "artistName": "Aimer",
+                        "artistUrl": "https://music.apple.com/us/artist/aimer/569972619",
+                        "artwork": {
+                            "bgColor": "fdc59c",
+                            "hasP3": false,
+                            "height": 4000,
+                            "textColor1": "1c1a12",
+                            "textColor2": "2c261c",
+                            "textColor3": "493c2e",
+                            "textColor4": "554635",
+                            "url": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/bb/2f/0d/bb2f0dd6-d5bd-c832-04d5-0628f4e4c7ce/4547366786781.jpg/{w}x{h}bb.{f}",
+                            "width": 4000
+                        },
+                        "name": "Little Bouquet Pastoral - EP",
+                        "releaseDate": "2025-11-12",
+                        "trackCount": 5,
+                        "url": "https://music.apple.com/us/album/little-bouquet-pastoral-ep/1849172484"
+                    },
+                    "relationships": {
+                        "artists": {
+                            "href": "/v1/catalog/us/albums/1849172484/artists?l=en-US",
+                            "data": [
+                                {
+                                    "id": "569972619",
+                                    "type": "artists",
+                                    "href": "/v1/catalog/us/artists/569972619?l=en-US",
+                                    "attributes": {
+                                        "artwork": {
+                                            "bgColor": "e6ebe3",
+                                            "hasP3": false,
+                                            "height": 2400,
+                                            "textColor1": "25221f",
+                                            "textColor2": "2d2f2c",
+                                            "textColor3": "4c4a46",
+                                            "textColor4": "525451",
+                                            "url": "https://is1-ssl.mzstatic.com/image/thumb/AMCArtistImages211/v4/d8/15/23/d8152345-7d8b-226e-79e0-3599da275c6e/ami-identity-54f701b8b197c76a0b9fa55ea5989664-2025-06-28T14-13-25.583Z_cropped.png/{w}x{h}bb.{f}",
+                                            "width": 2400
+                                        },
+                                        "name": "Aimer",
+                                        "url": "https://music.apple.com/us/artist/aimer/569972619"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "meta": {
+                        "contentVersion": {
+                            "MZ_INDEXER": 1763172984989,
+                            "RTCI": 0
+                        }
+                    }
+                },
+                {
+                    "id": "1538258997",
+                    "type": "albums",
+                    "href": "/v1/catalog/us/albums/1538258997?l=en-US",
+                    "attributes": {
+                        "artistName": "Aimer",
+                        "artistUrl": "https://music.apple.com/us/artist/aimer/569972619",
+                        "artwork": {
+                            "bgColor": "fafbfc",
+                            "hasP3": false,
+                            "height": 3000,
+                            "textColor1": "090a0a",
+                            "textColor2": "2d302c",
+                            "textColor3": "393a3a",
+                            "textColor4": "565955",
+                            "url": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/46/4a/84/464a843d-14cc-e5e2-a9d6-763eb558e104/4547366270358.jpg/{w}x{h}bb.{f}",
+                            "width": 3000
+                        },
+                        "name": "daydream",
+                        "releaseDate": "2016-09-21",
+                        "trackCount": 13,
+                        "url": "https://music.apple.com/us/album/daydream/1538258997"
+                    },
+                    "relationships": {
+                        "artists": {
+                            "href": "/v1/catalog/us/albums/1538258997/artists?l=en-US",
+                            "data": [
+                                {
+                                    "id": "569972619",
+                                    "type": "artists",
+                                    "href": "/v1/catalog/us/artists/569972619?l=en-US",
+                                    "attributes": {
+                                        "artwork": {
+                                            "bgColor": "e6ebe3",
+                                            "hasP3": false,
+                                            "height": 2400,
+                                            "textColor1": "25221f",
+                                            "textColor2": "2d2f2c",
+                                            "textColor3": "4c4a46",
+                                            "textColor4": "525451",
+                                            "url": "https://is1-ssl.mzstatic.com/image/thumb/AMCArtistImages211/v4/d8/15/23/d8152345-7d8b-226e-79e0-3599da275c6e/ami-identity-54f701b8b197c76a0b9fa55ea5989664-2025-06-28T14-13-25.583Z_cropped.png/{w}x{h}bb.{f}",
+                                            "width": 2400
+                                        },
+                                        "name": "Aimer",
+                                        "url": "https://music.apple.com/us/artist/aimer/569972619"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "meta": {
+                        "contentVersion": {
+                            "MZ_INDEXER": 1763005647210,
+                            "RTCI": 0
+                        }
+                    }
+                },
+                {
+                    "id": "1598330550",
+                    "type": "albums",
+                    "href": "/v1/catalog/us/albums/1598330550?l=en-US",
+                    "attributes": {
+                        "artistName": "milet, Aimer & Lilas",
+                        "artistUrl": "https://music.apple.com/WebObjects/MZStore.woa/wa/viewCollaboration?cc=us&ids=880638079-569972619-1489581870",
+                        "artwork": {
+                            "bgColor": "f8fdff",
+                            "hasP3": false,
+                            "height": 3000,
+                            "textColor1": "0a0807",
+                            "textColor2": "19120d",
+                            "textColor3": "393939",
+                            "textColor4": "45413d",
+                            "url": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/ec/1d/a0/ec1da08d-502e-9d7e-10d5-2dd301a0314f/4547366542912.jpg/{w}x{h}bb.{f}",
+                            "width": 3000
+                        },
+                        "name": "Omokage (produced by Vaundy) - Single",
+                        "releaseDate": "2021-12-17",
+                        "trackCount": 1,
+                        "url": "https://music.apple.com/us/album/%E3%81%8A%E3%82%82%E3%81%8B%E3%81%92-produced-by-vaundy-single/1598330550"
+                    },
+                    "relationships": {
+                        "artists": {
+                            "href": "/v1/catalog/us/albums/1598330550/artists?l=en-US",
+                            "data": [
+                                {
+                                    "id": "880638079",
+                                    "type": "artists",
+                                    "href": "/v1/catalog/us/artists/880638079?l=en-US",
+                                    "attributes": {
+                                        "artwork": {
+                                            "bgColor": "8b8f8f",
+                                            "hasP3": false,
+                                            "height": 2400,
+                                            "textColor1": "070d0c",
+                                            "textColor2": "0e110e",
+                                            "textColor3": "212726",
+                                            "textColor4": "272a28",
+                                            "url": "https://is1-ssl.mzstatic.com/image/thumb/AMCArtistImages211/v4/16/e1/74/16e174f9-d756-4528-a7c9-3a04fe246e75/ami-identity-35fa38b98711a3ae4ce713f3f0e4e031-2025-10-20T07-00-10.837Z_cropped.png/{w}x{h}bb.{f}",
+                                            "width": 2400
+                                        },
+                                        "name": "milet",
+                                        "url": "https://music.apple.com/us/artist/milet/880638079"
+                                    }
+                                },
+                                {
+                                    "id": "569972619",
+                                    "type": "artists",
+                                    "href": "/v1/catalog/us/artists/569972619?l=en-US",
+                                    "attributes": {
+                                        "artwork": {
+                                            "bgColor": "e6ebe3",
+                                            "hasP3": false,
+                                            "height": 2400,
+                                            "textColor1": "25221f",
+                                            "textColor2": "2d2f2c",
+                                            "textColor3": "4c4a46",
+                                            "textColor4": "525451",
+                                            "url": "https://is1-ssl.mzstatic.com/image/thumb/AMCArtistImages211/v4/d8/15/23/d8152345-7d8b-226e-79e0-3599da275c6e/ami-identity-54f701b8b197c76a0b9fa55ea5989664-2025-06-28T14-13-25.583Z_cropped.png/{w}x{h}bb.{f}",
+                                            "width": 2400
+                                        },
+                                        "name": "Aimer",
+                                        "url": "https://music.apple.com/us/artist/aimer/569972619"
+                                    }
+                                },
+                                {
+                                    "id": "1489581870",
+                                    "type": "artists",
+                                    "href": "/v1/catalog/us/artists/1489581870?l=en-US",
+                                    "attributes": {
+                                        "artwork": {
+                                            "bgColor": "464d74",
+                                            "hasP3": false,
+                                            "height": 5916,
+                                            "textColor1": "f7e3df",
+                                            "textColor2": "facda8",
+                                            "textColor3": "d4c5ca",
+                                            "textColor4": "d6b39e",
+                                            "url": "https://is1-ssl.mzstatic.com/image/thumb/Features211/v4/a8/88/ae/a888ae75-fd6f-5299-303d-b7df7d2ab90c/mzl.dandmemk.jpg/{w}x{h}bb.{f}",
+                                            "width": 5916
+                                        },
+                                        "name": "Lilas",
+                                        "url": "https://music.apple.com/us/artist/lilas/1489581870"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "meta": {
+                        "contentVersion": {
+                            "MZ_INDEXER": 1760995565502,
+                            "RTCI": 0
+                        }
+                    }
+                },
+                {
+                    "id": "1536130464",
+                    "type": "albums",
+                    "href": "/v1/catalog/us/albums/1536130464?l=en-US",
+                    "attributes": {
+                        "artistName": "Aimer",
+                        "artistUrl": "https://music.apple.com/us/artist/aimer/569972619",
+                        "artwork": {
+                            "bgColor": "eff2f5",
+                            "hasP3": false,
+                            "height": 3000,
+                            "textColor1": "001a33",
+                            "textColor2": "00243f",
+                            "textColor3": "2f455a",
+                            "textColor4": "2f4d63",
+                            "url": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/a7/e4/91/a7e4914b-3e96-d119-0ce7-d9e7d5ab113a/4560429730019.jpg/{w}x{h}bb.{f}",
+                            "width": 3000
+                        },
+                        "name": "DAWN",
+                        "releaseDate": "2015-07-29",
+                        "trackCount": 13,
+                        "url": "https://music.apple.com/us/album/dawn/1536130464"
+                    },
+                    "relationships": {
+                        "artists": {
+                            "href": "/v1/catalog/us/albums/1536130464/artists?l=en-US",
+                            "data": [
+                                {
+                                    "id": "569972619",
+                                    "type": "artists",
+                                    "href": "/v1/catalog/us/artists/569972619?l=en-US",
+                                    "attributes": {
+                                        "artwork": {
+                                            "bgColor": "e6ebe3",
+                                            "hasP3": false,
+                                            "height": 2400,
+                                            "textColor1": "25221f",
+                                            "textColor2": "2d2f2c",
+                                            "textColor3": "4c4a46",
+                                            "textColor4": "525451",
+                                            "url": "https://is1-ssl.mzstatic.com/image/thumb/AMCArtistImages211/v4/d8/15/23/d8152345-7d8b-226e-79e0-3599da275c6e/ami-identity-54f701b8b197c76a0b9fa55ea5989664-2025-06-28T14-13-25.583Z_cropped.png/{w}x{h}bb.{f}",
+                                            "width": 2400
+                                        },
+                                        "name": "Aimer",
+                                        "url": "https://music.apple.com/us/artist/aimer/569972619"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "meta": {
+                        "contentVersion": {
+                            "MZ_INDEXER": 1763022138458,
+                            "RTCI": 0
+                        }
+                    }
+                },
+                {
+                    "id": "1594814582",
+                    "type": "albums",
+                    "href": "/v1/catalog/us/albums/1594814582?l=en-US",
+                    "attributes": {
+                        "artistName": "Aimer",
+                        "artistUrl": "https://music.apple.com/us/artist/aimer/569972619",
+                        "artwork": {
+                            "bgColor": "f1f0f1",
+                            "hasP3": false,
+                            "height": 3000,
+                            "textColor1": "1b0603",
+                            "textColor2": "1c100e",
+                            "textColor3": "463533",
+                            "textColor4": "473d3c",
+                            "url": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/c9/40/9e/c9409e84-c0ea-c389-3be3-2343ec3dfb3b/4547366539806.jpg/{w}x{h}bb.{f}",
+                            "width": 3000
+                        },
+                        "name": "Zankyosanka / Asa ga kuru - EP",
+                        "releaseDate": "2022-01-12",
+                        "trackCount": 6,
+                        "url": "https://music.apple.com/us/album/%E6%AE%8B%E9%9F%BF%E6%95%A3%E6%AD%8C-%E6%9C%9D%E3%81%8C%E6%9D%A5%E3%82%8B-ep/1594814582"
+                    },
+                    "relationships": {
+                        "artists": {
+                            "href": "/v1/catalog/us/albums/1594814582/artists?l=en-US",
+                            "data": [
+                                {
+                                    "id": "569972619",
+                                    "type": "artists",
+                                    "href": "/v1/catalog/us/artists/569972619?l=en-US",
+                                    "attributes": {
+                                        "artwork": {
+                                            "bgColor": "e6ebe3",
+                                            "hasP3": false,
+                                            "height": 2400,
+                                            "textColor1": "25221f",
+                                            "textColor2": "2d2f2c",
+                                            "textColor3": "4c4a46",
+                                            "textColor4": "525451",
+                                            "url": "https://is1-ssl.mzstatic.com/image/thumb/AMCArtistImages211/v4/d8/15/23/d8152345-7d8b-226e-79e0-3599da275c6e/ami-identity-54f701b8b197c76a0b9fa55ea5989664-2025-06-28T14-13-25.583Z_cropped.png/{w}x{h}bb.{f}",
+                                            "width": 2400
+                                        },
+                                        "name": "Aimer",
+                                        "url": "https://music.apple.com/us/artist/aimer/569972619"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "meta": {
+                        "contentVersion": {
+                            "MZ_INDEXER": 1762449964652,
+                            "RTCI": 0
+                        }
+                    }
+                },
+                {
+                    "id": "1523466487",
+                    "type": "albums",
+                    "href": "/v1/catalog/us/albums/1523466487?l=en-US",
+                    "attributes": {
+                        "artistName": "Darina Victry",
+                        "artistUrl": "https://music.apple.com/us/artist/darina-victry/1497865345",
+                        "artwork": {
+                            "bgColor": "321516",
+                            "hasP3": false,
+                            "height": 1440,
+                            "textColor1": "ffcdcd",
+                            "textColor2": "ffa3b1",
+                            "textColor3": "d5a8a9",
+                            "textColor4": "d58692",
+                            "url": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/4c/bd/8c/4cbd8ca3-7f23-9327-311e-b86fe06c3590/cover.jpg/{w}x{h}bb.{f}",
+                            "width": 1440
+                        },
+                        "name": "Laisse moi t'aimer - Single",
+                        "releaseDate": "2020-07-13",
+                        "trackCount": 1,
+                        "url": "https://music.apple.com/us/album/laisse-moi-taimer-single/1523466487"
+                    },
+                    "relationships": {
+                        "artists": {
+                            "href": "/v1/catalog/us/albums/1523466487/artists?l=en-US",
+                            "data": [
+                                {
+                                    "id": "1497865345",
+                                    "type": "artists",
+                                    "href": "/v1/catalog/us/artists/1497865345?l=en-US",
+                                    "attributes": {
+                                        "artwork": {
+                                            "bgColor": "e6abb5",
+                                            "hasP3": false,
+                                            "height": 4762,
+                                            "textColor1": "050207",
+                                            "textColor2": "220f11",
+                                            "textColor3": "32242a",
+                                            "textColor4": "492e31",
+                                            "url": "https://is1-ssl.mzstatic.com/image/thumb/AMCArtistImages122/v4/2e/23/b3/2e23b3ec-e62d-b5b1-645f-15df2d59408b/507e1924-bf14-46bb-8b57-1f9764cae0a5_ami-identity-5aff88cd128a3a6e4905d8d92f03046d-2022-11-23T12-07-00.555Z_cropped.png/{w}x{h}bb.{f}",
+                                            "width": 4762
+                                        },
+                                        "name": "Darina Victry",
+                                        "url": "https://music.apple.com/us/artist/darina-victry/1497865345"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "meta": {
+                        "contentVersion": {
+                            "MZ_INDEXER": 1725307104010,
+                            "RTCI": 0
+                        }
+                    }
+                },
+                {
+                    "id": "1647194310",
+                    "type": "albums",
+                    "href": "/v1/catalog/us/albums/1647194310?l=en-US",
+                    "attributes": {
+                        "artistName": "Blanche Bailly",
+                        "artistUrl": "https://music.apple.com/us/artist/blanche-bailly/1256215662",
+                        "artwork": {
+                            "bgColor": "f6ce20",
+                            "hasP3": false,
+                            "height": 3000,
+                            "textColor1": "22160c",
+                            "textColor2": "2e1f0c",
+                            "textColor3": "4c3a10",
+                            "textColor4": "564210",
+                            "url": "https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/34/e2/84/34e2842a-584c-b730-bf96-037a674c071c/790566190160_cover.jpg/{w}x{h}bb.{f}",
+                            "width": 3000
+                        },
+                        "name": "Aimer (feat. KO-C) - Single",
+                        "releaseDate": "2022-10-28",
+                        "trackCount": 1,
+                        "url": "https://music.apple.com/us/album/aimer-feat-ko-c-single/1647194310"
+                    },
+                    "relationships": {
+                        "artists": {
+                            "href": "/v1/catalog/us/albums/1647194310/artists?l=en-US",
+                            "data": [
+                                {
+                                    "id": "1256215662",
+                                    "type": "artists",
+                                    "href": "/v1/catalog/us/artists/1256215662?l=en-US",
+                                    "attributes": {
+                                        "artwork": {
+                                            "bgColor": "770828",
+                                            "hasP3": false,
+                                            "height": 2419,
+                                            "textColor1": "e9ad93",
+                                            "textColor2": "eda47f",
+                                            "textColor3": "d28c7e",
+                                            "textColor4": "d5856e",
+                                            "url": "https://is1-ssl.mzstatic.com/image/thumb/AMCArtistImages211/v4/77/9b/6f/779b6f08-5907-a46c-bb4c-91e45c9f5b58/ami-identity-d624f85745444934cef2bf66ebb6f661-2025-04-21T18-00-05.682Z_cropped.png/{w}x{h}bb.{f}",
+                                            "width": 2419
+                                        },
+                                        "name": "Blanche Bailly",
+                                        "url": "https://music.apple.com/us/artist/blanche-bailly/1256215662"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "meta": {
+                        "contentVersion": {
+                            "MZ_INDEXER": 1745344596335,
+                            "RTCI": 0
+                        }
+                    }
+                },
+                {
+                    "id": "696523808",
+                    "type": "albums",
+                    "href": "/v1/catalog/us/albums/696523808?l=en-US",
+                    "attributes": {
+                        "artistName": "Julien Clerc",
+                        "artistUrl": "https://music.apple.com/us/artist/julien-clerc/15023630",
+                        "artwork": {
+                            "bgColor": "869dac",
+                            "hasP3": false,
+                            "height": 1800,
+                            "textColor1": "010301",
+                            "textColor2": "0c0f0f",
+                            "textColor3": "1b2223",
+                            "textColor4": "242c2e",
+                            "url": "https://is1-ssl.mzstatic.com/image/thumb/Music113/v4/51/89/cb/5189cb3c-0dbc-cbd1-6baf-d899610ef774/724384738259.jpg/{w}x{h}bb.{f}",
+                            "width": 1800
+                        },
+                        "name": "Aimer",
+                        "releaseDate": "1999-04-06",
+                        "trackCount": 19,
+                        "url": "https://music.apple.com/us/album/aimer/696523808"
+                    },
+                    "relationships": {
+                        "artists": {
+                            "href": "/v1/catalog/us/albums/696523808/artists?l=en-US",
+                            "data": [
+                                {
+                                    "id": "15023630",
+                                    "type": "artists",
+                                    "href": "/v1/catalog/us/artists/15023630?l=en-US",
+                                    "attributes": {
+                                        "artwork": {
+                                            "bgColor": "000000",
+                                            "hasP3": false,
+                                            "height": 2400,
+                                            "textColor1": "e4b7a6",
+                                            "textColor2": "d6977d",
+                                            "textColor3": "b69284",
+                                            "textColor4": "ab7964",
+                                            "url": "https://is1-ssl.mzstatic.com/image/thumb/Features125/v4/bd/85/5e/bd855e10-391a-cb9a-1765-f0b6f8fbc6c4/pr_source.png/{w}x{h}bb.{f}",
+                                            "width": 2400
+                                        },
+                                        "name": "Julien Clerc",
+                                        "url": "https://music.apple.com/us/artist/julien-clerc/15023630"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "meta": {
+                        "contentVersion": {
+                            "MZ_INDEXER": 1762564006645,
+                            "RTCI": 0
+                        }
+                    }
+                },
+                {
+                    "id": "1648869953",
+                    "type": "albums",
+                    "href": "/v1/catalog/us/albums/1648869953?l=en-US",
+                    "attributes": {
+                        "artistName": "Serge Lama",
+                        "artistUrl": "https://music.apple.com/us/artist/serge-lama/13502065",
+                        "artwork": {
+                            "bgColor": "b7100f",
+                            "hasP3": false,
+                            "height": 4000,
+                            "textColor1": "f2e5c3",
+                            "textColor2": "e1d5b8",
+                            "textColor3": "e6ba9f",
+                            "textColor4": "d8ae96",
+                            "url": "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/3b/97/02/3b9702f1-2b03-bc5f-5996-fdaa013ecb0d/5054197202179.jpg/{w}x{h}bb.{f}",
+                            "width": 4000
+                        },
+                        "name": "Aimer",
+                        "releaseDate": "2022-10-07",
+                        "trackCount": 14,
+                        "url": "https://music.apple.com/us/album/aimer/1648869953"
+                    },
+                    "relationships": {
+                        "artists": {
+                            "href": "/v1/catalog/us/albums/1648869953/artists?l=en-US",
+                            "data": [
+                                {
+                                    "id": "13502065",
+                                    "type": "artists",
+                                    "href": "/v1/catalog/us/artists/13502065?l=en-US",
+                                    "attributes": {
+                                        "artwork": {
+                                            "bgColor": "4c5e5d",
+                                            "hasP3": false,
+                                            "height": 1441,
+                                            "textColor1": "fccfc0",
+                                            "textColor2": "f9c0a9",
+                                            "textColor3": "d8b9ad",
+                                            "textColor4": "d6ac9a",
+                                            "url": "https://is1-ssl.mzstatic.com/image/thumb/Features125/v4/c5/87/34/c58734ce-ad09-fa0c-d93c-91b4289a3ff6/mzl.hlljdesz.jpg/{w}x{h}bb.{f}",
+                                            "width": 1441
+                                        },
+                                        "name": "Serge Lama",
+                                        "url": "https://music.apple.com/us/artist/serge-lama/13502065"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "meta": {
+                        "contentVersion": {
+                            "MZ_INDEXER": 1762571025260,
+                            "RTCI": 0
+                        }
+                    }
+                },
+                {
+                    "id": "1819582832",
+                    "type": "albums",
+                    "href": "/v1/catalog/us/albums/1819582832?l=en-US",
+                    "attributes": {
+                        "artistName": "TORYONTHEBEAT",
+                        "artistUrl": "https://music.apple.com/us/artist/toryonthebeat/1462593750",
+                        "artwork": {
+                            "bgColor": "f8f9fb",
+                            "hasP3": false,
+                            "height": 3000,
+                            "textColor1": "51162c",
+                            "textColor2": "432c20",
+                            "textColor3": "734356",
+                            "textColor4": "67554c",
+                            "url": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/74/b0/6c/74b06caa-d343-1211-8904-c5a35a0d8ef0/5063655925383_cover.jpg/{w}x{h}bb.{f}",
+                            "width": 3000
+                        },
+                        "name": "Aimer. - Single",
+                        "releaseDate": "2025-06-16",
+                        "trackCount": 1,
+                        "url": "https://music.apple.com/us/album/aimer-single/1819582832"
+                    },
+                    "relationships": {
+                        "artists": {
+                            "href": "/v1/catalog/us/albums/1819582832/artists?l=en-US",
+                            "data": [
+                                {
+                                    "id": "1462593750",
+                                    "type": "artists",
+                                    "href": "/v1/catalog/us/artists/1462593750?l=en-US",
+                                    "attributes": {
+                                        "artwork": {
+                                            "bgColor": "060d0e",
+                                            "hasP3": false,
+                                            "height": 2400,
+                                            "textColor1": "dbd3c1",
+                                            "textColor2": "bec4b0",
+                                            "textColor3": "b1ab9d",
+                                            "textColor4": "99a090",
+                                            "url": "https://is1-ssl.mzstatic.com/image/thumb/AMCArtistImages116/v4/4b/1a/9b/4b1a9b87-95cc-1de7-3a74-9c70c848ac92/626dbf4f-b18c-42c3-931a-c2d621669453_ami-identity-a462d554cf1cb35fcedaed6226b7dc96-2023-03-31T14-53-26.626Z_cropped.png/{w}x{h}bb.{f}",
+                                            "width": 2400
+                                        },
+                                        "name": "TORYONTHEBEAT",
+                                        "url": "https://music.apple.com/us/artist/toryonthebeat/1462593750"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "meta": {
+                        "contentVersion": {
+                            "MZ_INDEXER": 1762529384993,
+                            "RTCI": 0
+                        }
+                    }
+                },
+                {
+                    "id": "1372165925",
+                    "type": "albums",
+                    "href": "/v1/catalog/us/albums/1372165925?l=en-US",
+                    "attributes": {
+                        "artistName": "Antonny Drew",
+                        "artistUrl": "https://music.apple.com/us/artist/antonny-drew/385898728",
+                        "artwork": {
+                            "bgColor": "9099b3",
+                            "hasP3": false,
+                            "height": 3000,
+                            "textColor1": "0e0a0d",
+                            "textColor2": "1d1d23",
+                            "textColor3": "28262e",
+                            "textColor4": "34353f",
+                            "url": "https://is1-ssl.mzstatic.com/image/thumb/Music118/v4/bb/85/58/bb8558df-a00e-d7af-9521-6592e5070cb6/3596973577894_cover.jpg/{w}x{h}bb.{f}",
+                            "width": 3000
+                        },
+                        "name": "Aimer (feat. Stony) - Single",
+                        "releaseDate": "2018-04-27",
+                        "trackCount": 1,
+                        "url": "https://music.apple.com/us/album/aimer-feat-stony-single/1372165925"
+                    },
+                    "relationships": {
+                        "artists": {
+                            "href": "/v1/catalog/us/albums/1372165925/artists?l=en-US",
+                            "data": [
+                                {
+                                    "id": "385898728",
+                                    "type": "artists",
+                                    "href": "/v1/catalog/us/artists/385898728?l=en-US",
+                                    "attributes": {
+                                        "artwork": {
+                                            "bgColor": "e9e5ed",
+                                            "hasP3": false,
+                                            "height": 2055,
+                                            "textColor1": "110a09",
+                                            "textColor2": "282a33",
+                                            "textColor3": "3c3637",
+                                            "textColor4": "4f4f58",
+                                            "url": "https://is1-ssl.mzstatic.com/image/thumb/Music123/v4/7f/11/6b/7f116b5b-a6c0-fd83-4887-71f8678ef649/pr_source.png/{w}x{h}bb.{f}",
+                                            "width": 2055
+                                        },
+                                        "name": "Antonny Drew",
+                                        "url": "https://music.apple.com/us/artist/antonny-drew/385898728"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "meta": {
+                        "contentVersion": {
+                            "MZ_INDEXER": 1762955456812,
+                            "RTCI": 0
+                        }
+                    }
+                },
+                {
+                    "id": "1846517180",
+                    "type": "albums",
+                    "href": "/v1/catalog/us/albums/1846517180?l=en-US",
+                    "attributes": {
+                        "artistName": "Aimer",
+                        "artistUrl": "https://music.apple.com/us/artist/aimer/569972619",
+                        "artwork": {
+                            "bgColor": "867263",
+                            "hasP3": false,
+                            "height": 4000,
+                            "textColor1": "060505",
+                            "textColor2": "0d0b0a",
+                            "textColor3": "201b18",
+                            "textColor4": "25201c",
+                            "url": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/91/4d/dc/914ddc00-04c0-f966-6d8d-2b90ba70c632/4547366784725.jpg/{w}x{h}bb.{f}",
+                            "width": 4000
+                        },
+                        "name": "Little Bouquet - Single",
+                        "releaseDate": "2025-11-01",
+                        "trackCount": 1,
+                        "url": "https://music.apple.com/us/album/little-bouquet-single/1846517180"
+                    },
+                    "relationships": {
+                        "artists": {
+                            "href": "/v1/catalog/us/albums/1846517180/artists?l=en-US",
+                            "data": [
+                                {
+                                    "id": "569972619",
+                                    "type": "artists",
+                                    "href": "/v1/catalog/us/artists/569972619?l=en-US",
+                                    "attributes": {
+                                        "artwork": {
+                                            "bgColor": "e6ebe3",
+                                            "hasP3": false,
+                                            "height": 2400,
+                                            "textColor1": "25221f",
+                                            "textColor2": "2d2f2c",
+                                            "textColor3": "4c4a46",
+                                            "textColor4": "525451",
+                                            "url": "https://is1-ssl.mzstatic.com/image/thumb/AMCArtistImages211/v4/d8/15/23/d8152345-7d8b-226e-79e0-3599da275c6e/ami-identity-54f701b8b197c76a0b9fa55ea5989664-2025-06-28T14-13-25.583Z_cropped.png/{w}x{h}bb.{f}",
+                                            "width": 2400
+                                        },
+                                        "name": "Aimer",
+                                        "url": "https://music.apple.com/us/artist/aimer/569972619"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "meta": {
+                        "contentVersion": {
+                            "MZ_INDEXER": 1762475540900,
+                            "RTCI": 0
+                        }
+                    }
+                },
+                {
+                    "id": "1658686228",
+                    "type": "albums",
+                    "href": "/v1/catalog/us/albums/1658686228?l=en-US",
+                    "attributes": {
+                        "artistName": "Aimer",
+                        "artistUrl": "https://music.apple.com/us/artist/aimer/569972619",
+                        "artwork": {
+                            "bgColor": "000000",
+                            "hasP3": false,
+                            "height": 3000,
+                            "textColor1": "eee1db",
+                            "textColor2": "d0dbed",
+                            "textColor3": "beb4af",
+                            "textColor4": "a6afbe",
+                            "url": "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/98/d2/fc/98d2fc00-198a-daf9-2e3c-e989af40290a/4547366600018.jpg/{w}x{h}bb.{f}",
+                            "width": 3000
+                        },
+                        "name": "escalate - Single",
+                        "releaseDate": "2023-01-08",
+                        "trackCount": 1,
+                        "url": "https://music.apple.com/us/album/escalate-single/1658686228"
+                    },
+                    "relationships": {
+                        "artists": {
+                            "href": "/v1/catalog/us/albums/1658686228/artists?l=en-US",
+                            "data": [
+                                {
+                                    "id": "569972619",
+                                    "type": "artists",
+                                    "href": "/v1/catalog/us/artists/569972619?l=en-US",
+                                    "attributes": {
+                                        "artwork": {
+                                            "bgColor": "e6ebe3",
+                                            "hasP3": false,
+                                            "height": 2400,
+                                            "textColor1": "25221f",
+                                            "textColor2": "2d2f2c",
+                                            "textColor3": "4c4a46",
+                                            "textColor4": "525451",
+                                            "url": "https://is1-ssl.mzstatic.com/image/thumb/AMCArtistImages211/v4/d8/15/23/d8152345-7d8b-226e-79e0-3599da275c6e/ami-identity-54f701b8b197c76a0b9fa55ea5989664-2025-06-28T14-13-25.583Z_cropped.png/{w}x{h}bb.{f}",
+                                            "width": 2400
+                                        },
+                                        "name": "Aimer",
+                                        "url": "https://music.apple.com/us/artist/aimer/569972619"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "meta": {
+                        "contentVersion": {
+                            "MZ_INDEXER": 1762904520371,
+                            "RTCI": 0
+                        }
+                    }
+                },
+                {
+                    "id": "1546316228",
+                    "type": "albums",
+                    "href": "/v1/catalog/us/albums/1546316228?l=en-US",
+                    "attributes": {
+                        "artistName": "Aimer",
+                        "artistUrl": "https://music.apple.com/us/artist/aimer/569972619",
+                        "artwork": {
+                            "bgColor": "000000",
+                            "hasP3": false,
+                            "height": 3000,
+                            "textColor1": "ffce40",
+                            "textColor2": "f64f07",
+                            "textColor3": "cba433",
+                            "textColor4": "c53f05",
+                            "url": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/54/af/b2/54afb286-3614-f2c8-e633-2831bd2fd76b/4547366491647.jpg/{w}x{h}bb.{f}",
+                            "width": 3000
+                        },
+                        "name": "Walpurgis",
+                        "releaseDate": "2021-04-14",
+                        "trackCount": 14,
+                        "url": "https://music.apple.com/us/album/walpurgis/1546316228"
+                    },
+                    "relationships": {
+                        "artists": {
+                            "href": "/v1/catalog/us/albums/1546316228/artists?l=en-US",
+                            "data": [
+                                {
+                                    "id": "569972619",
+                                    "type": "artists",
+                                    "href": "/v1/catalog/us/artists/569972619?l=en-US",
+                                    "attributes": {
+                                        "artwork": {
+                                            "bgColor": "e6ebe3",
+                                            "hasP3": false,
+                                            "height": 2400,
+                                            "textColor1": "25221f",
+                                            "textColor2": "2d2f2c",
+                                            "textColor3": "4c4a46",
+                                            "textColor4": "525451",
+                                            "url": "https://is1-ssl.mzstatic.com/image/thumb/AMCArtistImages211/v4/d8/15/23/d8152345-7d8b-226e-79e0-3599da275c6e/ami-identity-54f701b8b197c76a0b9fa55ea5989664-2025-06-28T14-13-25.583Z_cropped.png/{w}x{h}bb.{f}",
+                                            "width": 2400
+                                        },
+                                        "name": "Aimer",
+                                        "url": "https://music.apple.com/us/artist/aimer/569972619"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "meta": {
+                        "contentVersion": {
+                            "MZ_INDEXER": 1762904333338,
+                            "RTCI": 0
+                        }
+                    }
+                },
+                {
+                    "id": "1538261074",
+                    "type": "albums",
+                    "href": "/v1/catalog/us/albums/1538261074?l=en-US",
+                    "attributes": {
+                        "artistName": "Aimer",
+                        "artistUrl": "https://music.apple.com/us/artist/aimer/569972619",
+                        "artwork": {
+                            "bgColor": "1d201f",
+                            "hasP3": false,
+                            "height": 3000,
+                            "textColor1": "f8f8f9",
+                            "textColor2": "97b3d0",
+                            "textColor3": "cccccd",
+                            "textColor4": "7f95ac",
+                            "url": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/77/cc/b3/77ccb311-f62e-76d6-18df-7ac92b5b888f/4547366402346.jpg/{w}x{h}bb.{f}",
+                            "width": 3000
+                        },
+                        "name": "Penny Rain",
+                        "releaseDate": "2019-04-10",
+                        "trackCount": 10,
+                        "url": "https://music.apple.com/us/album/penny-rain/1538261074"
+                    },
+                    "relationships": {
+                        "artists": {
+                            "href": "/v1/catalog/us/albums/1538261074/artists?l=en-US",
+                            "data": [
+                                {
+                                    "id": "569972619",
+                                    "type": "artists",
+                                    "href": "/v1/catalog/us/artists/569972619?l=en-US",
+                                    "attributes": {
+                                        "artwork": {
+                                            "bgColor": "e6ebe3",
+                                            "hasP3": false,
+                                            "height": 2400,
+                                            "textColor1": "25221f",
+                                            "textColor2": "2d2f2c",
+                                            "textColor3": "4c4a46",
+                                            "textColor4": "525451",
+                                            "url": "https://is1-ssl.mzstatic.com/image/thumb/AMCArtistImages211/v4/d8/15/23/d8152345-7d8b-226e-79e0-3599da275c6e/ami-identity-54f701b8b197c76a0b9fa55ea5989664-2025-06-28T14-13-25.583Z_cropped.png/{w}x{h}bb.{f}",
+                                            "width": 2400
+                                        },
+                                        "name": "Aimer",
+                                        "url": "https://music.apple.com/us/artist/aimer/569972619"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "meta": {
+                        "contentVersion": {
+                            "MZ_INDEXER": 1762744058917,
+                            "RTCI": 0
+                        }
+                    }
+                },
+                {
+                    "id": "1752375727",
+                    "type": "albums",
+                    "href": "/v1/catalog/us/albums/1752375727?l=en-US",
+                    "attributes": {
+                        "artistName": "Ecole Pierre",
+                        "artistUrl": "https://music.apple.com/us/artist/ecole-pierre/1516929008",
+                        "artwork": {
+                            "bgColor": "c82726",
+                            "hasP3": false,
+                            "height": 1400,
+                            "textColor1": "feebc9",
+                            "textColor2": "e9d3ee",
+                            "textColor3": "f3c3a9",
+                            "textColor4": "e2b1c6",
+                            "url": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/3e/a1/c9/3ea1c968-90b5-d919-7401-231b8fcf325f/859789800611_cover.jpg/{w}x{h}bb.{f}",
+                            "width": 1400
+                        },
+                        "name": "Aimer",
+                        "releaseDate": "2024-06-21",
+                        "trackCount": 9,
+                        "url": "https://music.apple.com/us/album/aimer/1752375727"
+                    },
+                    "relationships": {
+                        "artists": {
+                            "href": "/v1/catalog/us/albums/1752375727/artists?l=en-US",
+                            "data": [
+                                {
+                                    "id": "1516929008",
+                                    "type": "artists",
+                                    "href": "/v1/catalog/us/artists/1516929008?l=en-US",
+                                    "attributes": {
+                                        "artwork": {
+                                            "bgColor": "031b21",
+                                            "hasP3": false,
+                                            "height": 3186,
+                                            "textColor1": "d2cccb",
+                                            "textColor2": "d6a358",
+                                            "textColor3": "a8a9a9",
+                                            "textColor4": "ab884d",
+                                            "url": "https://is1-ssl.mzstatic.com/image/thumb/AMCArtistImages123/v4/a5/17/1f/a5171f86-7fb8-4dfb-a1e5-93b19bf57df6/350c778e-7865-4428-aee4-f9da0f4d7f58_ami-identity-e9dfc0e6c941a951c120c25f08dcccfd-2023-01-18T09-39-11.128Z_cropped.png/{w}x{h}bb.{f}",
+                                            "width": 3186
+                                        },
+                                        "name": "Ecole Pierre",
+                                        "url": "https://music.apple.com/us/artist/ecole-pierre/1516929008"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "meta": {
+                        "contentVersion": {
+                            "MZ_INDEXER": 1728290985635,
+                            "RTCI": 0
+                        }
+                    }
+                },
+                {
+                    "id": "1436020311",
+                    "type": "albums",
+                    "href": "/v1/catalog/us/albums/1436020311?l=en-US",
+                    "attributes": {
+                        "artistName": "NIU RAZA",
+                        "artistUrl": "https://music.apple.com/us/artist/niu-raza/1269999236",
+                        "artwork": {
+                            "bgColor": "0f1012",
+                            "hasP3": false,
+                            "height": 3000,
+                            "textColor1": "e895c8",
+                            "textColor2": "dc80b5",
+                            "textColor3": "bc7aa4",
+                            "textColor4": "b36994",
+                            "url": "https://is1-ssl.mzstatic.com/image/thumb/Music128/v4/d2/c6/25/d2c62559-97f7-8e52-f740-7527e60d2ac1/artwork.jpg/{w}x{h}bb.{f}",
+                            "width": 3000
+                        },
+                        "name": "Aimer - Single",
+                        "releaseDate": "2018-09-11",
+                        "trackCount": 1,
+                        "url": "https://music.apple.com/us/album/aimer-single/1436020311"
+                    },
+                    "relationships": {
+                        "artists": {
+                            "href": "/v1/catalog/us/albums/1436020311/artists?l=en-US",
+                            "data": [
+                                {
+                                    "id": "1269999236",
+                                    "type": "artists",
+                                    "href": "/v1/catalog/us/artists/1269999236?l=en-US",
+                                    "attributes": {
+                                        "artwork": {
+                                            "bgColor": "fefefe",
+                                            "hasP3": false,
+                                            "height": 3000,
+                                            "textColor1": "000000",
+                                            "textColor2": "333333",
+                                            "textColor3": "333333",
+                                            "textColor4": "5b5b5b",
+                                            "url": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/00/b8/42/00b842b0-f714-2e9f-0300-33467e146fd8/artwork.jpg/{w}x{h}ac.{f}",
+                                            "width": 3000
+                                        },
+                                        "name": "NIU RAZA",
+                                        "url": "https://music.apple.com/us/artist/niu-raza/1269999236"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "meta": {
+                        "contentVersion": {
+                            "MZ_INDEXER": 1710333569674,
+                            "RTCI": 0
+                        }
+                    }
+                },
+                {
+                    "id": "1536143514",
+                    "type": "albums",
+                    "href": "/v1/catalog/us/albums/1536143514?l=en-US",
+                    "attributes": {
+                        "artistName": "Aimer",
+                        "artistUrl": "https://music.apple.com/us/artist/aimer/569972619",
+                        "artwork": {
+                            "bgColor": "1f1e19",
+                            "hasP3": false,
+                            "height": 3000,
+                            "textColor1": "f7f8f8",
+                            "textColor2": "4eabea",
+                            "textColor3": "cccccb",
+                            "textColor4": "448fc0",
+                            "url": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/6b/ea/e8/6beae830-4aa8-2751-9f29-7ad4b0907470/4560429721932.jpg/{w}x{h}bb.{f}",
+                            "width": 3000
+                        },
+                        "name": "Sleepless Nights",
+                        "releaseDate": "2012-10-03",
+                        "trackCount": 13,
+                        "url": "https://music.apple.com/us/album/sleepless-nights/1536143514"
+                    },
+                    "relationships": {
+                        "artists": {
+                            "href": "/v1/catalog/us/albums/1536143514/artists?l=en-US",
+                            "data": [
+                                {
+                                    "id": "569972619",
+                                    "type": "artists",
+                                    "href": "/v1/catalog/us/artists/569972619?l=en-US",
+                                    "attributes": {
+                                        "artwork": {
+                                            "bgColor": "e6ebe3",
+                                            "hasP3": false,
+                                            "height": 2400,
+                                            "textColor1": "25221f",
+                                            "textColor2": "2d2f2c",
+                                            "textColor3": "4c4a46",
+                                            "textColor4": "525451",
+                                            "url": "https://is1-ssl.mzstatic.com/image/thumb/AMCArtistImages211/v4/d8/15/23/d8152345-7d8b-226e-79e0-3599da275c6e/ami-identity-54f701b8b197c76a0b9fa55ea5989664-2025-06-28T14-13-25.583Z_cropped.png/{w}x{h}bb.{f}",
+                                            "width": 2400
+                                        },
+                                        "name": "Aimer",
+                                        "url": "https://music.apple.com/us/artist/aimer/569972619"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "meta": {
+                        "contentVersion": {
+                            "MZ_INDEXER": 1762742011493,
+                            "RTCI": 0
+                        }
+                    }
+                },
+                {
+                    "id": "1537277967",
+                    "type": "albums",
+                    "href": "/v1/catalog/us/albums/1537277967?l=en-US",
+                    "attributes": {
+                        "artistName": "Aimer",
+                        "artistUrl": "https://music.apple.com/us/artist/aimer/569972619",
+                        "artwork": {
+                            "bgColor": "000000",
+                            "hasP3": false,
+                            "height": 3000,
+                            "textColor1": "e5cdd6",
+                            "textColor2": "dfcfb8",
+                            "textColor3": "b7a4ab",
+                            "textColor4": "b2a593",
+                            "url": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/41/e9/1d/41e91d6a-8fc7-7af4-9d41-8dee0799a682/jacket_SEXX01820B00Z_550.jpg/{w}x{h}bb.{f}",
+                            "width": 3000
+                        },
+                        "name": "STAND ALONE - Single",
+                        "releaseDate": "2019-05-05",
+                        "trackCount": 1,
+                        "url": "https://music.apple.com/us/album/stand-alone-single/1537277967"
+                    },
+                    "relationships": {
+                        "artists": {
+                            "href": "/v1/catalog/us/albums/1537277967/artists?l=en-US",
+                            "data": [
+                                {
+                                    "id": "569972619",
+                                    "type": "artists",
+                                    "href": "/v1/catalog/us/artists/569972619?l=en-US",
+                                    "attributes": {
+                                        "artwork": {
+                                            "bgColor": "e6ebe3",
+                                            "hasP3": false,
+                                            "height": 2400,
+                                            "textColor1": "25221f",
+                                            "textColor2": "2d2f2c",
+                                            "textColor3": "4c4a46",
+                                            "textColor4": "525451",
+                                            "url": "https://is1-ssl.mzstatic.com/image/thumb/AMCArtistImages211/v4/d8/15/23/d8152345-7d8b-226e-79e0-3599da275c6e/ami-identity-54f701b8b197c76a0b9fa55ea5989664-2025-06-28T14-13-25.583Z_cropped.png/{w}x{h}bb.{f}",
+                                            "width": 2400
+                                        },
+                                        "name": "Aimer",
+                                        "url": "https://music.apple.com/us/artist/aimer/569972619"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "meta": {
+                        "contentVersion": {
+                            "MZ_INDEXER": 1759836635706,
+                            "RTCI": 0
+                        }
+                    }
+                },
+                {
+                    "id": "1568504123",
+                    "type": "albums",
+                    "href": "/v1/catalog/us/albums/1568504123?l=en-US",
+                    "attributes": {
+                        "artistName": "Tryo",
+                        "artistUrl": "https://music.apple.com/us/artist/tryo/14341479",
+                        "artwork": {
+                            "bgColor": "77a4e3",
+                            "hasP3": false,
+                            "height": 3500,
+                            "textColor1": "03070f",
+                            "textColor2": "040911",
+                            "textColor3": "1a2639",
+                            "textColor4": "1b283b",
+                            "url": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/49/04/12/4904124e-688b-69b3-3f2b-7c8239bf9d9a/3663729159212_cover.jpg/{w}x{h}bb.{f}",
+                            "width": 3500
+                        },
+                        "name": "Aimer - Single",
+                        "releaseDate": "2021-05-27",
+                        "trackCount": 1,
+                        "url": "https://music.apple.com/us/album/aimer-single/1568504123"
+                    },
+                    "relationships": {
+                        "artists": {
+                            "href": "/v1/catalog/us/albums/1568504123/artists?l=en-US",
+                            "data": [
+                                {
+                                    "id": "14341479",
+                                    "type": "artists",
+                                    "href": "/v1/catalog/us/artists/14341479?l=en-US",
+                                    "attributes": {
+                                        "artwork": {
+                                            "bgColor": "0b0e12",
+                                            "hasP3": false,
+                                            "height": 805,
+                                            "textColor1": "c4bde5",
+                                            "textColor2": "b7b1d7",
+                                            "textColor3": "9f9abb",
+                                            "textColor4": "9491af",
+                                            "url": "https://is1-ssl.mzstatic.com/image/thumb/Features125/v4/56/4a/50/564a5046-f1dd-edbb-cd5b-4c7acfc07e83/pr_source.png/{w}x{h}bb.{f}",
+                                            "width": 805
+                                        },
+                                        "name": "Tryo",
+                                        "url": "https://music.apple.com/us/artist/tryo/14341479"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "meta": {
+                        "contentVersion": {
+                            "MZ_INDEXER": 1762747656373,
+                            "RTCI": 0
+                        }
+                    }
+                }
+            ]
+        },
+        "artists": {
+            "href": "/v1/catalog/us/search?l=en-US&limit=21&term=aimer&types=artists",
+            "data": [
+                {
+                    "id": "569972619",
+                    "type": "artists",
+                    "href": "/v1/catalog/us/artists/569972619?l=en-US",
+                    "attributes": {
+                        "artwork": {
+                            "bgColor": "e6ebe3",
+                            "hasP3": false,
+                            "height": 2400,
+                            "textColor1": "25221f",
+                            "textColor2": "2d2f2c",
+                            "textColor3": "4c4a46",
+                            "textColor4": "525451",
+                            "url": "https://is1-ssl.mzstatic.com/image/thumb/AMCArtistImages211/v4/d8/15/23/d8152345-7d8b-226e-79e0-3599da275c6e/ami-identity-54f701b8b197c76a0b9fa55ea5989664-2025-06-28T14-13-25.583Z_cropped.png/{w}x{h}bb.{f}",
+                            "width": 2400
+                        },
+                        "name": "Aimer",
+                        "url": "https://music.apple.com/us/artist/aimer/569972619"
+                    }
+                },
+                {
+                    "id": "1327038386",
+                    "type": "artists",
+                    "href": "/v1/catalog/us/artists/1327038386?l=en-US",
+                    "attributes": {
+                        "artwork": {
+                            "bgColor": "dfd7cc",
+                            "hasP3": false,
+                            "height": 3000,
+                            "textColor1": "0d0904",
+                            "textColor2": "262419",
+                            "textColor3": "37322c",
+                            "textColor4": "4b483d",
+                            "url": "https://is1-ssl.mzstatic.com/image/thumb/Music123/v4/b6/40/04/b6400459-55a3-117b-0010-3f681c95f9b1/8809913545866_cover.jpg/{w}x{h}ac.{f}",
+                            "width": 3000
+                        },
+                        "name": "Aimer",
+                        "url": "https://music.apple.com/us/artist/aimer/1327038386"
+                    }
+                },
+                {
+                    "id": "1582499113",
+                    "type": "artists",
+                    "href": "/v1/catalog/us/artists/1582499113?l=en-US",
+                    "attributes": {
+                        "artwork": {
+                            "bgColor": "f7b4ca",
+                            "hasP3": false,
+                            "height": 2152,
+                            "textColor1": "370d1b",
+                            "textColor2": "411223",
+                            "textColor3": "5d2e3e",
+                            "textColor4": "653345",
+                            "url": "https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/cc/fe/e0/ccfee06d-eef8-dd9e-c7f8-7ed7999f13eb/pr_source.png/{w}x{h}bb.{f}",
+                            "width": 2152
+                        },
+                        "name": "AIMER",
+                        "url": "https://music.apple.com/us/artist/aimer/1582499113"
+                    }
+                },
+                {
+                    "id": "1534959882",
+                    "type": "artists",
+                    "href": "/v1/catalog/us/artists/1534959882?l=en-US",
+                    "attributes": {
+                        "artwork": {
+                            "bgColor": "343957",
+                            "hasP3": false,
+                            "height": 3000,
+                            "textColor1": "ffffff",
+                            "textColor2": "f1e2c3",
+                            "textColor3": "d6d7dd",
+                            "textColor4": "cbc0ae",
+                            "url": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/b9/c9/a4/b9c9a4e5-de0f-6b74-f959-0cd25646a06e/8809596370816.jpg/{w}x{h}ac.{f}",
+                            "width": 3000
+                        },
+                        "name": "Aimer",
+                        "url": "https://music.apple.com/us/artist/aimer/1534959882"
+                    }
+                }
+            ]
+        }
+    },
+    "meta": {
+        "results": {
+            "order": [
+                "albums",
+                "artists"
+            ],
+            "rawOrder": [
+                "albums",
+                "artists"
+            ]
+        },
+        "metrics": {}
+    }
+}

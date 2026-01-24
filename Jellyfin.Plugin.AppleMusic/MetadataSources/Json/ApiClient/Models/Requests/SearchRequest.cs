@@ -61,12 +61,12 @@ public class SearchRequest
     /// <summary>
     /// Gets or sets the search term.
     /// </summary>
-    public string Term { get; set; }
+    public required string Term { get; set; }
 
     /// <summary>
     /// Gets or sets types to search for.
     /// </summary>
-    public IEnumerable<string> Types { get; set; }
+    public required IEnumerable<string> Types { get; set; }
 
     /// <summary>
     /// Builds the query string for this search request.
