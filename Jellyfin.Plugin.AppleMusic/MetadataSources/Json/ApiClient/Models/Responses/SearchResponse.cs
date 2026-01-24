@@ -49,14 +49,26 @@ public class SearchResponse
     [OnDeserialized]
     private void OnDeserialized(StreamingContext context)
     {
-        ResponseData.TryGetValue("albums", out var albumsObject);
-        if (albumsObject is not null)
+        // The API response wraps albums/artists under "results"
+        ResponseData.TryGetValue("results", out var resultsObject);
+        if (resultsObject is null)
+        {
+            return;
+        }
+
+        var resultsJson = resultsObject.ToString() ?? string.Empty;
+        var results = JsonConvert.DeserializeObject<Dictionary<string, object>>(resultsJson, SerializerSettings);
+        if (results is null)
+        {
+            return;
+        }
+
+        if (results.TryGetValue("albums", out var albumsObject))
         {
             Albums = DeserializeData(albumsObject);
         }
 
-        ResponseData.TryGetValue("artists", out var artistsObject);
-        if (artistsObject is not null)
+        if (results.TryGetValue("artists", out var artistsObject))
         {
             Artists = DeserializeData(artistsObject);
         }

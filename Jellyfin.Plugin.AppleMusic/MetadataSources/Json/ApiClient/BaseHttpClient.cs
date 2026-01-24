@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Jellyfin.Plugin.AppleMusic.MetadataSources.Json.ApiClient;
 
@@ -13,15 +14,15 @@ namespace Jellyfin.Plugin.AppleMusic.MetadataSources.Json.ApiClient;
 /// </summary>
 public class BaseHttpClient : IHttpClient, IDisposable
 {
-    private readonly ILogger _logger;
-    private readonly HttpClient _httpClient;
-
-    private readonly JsonSerializerOptions _serializerOptions = new()
+    private static readonly JsonSerializerSettings SerializerSettings = new()
     {
-        PropertyNameCaseInsensitive = false,
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        NullValueHandling = NullValueHandling.Ignore,
+        DefaultValueHandling = DefaultValueHandling.Include,
+        ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() },
     };
 
+    private readonly ILogger _logger;
+    private readonly HttpClient _httpClient;
     private bool _isDisposed;
 
     /// <summary>
@@ -50,8 +51,8 @@ public class BaseHttpClient : IHttpClient, IDisposable
 
         using var response = await _httpClient.SendAsync(request, cancellationToken);
         response.EnsureSuccessStatusCode();
-        var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
-        return await JsonSerializer.DeserializeAsync<T>(stream, _serializerOptions, cancellationToken);
+        var content = await response.Content.ReadAsStringAsync(cancellationToken);
+        return JsonConvert.DeserializeObject<T>(content, SerializerSettings);
     }
 
     /// <summary>
