@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Jellyfin.Plugin.AppleMusic.Dtos;
 using Jellyfin.Plugin.AppleMusic.ExternalIds;
 using Jellyfin.Plugin.AppleMusic.MetadataSources;
-using Jellyfin.Plugin.AppleMusic.MetadataSources.Web;
 using Jellyfin.Plugin.AppleMusic.Utils;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities.Audio;
@@ -40,7 +39,7 @@ public class AlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, AlbumIn
     {
         _httpClient = httpClientFactory.CreateClient(NamedClient.Default);
         _logger = loggerFactory.CreateLogger<AlbumMetadataProvider>();
-        _metadataSource = source ?? new WebMetadataSource(loggerFactory);
+        _metadataSource = source ?? MetadataSourceFactory.Create(httpClientFactory, loggerFactory);
     }
 
     /// <inheritdoc />
