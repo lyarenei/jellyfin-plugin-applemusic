@@ -12,6 +12,7 @@ namespace Jellyfin.Plugin.AppleMusic.MetadataSources.Json.ApiClient;
 /// </summary>
 public class DefaultApiClient
 {
+    private const string CatalogBaseUrl = "https://amp-api-edge.music.apple.com/v1/catalog/us";
     private const string SearchBaseUrl = "https://amp-api-edge.music.apple.com/v1/catalog/us/search";
     private const string Origin = "https://music.apple.com";
     private const string Referer = "https://music.apple.com/";
