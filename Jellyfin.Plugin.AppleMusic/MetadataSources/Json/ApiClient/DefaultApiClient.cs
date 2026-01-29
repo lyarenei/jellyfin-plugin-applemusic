@@ -43,17 +43,21 @@ public class DefaultApiClient
     public async Task<SearchResponse> SearchAsync(SearchRequest request, CancellationToken cancellationToken)
     {
         var url = $"{SearchBaseUrl}?{request.ToQueryString()}";
-
-        var headers = new Dictionary<string, string>
-        {
-            { "Authorization", $"Bearer {Jwt}" },
-            { "Origin", Origin },
-            { "Referer", Referer },
-        };
+        var headers = CreateRequestHeaders();
 
         _logger.LogDebug("Searching Apple Music API: {Url}", url);
 
         var response = await _httpClient.GetAsync<SearchResponse>(url, headers, cancellationToken);
         return response ?? new SearchResponse();
+    }
+
+    private static Dictionary<string, string> CreateRequestHeaders()
+    {
+        return new Dictionary<string, string>
+        {
+            { "Authorization", $"Bearer {Jwt}" },
+            { "Origin", Origin },
+            { "Referer", Referer },
+        };
     }
 }
