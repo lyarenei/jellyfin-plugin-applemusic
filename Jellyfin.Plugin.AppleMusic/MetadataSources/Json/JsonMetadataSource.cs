@@ -61,11 +61,18 @@ public class JsonMetadataSource : IMetadataSource
     }
 
     /// <inheritdoc />
-    public Task<ITunesAlbum?> GetAlbumAsync(string albumId, CancellationToken cancellationToken)
+    public async Task<ITunesAlbum?> GetAlbumAsync(string albumId, CancellationToken cancellationToken)
     {
-        // Album data from search results is already complete enough for metadata
-        // Full implementation would call: /v1/catalog/us/albums/{albumId}
-        throw new NotImplementedException("Use SearchAsync for album discovery");
+        _logger.LogInformation("Fetching album with ID: {AlbumId}", albumId);
+
+        var result = await _apiClient.GetAlbumAsync(albumId, cancellationToken);
+        if (result is null)
+        {
+            _logger.LogWarning("Album not found: {AlbumId}", albumId);
+            return null;
+        }
+
+        return ConvertAlbums(new[] { result }).FirstOrDefault();
     }
 
     /// <inheritdoc />
