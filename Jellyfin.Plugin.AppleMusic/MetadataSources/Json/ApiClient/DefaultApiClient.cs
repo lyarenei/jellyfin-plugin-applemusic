@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Jellyfin.Plugin.AppleMusic.MetadataSources.Json.ApiClient.Models;
 using Jellyfin.Plugin.AppleMusic.MetadataSources.Json.ApiClient.Models.Requests;
 using Jellyfin.Plugin.AppleMusic.MetadataSources.Json.ApiClient.Models.Responses;
 using Microsoft.Extensions.Logging;
@@ -49,6 +51,23 @@ public class DefaultApiClient
 
         var response = await _httpClient.GetAsync<SearchResponse>(url, headers, cancellationToken);
         return response ?? new SearchResponse();
+    }
+
+    /// <summary>
+    /// Get album by ID from Apple Music.
+    /// </summary>
+    /// <param name="albumId">Apple Music album ID.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Album data or null if not found.</returns>
+    public async Task<SearchResult?> GetAlbumAsync(string albumId, CancellationToken cancellationToken)
+    {
+        var url = $"{CatalogBaseUrl}/albums/{albumId}";
+        var headers = CreateRequestHeaders();
+
+        _logger.LogDebug("Fetching album from Apple Music API: {Url}", url);
+
+        var response = await _httpClient.GetAsync<ResourceResponse>(url, headers, cancellationToken);
+        return response?.Data?.FirstOrDefault();
     }
 
     private static Dictionary<string, string> CreateRequestHeaders()
