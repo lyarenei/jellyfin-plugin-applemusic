@@ -70,6 +70,23 @@ public class DefaultApiClient
         return response?.Data?.FirstOrDefault();
     }
 
+    /// <summary>
+    /// Get artist by ID from Apple Music.
+    /// </summary>
+    /// <param name="artistId">Apple Music artist ID.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Artist data or null if not found.</returns>
+    public async Task<SearchResult?> GetArtistAsync(string artistId, CancellationToken cancellationToken)
+    {
+        var url = $"{CatalogBaseUrl}/artists/{artistId}";
+        var headers = CreateRequestHeaders();
+
+        _logger.LogDebug("Fetching artist from Apple Music API: {Url}", url);
+
+        var response = await _httpClient.GetAsync<ResourceResponse>(url, headers, cancellationToken);
+        return response?.Data?.FirstOrDefault();
+    }
+
     private static Dictionary<string, string> CreateRequestHeaders()
     {
         return new Dictionary<string, string>
