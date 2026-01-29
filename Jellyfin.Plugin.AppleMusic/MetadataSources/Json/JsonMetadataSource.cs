@@ -76,11 +76,18 @@ public class JsonMetadataSource : IMetadataSource
     }
 
     /// <inheritdoc />
-    public Task<ITunesArtist?> GetArtistAsync(string artistId, CancellationToken cancellationToken)
+    public async Task<ITunesArtist?> GetArtistAsync(string artistId, CancellationToken cancellationToken)
     {
-        // Artist data from search results is already complete enough for metadata
-        // Full implementation would call: /v1/catalog/us/artists/{artistId}
-        throw new NotImplementedException("Use SearchAsync for artist discovery");
+        _logger.LogInformation("Fetching artist with ID: {ArtistId}", artistId);
+
+        var result = await _apiClient.GetArtistAsync(artistId, cancellationToken);
+        if (result is null)
+        {
+            _logger.LogWarning("Artist not found: {ArtistId}", artistId);
+            return null;
+        }
+
+        return ConvertArtists(new[] { result }).FirstOrDefault();
     }
 
     private List<ITunesAlbum> ConvertAlbums(IEnumerable<SearchResult> results)
