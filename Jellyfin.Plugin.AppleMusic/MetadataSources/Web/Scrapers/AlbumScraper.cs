@@ -26,6 +26,7 @@ public class AlbumScraper : IScraper<MusicAlbum>
     private const string AlbumDetailXPath = "//div[@data-testid='container-detail-header']";
     private const string AlbumNameXPath = "//h1[@data-testid='non-editable-product-title']";
     private const string AlbumArtistLinkXPath = "//a[@data-testid='click-action']";
+    private const string AlbumArtistSubtitleXPath = "//div[@data-testid='product-subtitle']";
     private const string AboutXPath = "//p[@data-testid='truncate-text']";
     private const string AlbumDescriptionXPath = "//p[@data-testid='tracklist-footer-description']";
 
