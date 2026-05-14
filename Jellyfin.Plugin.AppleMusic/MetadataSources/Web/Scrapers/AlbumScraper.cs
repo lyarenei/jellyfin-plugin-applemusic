@@ -73,21 +73,8 @@ public class AlbumScraper : IScraper<MusicAlbum>
         }
 
         _logger.LogDebug("Found {Count} artist nodes in album", artistNodes.Count);
+        var artists = ParseArtists(artistNodes);
 
-        var artists = new List<ITunesArtist>();
-        foreach (var node in artistNodes)
-        {
-            if (node is not IHtmlAnchorElement artistElem)
-            {
-                _logger.LogTrace("Node is not an anchor element, skipping");
-                continue;
-            }
-
-            _logger.LogTrace("Adding artist with url {Url}", artistElem.Href);
-            artists.Add(new ITunesArtist { Name = artistElem.TextContent, Url = artistElem.Href, });
-        }
-
-        _logger.LogDebug("Parsed {Count} artists from album", artists.Count);
         _logger.LogDebug("Processing optional album details");
 
         var aboutText = document.Body.SelectSingleNode(AlbumDetailXPath + AboutXPath)?.TextContent;
@@ -106,6 +93,28 @@ public class AlbumScraper : IScraper<MusicAlbum>
             Url = document.Url,
             Id = PluginUtils.GetIdFromUrl(document.Url),
         };
+    }
+
+    private List<ITunesArtist> ParseArtists(IEnumerable<INode> artistNodes)
+    {
+        var artists = new List<ITunesArtist>();
+        foreach (var node in artistNodes)
+        {
+            if (node is not IHtmlAnchorElement artistElem)
+            {
+                _logger.LogTrace("Node is not an anchor element, skipping");
+                continue;
+            }
+
+            _logger.LogTrace("Adding artist with url {Url}", artistElem.Href);
+            artists.Add(new ITunesArtist
+            {
+                Name = artistElem.TextContent,
+                Url = artistElem.Href,
+            });
+        }
+
+        return artists;
     }
 
     private (DateTime Date, int ProductionYear)? ParseDescription(string? details)
