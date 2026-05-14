@@ -66,15 +66,15 @@ public class AlbumScraper : IScraper<MusicAlbum>
             _logger.LogTrace("Found album image");
         }
 
-        var artistNodes = document.Body.SelectNodes(AlbumDetailXPath + AlbumArtistLinkXPath);
-        if (artistNodes is null || artistNodes.Count == 0)
+        var artistLinkNodes = document.Body.SelectNodes(AlbumDetailXPath + AlbumArtistLinkXPath);
+        if (artistLinkNodes is null || artistLinkNodes.Count == 0)
         {
             _logger.LogTrace("No album artists found");
             return null;
         }
 
-        _logger.LogDebug("Found {Count} artist nodes in album", artistNodes.Count);
-        var artists = ParseArtists(artistNodes);
+        _logger.LogDebug("Found {Count} artist nodes in album", artistLinkNodes.Count);
+        var artists = ParseArtists(artistLinkNodes);
 
         _logger.LogDebug("Processing optional album details");
 
