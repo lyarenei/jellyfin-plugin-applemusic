@@ -66,18 +66,9 @@ public class AlbumScraper : IScraper<MusicAlbum>
             _logger.LogTrace("Found album image");
         }
 
-        var artistLinkNodes = document.Body.SelectNodes(AlbumDetailXPath + AlbumArtistLinkXPath);
-        if (artistLinkNodes is null || artistLinkNodes.Count == 0)
-        {
-            _logger.LogTrace("No album artists found");
-            return null;
-        }
-
-        _logger.LogDebug("Found {Count} artist nodes in album", artistLinkNodes.Count);
-        var artists = ParseArtists(artistLinkNodes);
-
         _logger.LogDebug("Processing optional album details");
 
+        var artists = ParseAlbumArtists(document);
         var aboutText = document.Body.SelectSingleNode(AlbumDetailXPath + AboutXPath)?.TextContent;
         var descString = document.Body.SelectSingleNode(AlbumDescriptionXPath)?.TextContent;
         var parsedDesc = ParseDescription(descString);
@@ -94,6 +85,30 @@ public class AlbumScraper : IScraper<MusicAlbum>
             Url = document.Url,
             Id = PluginUtils.GetIdFromUrl(document.Url),
         };
+    }
+
+    private List<ITunesArtist> ParseAlbumArtists(IDocument document)
+    {
+        // Artists with links => we can scrape them
+        var artistLinkNodes = document.Body.SelectNodes(AlbumDetailXPath + AlbumArtistLinkXPath);
+        if (artistLinkNodes.Count > 0)
+        {
+            _logger.LogDebug("Found {Count} artist nodes in album", artistLinkNodes.Count);
+            return ParseArtists(artistLinkNodes);
+        }
+
+        _logger.LogTrace("No album artists with links found, trying to parse artists from subtitle");
+
+        // Artists without links => we can only get their names
+        var artistSubtitleNodes = document.Body.SelectNodes(AlbumDetailXPath + AlbumArtistSubtitleXPath);
+        if (artistSubtitleNodes.Count > 0)
+        {
+            _logger.LogDebug("Found {Count} artist subtitle nodes in album", artistSubtitleNodes.Count);
+            return ParseArtists(artistSubtitleNodes);
+        }
+
+        _logger.LogDebug("No album artists found");
+        return [];
     }
 
     private List<ITunesArtist> ParseArtists(IEnumerable<INode> artistNodes)
