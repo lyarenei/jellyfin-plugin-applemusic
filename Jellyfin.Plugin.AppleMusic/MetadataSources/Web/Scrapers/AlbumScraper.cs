@@ -116,18 +116,24 @@ public class AlbumScraper : IScraper<MusicAlbum>
         var artists = new List<ITunesArtist>();
         foreach (var node in artistNodes)
         {
-            if (node is not IHtmlAnchorElement artistElem)
+            if (string.IsNullOrEmpty(node.TextContent))
             {
-                _logger.LogTrace("Node is not an anchor element, skipping");
+                _logger.LogTrace("Artist name is empty, skipping");
                 continue;
             }
 
-            _logger.LogTrace("Adding artist with url {Url}", artistElem.Href);
-            artists.Add(new ITunesArtist
+            var newArtist = new ITunesArtist
             {
-                Name = artistElem.TextContent,
-                Url = artistElem.Href,
-            });
+                Name = node.TextContent.Trim(),
+            };
+
+            if (node is IHtmlAnchorElement anchor)
+            {
+                _logger.LogTrace("Adding URL to artist: {Url}", anchor.Href);
+                newArtist.Url = anchor.Href;
+            }
+
+            artists.Add(newArtist);
         }
 
         return artists;
