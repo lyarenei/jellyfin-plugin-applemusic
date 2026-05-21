@@ -161,8 +161,16 @@ public class WebMetadataSource : IMetadataSource
         _logger.LogDebug("Scraping artists for album {AlbumName}", album.Name);
 
         var artistTasks = album.Artists
-            .Select(artist => PluginUtils.GetIdFromUrl(artist.Url))
-            .Select(artistId => GetArtistAsync(artistId, cancellationToken));
+            .Select(artist =>
+            {
+                if (string.IsNullOrEmpty(artist.Url))
+                {
+                    return Task.FromResult<ITunesArtist?>(artist);
+                }
+
+                var artistId = PluginUtils.GetIdFromUrl(artist.Url);
+                return GetArtistAsync(artistId, cancellationToken);
+            });
 
         var scrapedArtists = await Task.WhenAll(artistTasks);
         album.Artists = scrapedArtists
