@@ -157,7 +157,8 @@ public class WebMetadataSource : IMetadataSource
             return null;
         }
 
-        _logger.LogDebug("Scraped album from url {Url}", document.Url);
+        _logger.LogDebug("Scraped album metadata from url {Url}", document.Url);
+        _logger.LogDebug("Scraping artists for album {AlbumName}", album.Name);
 
         var artistTasks = album.Artists
             .Select(artist => PluginUtils.GetIdFromUrl(artist.Url))
