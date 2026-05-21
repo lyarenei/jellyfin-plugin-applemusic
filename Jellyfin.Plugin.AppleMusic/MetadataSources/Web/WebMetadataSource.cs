@@ -165,7 +165,8 @@ public class WebMetadataSource : IMetadataSource
             .Select(artistId => GetArtistAsync(artistId, cancellationToken));
 
         var scrapedArtists = await Task.WhenAll(artistTasks);
-        album.Artists = scrapedArtists.Where(artist => artist is not null)
+        album.Artists = scrapedArtists
+            .Where(artist => artist is not null)
             .Cast<ITunesArtist>()
             .ToList();
 
