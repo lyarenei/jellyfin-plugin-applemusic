@@ -131,7 +131,7 @@ public class AlbumMetadataProvider : IRemoteMetadataProvider<MusicAlbum, AlbumIn
         }
 
         var albumArtist = albumData.Artists.FirstOrDefault();
-        if (albumArtist is not null)
+        if (albumArtist is not null && !string.IsNullOrEmpty(albumArtist.Id))
         {
             _logger.LogDebug("Setting provider ID for album artist {ArtistName}", albumArtist.Name);
             metadataResult.Item.SetProviderId(nameof(ProviderKey.ITunesAlbumArtist), albumArtist.Id);
