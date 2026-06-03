@@ -1,7 +1,7 @@
 ---
 name: "Apple Music"
 guid: "a9f62a44-fea5-46c3-ac26-55abba29c7c8"
-version: "3.0.5.1"
+version: "3.0.6.1"
 targetAbi: "10.10.0.0"
 framework: "net8.0"
 overview: "Fetch images and metadata from Apple Music."
@@ -15,4 +15,4 @@ artifacts:
 - "Jellyfin.Plugin.AppleMusic.dll"
 changelog: >
   Fix:
-    - Album artwork being pulled if artist did not have one
+    - Albums without artist (e.g., compilation albums) not being fetched
