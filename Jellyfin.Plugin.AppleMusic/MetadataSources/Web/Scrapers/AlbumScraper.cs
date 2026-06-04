@@ -25,7 +25,8 @@ public class AlbumScraper : IScraper<MusicAlbum>
 
     private const string AlbumDetailXPath = "//div[@data-testid='container-detail-header']";
     private const string AlbumNameXPath = "//h1[@data-testid='non-editable-product-title']";
-    private const string AlbumArtistXPath = "//a[@data-testid='click-action']";
+    private const string AlbumArtistLinkXPath = "//a[@data-testid='click-action']";
+    private const string AlbumArtistSubtitleXPath = "//div[@data-testid='product-subtitles']";
     private const string AboutXPath = "//p[@data-testid='truncate-text']";
     private const string AlbumDescriptionXPath = "//p[@data-testid='tracklist-footer-description']";
 
@@ -65,31 +66,9 @@ public class AlbumScraper : IScraper<MusicAlbum>
             _logger.LogTrace("Found album image");
         }
 
-        var artistNodes = document.Body.SelectNodes(AlbumDetailXPath + AlbumArtistXPath);
-        if (artistNodes is null || artistNodes.Count == 0)
-        {
-            _logger.LogTrace("No album artists found");
-            return null;
-        }
-
-        _logger.LogDebug("Found {Count} artist nodes in album", artistNodes.Count);
-
-        var artists = new List<ITunesArtist>();
-        foreach (var node in artistNodes)
-        {
-            if (node is not IHtmlAnchorElement artistElem)
-            {
-                _logger.LogTrace("Node is not an anchor element, skipping");
-                continue;
-            }
-
-            _logger.LogTrace("Adding artist with url {Url}", artistElem.Href);
-            artists.Add(new ITunesArtist { Name = artistElem.TextContent, Url = artistElem.Href, });
-        }
-
-        _logger.LogDebug("Parsed {Count} artists from album", artists.Count);
         _logger.LogDebug("Processing optional album details");
 
+        var artists = ParseAlbumArtists(document);
         var aboutText = document.Body.SelectSingleNode(AlbumDetailXPath + AboutXPath)?.TextContent;
         var descString = document.Body.SelectSingleNode(AlbumDescriptionXPath)?.TextContent;
         var parsedDesc = ParseDescription(descString);
@@ -106,6 +85,58 @@ public class AlbumScraper : IScraper<MusicAlbum>
             Url = document.Url,
             Id = PluginUtils.GetIdFromUrl(document.Url),
         };
+    }
+
+    private List<ITunesArtist> ParseAlbumArtists(IDocument document)
+    {
+        // Artists with links => we can scrape them
+        var artistLinkNodes = document.Body.SelectNodes(AlbumDetailXPath + AlbumArtistLinkXPath);
+        if (artistLinkNodes.Count > 0)
+        {
+            _logger.LogDebug("Found {Count} artist nodes in album", artistLinkNodes.Count);
+            return ParseArtists(artistLinkNodes);
+        }
+
+        _logger.LogTrace("No album artists with links found, trying to parse artists from subtitle");
+
+        // Artists without links => we can only get their names
+        var artistSubtitleNodes = document.Body.SelectNodes(AlbumDetailXPath + AlbumArtistSubtitleXPath);
+        if (artistSubtitleNodes.Count > 0)
+        {
+            _logger.LogDebug("Found {Count} artist subtitle nodes in album", artistSubtitleNodes.Count);
+            return ParseArtists(artistSubtitleNodes);
+        }
+
+        _logger.LogDebug("No album artists found");
+        return [];
+    }
+
+    private List<ITunesArtist> ParseArtists(IEnumerable<INode> artistNodes)
+    {
+        var artists = new List<ITunesArtist>();
+        foreach (var node in artistNodes)
+        {
+            if (string.IsNullOrEmpty(node.TextContent))
+            {
+                _logger.LogTrace("Artist name is empty, skipping");
+                continue;
+            }
+
+            var newArtist = new ITunesArtist
+            {
+                Name = node.TextContent.Trim(),
+            };
+
+            if (node is IHtmlAnchorElement anchor)
+            {
+                _logger.LogTrace("Adding URL to artist: {Url}", anchor.Href);
+                newArtist.Url = anchor.Href;
+            }
+
+            artists.Add(newArtist);
+        }
+
+        return artists;
     }
 
     private (DateTime Date, int ProductionYear)? ParseDescription(string? details)

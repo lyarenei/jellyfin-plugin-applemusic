@@ -157,14 +157,24 @@ public class WebMetadataSource : IMetadataSource
             return null;
         }
 
-        _logger.LogDebug("Scraped album from url {Url}", document.Url);
+        _logger.LogDebug("Scraped album metadata from url {Url}", document.Url);
+        _logger.LogDebug("Scraping artists for album {AlbumName}", album.Name);
 
         var artistTasks = album.Artists
-            .Select(artist => PluginUtils.GetIdFromUrl(artist.Url))
-            .Select(artistId => GetArtistAsync(artistId, cancellationToken));
+            .Select(artist =>
+            {
+                if (string.IsNullOrEmpty(artist.Url))
+                {
+                    return Task.FromResult<ITunesArtist?>(artist);
+                }
+
+                var artistId = PluginUtils.GetIdFromUrl(artist.Url);
+                return GetArtistAsync(artistId, cancellationToken);
+            });
 
         var scrapedArtists = await Task.WhenAll(artistTasks);
-        album.Artists = scrapedArtists.Where(artist => artist is not null)
+        album.Artists = scrapedArtists
+            .Where(artist => artist is not null)
             .Cast<ITunesArtist>()
             .ToList();
 
