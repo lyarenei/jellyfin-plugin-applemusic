@@ -51,4 +51,21 @@ public static class PluginUtils
     {
         return url.Split('/').LastOrDefault(string.Empty);
     }
+
+    /// <summary>
+    /// Resolve Apple Music artwork URL template to actual URL.
+    /// Template format uses placeholders: {w} for width, {h} for height, {f} for format.
+    /// </summary>
+    /// <param name="templateUrl">URL template from Apple Music API.</param>
+    /// <param name="width">Image width in pixels.</param>
+    /// <param name="height">Image height in pixels.</param>
+    /// <param name="format">Image format (e.g., "jpg").</param>
+    /// <returns>Resolved URL.</returns>
+    public static string ResolveArtworkUrl(string templateUrl, int width = 1200, int height = 1200, string format = "jpg")
+    {
+        return templateUrl
+            .Replace("{w}", width.ToString(System.Globalization.CultureInfo.InvariantCulture), StringComparison.Ordinal)
+            .Replace("{h}", height.ToString(System.Globalization.CultureInfo.InvariantCulture), StringComparison.Ordinal)
+            .Replace("{f}", format, StringComparison.Ordinal);
+    }
 }
