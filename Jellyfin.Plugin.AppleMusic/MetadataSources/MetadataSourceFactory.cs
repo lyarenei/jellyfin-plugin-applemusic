@@ -12,8 +12,9 @@ namespace Jellyfin.Plugin.AppleMusic.MetadataSources;
 /// </summary>
 public static class MetadataSourceFactory
 {
-    // Toggle this to switch between Web and JSON metadata sources.
-    private const bool UseJsonSource = true;
+    // Json metadata source is still experimental and should not be used.
+    // When the time comes, this should be converted to a plugin setting.
+    private const bool UseJsonSource = false;
 
     /// <summary>
     /// Creates a metadata source instance.
