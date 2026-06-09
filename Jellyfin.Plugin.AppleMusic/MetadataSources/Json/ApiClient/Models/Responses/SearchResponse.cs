@@ -1,7 +1,6 @@
+using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace Jellyfin.Plugin.AppleMusic.MetadataSources.Json.ApiClient.Models.Responses;
 
@@ -11,85 +10,25 @@ namespace Jellyfin.Plugin.AppleMusic.MetadataSources.Json.ApiClient.Models.Respo
 public class SearchResponse
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="SearchResponse"/> class.
+    /// Gets or sets the wrapped results object.
     /// </summary>
-    public SearchResponse()
-    {
-        Albums = new List<SearchResult>();
-        Artists = new List<SearchResult>();
-        ResponseData = new Dictionary<string, object>();
-    }
+    [JsonProperty("results")]
+    public SearchResults Results { get; set; } = new();
 
     /// <summary>
-    /// Gets or sets found albums.
+    /// Gets the album results.
     /// </summary>
     [JsonIgnore]
-    public IEnumerable<SearchResult> Albums { get; set; }
+    public IReadOnlyList<SearchResult> Albums => GetData(Results.Albums);
 
     /// <summary>
-    /// Gets or sets found artists.
+    /// Gets the artist results.
     /// </summary>
     [JsonIgnore]
-    public IEnumerable<SearchResult> Artists { get; set; }
+    public IReadOnlyList<SearchResult> Artists => GetData(Results.Artists);
 
-    // Don't want to create a million useless classes, so
-    // using extension parsing feature for custom JSON deserialization.
-    // There is definitely a better way to do this. :shrug:
-
-    private static JsonSerializerSettings SerializerSettings => new()
+    private static IReadOnlyList<SearchResult> GetData(ResourceList? list)
     {
-        NullValueHandling = NullValueHandling.Ignore,
-        DefaultValueHandling = DefaultValueHandling.Include,
-        ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() }
-    };
-
-    [JsonExtensionData]
-    private Dictionary<string, object> ResponseData { get; set; }
-
-    [OnDeserialized]
-    private void OnDeserialized(StreamingContext context)
-    {
-        // The API response wraps albums/artists under "results"
-        ResponseData.TryGetValue("results", out var resultsObject);
-        if (resultsObject is null)
-        {
-            return;
-        }
-
-        var resultsJson = resultsObject.ToString() ?? string.Empty;
-        var results = JsonConvert.DeserializeObject<Dictionary<string, object>>(resultsJson, SerializerSettings);
-        if (results is null)
-        {
-            return;
-        }
-
-        if (results.TryGetValue("albums", out var albumsObject))
-        {
-            Albums = DeserializeData(albumsObject);
-        }
-
-        if (results.TryGetValue("artists", out var artistsObject))
-        {
-            Artists = DeserializeData(artistsObject);
-        }
-    }
-
-    private static List<SearchResult> DeserializeData(object albumsObject)
-    {
-        var jsonString = albumsObject.ToString() ?? string.Empty;
-        var rawItems = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonString, settings: SerializerSettings);
-        if (rawItems is null)
-        {
-            return [];
-        }
-
-        var rawData = rawItems.GetValueOrDefault("data");
-        if (rawData is null)
-        {
-            return [];
-        }
-
-        var rawDataJson = rawData.ToString() ?? string.Empty;
-        return JsonConvert.DeserializeObject<List<SearchResult>>(rawDataJson, settings: SerializerSettings) ?? [];
+        return list is null ? Array.Empty<SearchResult>() : list.Data;
     }
 }
