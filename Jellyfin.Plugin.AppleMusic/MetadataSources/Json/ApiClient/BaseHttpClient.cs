@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
@@ -12,7 +11,7 @@ namespace Jellyfin.Plugin.AppleMusic.MetadataSources.Json.ApiClient;
 /// <summary>
 /// Base HTTP client.
 /// </summary>
-public class BaseHttpClient : IHttpClient, IDisposable
+public class BaseHttpClient : IHttpClient
 {
     private static readonly JsonSerializerSettings SerializerSettings = new()
     {
@@ -23,7 +22,6 @@ public class BaseHttpClient : IHttpClient, IDisposable
 
     private readonly ILogger _logger;
     private readonly HttpClient _httpClient;
-    private bool _isDisposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BaseHttpClient"/> class.
@@ -53,31 +51,5 @@ public class BaseHttpClient : IHttpClient, IDisposable
         response.EnsureSuccessStatusCode();
         var content = await response.Content.ReadAsStringAsync(cancellationToken);
         return JsonConvert.DeserializeObject<T>(content, SerializerSettings);
-    }
-
-    /// <summary>
-    /// Disposes managed and unmanaged (own) resources.
-    /// </summary>
-    /// <param name="disposing">Dispose managed resources.</param>
-    protected virtual void Dispose(bool disposing)
-    {
-        if (_isDisposed)
-        {
-            return;
-        }
-
-        if (disposing)
-        {
-            _httpClient.Dispose();
-        }
-
-        _isDisposed = true;
-    }
-
-    /// <inheritdoc />
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
     }
 }
