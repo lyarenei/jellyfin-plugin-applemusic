@@ -19,20 +19,20 @@ public class DefaultApiClient
     private const string Origin = "https://music.apple.com";
     private const string Referer = "https://music.apple.com/";
 
-    // TODO: Dynamic fetch & automatic refresh
-    private const string Jwt = "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IldlYlBsYXlLaWQifQ.eyJpc3MiOiJBTVBXZWJQbGF5IiwiaWF0IjoxNzYyNTM4NTI0LCJleHAiOjE3Njk3OTYxMjQsInJvb3RfaHR0cHNfb3JpZ2luIjpbImFwcGxlLmNvbSJdfQ.2fpk1NEdRGBhrWjhjDJfeVWQyfa005cJYQ0Ye37GeD08vuyZvVA1xOc0JiePTEa9FLHa1HZjLd3n5F0CYUqLTw";
-
     private readonly IHttpClient _httpClient;
+    private readonly IAppleMusicTokenProvider _tokenProvider;
     private readonly ILogger _logger;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DefaultApiClient"/> class.
     /// </summary>
     /// <param name="httpClient">Underlying HTTP client instance.</param>
+    /// <param name="tokenProvider">Bearer token provider.</param>
     /// <param name="logger">Logger instance.</param>
-    public DefaultApiClient(IHttpClient httpClient, ILogger logger)
+    public DefaultApiClient(IHttpClient httpClient, IAppleMusicTokenProvider tokenProvider, ILogger logger)
     {
         _httpClient = httpClient;
+        _tokenProvider = tokenProvider;
         _logger = logger;
     }
 
@@ -45,7 +45,7 @@ public class DefaultApiClient
     public async Task<SearchResponse> SearchAsync(SearchRequest request, CancellationToken cancellationToken)
     {
         var url = $"{SearchBaseUrl}?{request.ToQueryString()}";
-        var headers = CreateRequestHeaders();
+        var headers = await CreateRequestHeadersAsync(cancellationToken);
 
         _logger.LogDebug("Searching Apple Music API: {Url}", url);
 
@@ -62,7 +62,7 @@ public class DefaultApiClient
     public async Task<SearchResult?> GetAlbumAsync(string albumId, CancellationToken cancellationToken)
     {
         var url = $"{CatalogBaseUrl}/albums/{albumId}";
-        var headers = CreateRequestHeaders();
+        var headers = await CreateRequestHeadersAsync(cancellationToken);
 
         _logger.LogDebug("Fetching album from Apple Music API: {Url}", url);
 
@@ -79,7 +79,7 @@ public class DefaultApiClient
     public async Task<SearchResult?> GetArtistAsync(string artistId, CancellationToken cancellationToken)
     {
         var url = $"{CatalogBaseUrl}/artists/{artistId}";
-        var headers = CreateRequestHeaders();
+        var headers = await CreateRequestHeadersAsync(cancellationToken);
 
         _logger.LogDebug("Fetching artist from Apple Music API: {Url}", url);
 
@@ -87,11 +87,12 @@ public class DefaultApiClient
         return response?.Data?.FirstOrDefault();
     }
 
-    private static Dictionary<string, string> CreateRequestHeaders()
+    private async Task<Dictionary<string, string>> CreateRequestHeadersAsync(CancellationToken cancellationToken)
     {
+        var token = await _tokenProvider.GetTokenAsync(cancellationToken);
         return new Dictionary<string, string>
         {
-            { "Authorization", $"Bearer {Jwt}" },
+            { "Authorization", $"Bearer {token}" },
             { "Origin", Origin },
             { "Referer", Referer },
         };

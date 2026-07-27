@@ -36,7 +36,8 @@ public static class MetadataSourceFactory
     {
         var httpClient = httpClientFactory.CreateClient(NamedClient.Default);
         var baseHttpClient = new BaseHttpClient(httpClient, loggerFactory.CreateLogger<BaseHttpClient>());
-        var apiClient = new DefaultApiClient(baseHttpClient, loggerFactory.CreateLogger<DefaultApiClient>());
+        var tokenProvider = new WebPlayTokenProvider(baseHttpClient, loggerFactory.CreateLogger<WebPlayTokenProvider>());
+        var apiClient = new DefaultApiClient(baseHttpClient, tokenProvider, loggerFactory.CreateLogger<DefaultApiClient>());
         return new JsonMetadataSource(apiClient, loggerFactory);
     }
 }

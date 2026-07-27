@@ -37,6 +37,13 @@ public class BaseHttpClient : IHttpClient
     /// <inheritdoc />
     public async Task<T?> GetAsync<T>(string url, Dictionary<string, string>? headers = null, CancellationToken cancellationToken = default)
     {
+        var content = await GetStringAsync(url, headers, cancellationToken);
+        return JsonConvert.DeserializeObject<T>(content, SerializerSettings);
+    }
+
+    /// <inheritdoc />
+    public async Task<string> GetStringAsync(string url, Dictionary<string, string>? headers = null, CancellationToken cancellationToken = default)
+    {
         using var request = new HttpRequestMessage(HttpMethod.Get, url);
 
         if (headers is not null)
@@ -49,7 +56,6 @@ public class BaseHttpClient : IHttpClient
 
         using var response = await _httpClient.SendAsync(request, cancellationToken);
         response.EnsureSuccessStatusCode();
-        var content = await response.Content.ReadAsStringAsync(cancellationToken);
-        return JsonConvert.DeserializeObject<T>(content, SerializerSettings);
+        return await response.Content.ReadAsStringAsync(cancellationToken);
     }
 }

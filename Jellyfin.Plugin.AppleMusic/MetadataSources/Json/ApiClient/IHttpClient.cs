@@ -18,4 +18,13 @@ public interface IHttpClient
     /// <typeparam name="T">Response type.</typeparam>
     /// <returns>Deserialized response, or null on error.</returns>
     Task<T?> GetAsync<T>(string url, Dictionary<string, string>? headers = null, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Send a GET request and return the raw response body.
+    /// </summary>
+    /// <param name="url">Request URL.</param>
+    /// <param name="headers">Optional headers to include in the request.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The response body as a string.</returns>
+    Task<string> GetStringAsync(string url, Dictionary<string, string>? headers = null, CancellationToken cancellationToken = default);
 }
