@@ -1,14 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Jellyfin.Plugin.AppleMusic.Dtos;
 using Jellyfin.Plugin.AppleMusic.ExternalIds;
 using Jellyfin.Plugin.AppleMusic.MetadataSources;
+using Jellyfin.Plugin.AppleMusic.MusicBrainz;
 using Jellyfin.Plugin.AppleMusic.Utils;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities.Audio;
+using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
@@ -24,18 +27,21 @@ public class ArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist, Artis
     private readonly HttpClient _httpClient;
     private readonly ILogger<ArtistMetadataProvider> _logger;
     private readonly IMetadataSource _metadataSource;
+    private readonly AppleMusicIdResolver _idResolver;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ArtistMetadataProvider"/> class.
     /// </summary>
     /// <param name="httpClientFactory">HTTP client factory.</param>
     /// <param name="loggerFactory">Logger factory.</param>
+    /// <param name="libraryManager">Instance of the <see cref="ILibraryManager"/> interface.</param>
     /// <param name="source">Metadata source. If null, a default source will be used.</param>
-    public ArtistMetadataProvider(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory, IMetadataSource? source = null)
+    public ArtistMetadataProvider(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory, ILibraryManager libraryManager, IMetadataSource? source = null)
     {
         _httpClient = httpClientFactory.CreateClient(NamedClient.Default);
         _logger = loggerFactory.CreateLogger<ArtistMetadataProvider>();
         _metadataSource = source ?? MetadataSourceFactory.Create(httpClientFactory, loggerFactory);
+        _idResolver = new AppleMusicIdResolver(httpClientFactory, libraryManager, loggerFactory.CreateLogger<AppleMusicIdResolver>());
     }
 
     /// <inheritdoc />
@@ -53,6 +59,15 @@ public class ArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist, Artis
             return results;
         }
 
+        // List the artist found through MusicBrainz first, followed by the name search results.
+        var allResults = new List<RemoteSearchResult>();
+        var match = await _idResolver.ResolveArtistAsync(searchInfo, cancellationToken);
+        if (match.AppleMusicId is not null)
+        {
+            _logger.LogInformation("Resolved Apple Music ID {Id} for artist {Name} via {Source}", match.AppleMusicId, searchInfo.Name, match.Source);
+            allResults.AddRange(await GetArtistById(match.AppleMusicId, cancellationToken));
+        }
+
         _logger.LogInformation("Apple Music artist ID was not provided, using search");
 
         var searchTerm = searchInfo.Name;
@@ -60,13 +75,17 @@ public class ArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist, Artis
 
         _logger.LogInformation("Found {Count} search results using term {SearchTerm}", searchResults.Count, searchTerm);
 
-        var allResults = new List<RemoteSearchResult>();
         foreach (var result in searchResults)
         {
             _logger.LogDebug("Processing search result: {ResultName}", result.Name);
             if (result is not ITunesArtist artist)
             {
                 _logger.LogDebug("Search result is not artist, ignoring");
+                continue;
+            }
+
+            if (allResults.Any(r => r.GetProviderId(nameof(ProviderKey.ITunesArtist)) == artist.Id))
+            {
                 continue;
             }
 
@@ -112,6 +131,11 @@ public class ArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist, Artis
         {
             _logger.LogTrace("Adding image for artist {ArtistName}", artistData.Name);
             metadataResult.RemoteImages.Add((artistData.ImageUrl, ImageType.Primary));
+        }
+
+        if (artistData.BackdropImageUrl is not null)
+        {
+            metadataResult.RemoteImages.Add((artistData.BackdropImageUrl, ImageType.Backdrop));
         }
 
         _logger.LogDebug("Setting provider ID {Id} for artist {ArtistName}", artistData.Id, artistData.Name);

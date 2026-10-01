@@ -60,12 +60,14 @@ public static class PluginUtils
     /// <param name="width">Image width in pixels.</param>
     /// <param name="height">Image height in pixels.</param>
     /// <param name="format">Image format (e.g., "jpg").</param>
+    /// <param name="crop">Crop code for the {c} placeholder (e.g., "sr" crops to the exact size). Null leaves it untouched.</param>
     /// <returns>Resolved URL.</returns>
-    public static string ResolveArtworkUrl(string templateUrl, int width = 1200, int height = 1200, string format = "jpg")
+    public static string ResolveArtworkUrl(string templateUrl, int width = 1200, int height = 1200, string format = "jpg", string? crop = null)
     {
-        return templateUrl
+        var url = templateUrl
             .Replace("{w}", width.ToString(System.Globalization.CultureInfo.InvariantCulture), StringComparison.Ordinal)
             .Replace("{h}", height.ToString(System.Globalization.CultureInfo.InvariantCulture), StringComparison.Ordinal)
             .Replace("{f}", format, StringComparison.Ordinal);
+        return crop is null ? url : url.Replace("{c}", crop, StringComparison.Ordinal);
     }
 }

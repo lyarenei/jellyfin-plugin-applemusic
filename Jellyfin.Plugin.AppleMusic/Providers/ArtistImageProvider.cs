@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 using Jellyfin.Plugin.AppleMusic.Dtos;
 using Jellyfin.Plugin.AppleMusic.ExternalIds;
 using Jellyfin.Plugin.AppleMusic.MetadataSources;
+using Jellyfin.Plugin.AppleMusic.MusicBrainz;
 using Jellyfin.Plugin.AppleMusic.Utils;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
+using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
@@ -26,18 +28,21 @@ public class ArtistImageProvider : IRemoteImageProvider
     private readonly HttpClient _httpClient;
     private readonly ILogger<ArtistImageProvider> _logger;
     private readonly IMetadataSource _metadataSource;
+    private readonly AppleMusicIdResolver _idResolver;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ArtistImageProvider"/> class.
     /// </summary>
     /// <param name="httpClientFactory">Instance of the <see cref="IHttpClientFactory"/> interface.</param>
     /// <param name="loggerFactory">Logger factory.</param>
+    /// <param name="libraryManager">Instance of the <see cref="ILibraryManager"/> interface.</param>
     /// <param name="source">Metadata source. If null, a default source will be used.</param>
-    public ArtistImageProvider(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory, IMetadataSource? source = null)
+    public ArtistImageProvider(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory, ILibraryManager libraryManager, IMetadataSource? source = null)
     {
         _httpClient = httpClientFactory.CreateClient(NamedClient.Default);
         _logger = loggerFactory.CreateLogger<ArtistImageProvider>();
         _metadataSource = source ?? MetadataSourceFactory.Create(httpClientFactory, loggerFactory);
+        _idResolver = new AppleMusicIdResolver(httpClientFactory, libraryManager, loggerFactory.CreateLogger<AppleMusicIdResolver>());
     }
 
     /// <inheritdoc />
@@ -46,7 +51,7 @@ public class ArtistImageProvider : IRemoteImageProvider
     /// <inheritdoc />
     public IEnumerable<ImageType> GetSupportedImages(BaseItem item)
     {
-        return new List<ImageType> { ImageType.Primary };
+        return new List<ImageType> { ImageType.Primary, ImageType.Backdrop };
     }
 
     /// <inheritdoc />
@@ -76,47 +81,65 @@ public class ArtistImageProvider : IRemoteImageProvider
             return results;
         }
 
-        _logger.LogInformation("Apple Music artist ID is not available, using search with artist name");
+        var match = await _idResolver.ResolveArtistAsync(artist, cancellationToken);
+        if (match.AppleMusicId is not null)
+        {
+            _logger.LogInformation("Resolved Apple Music ID {Id} for artist {Name} via {Source}", match.AppleMusicId, artist.Name, match.Source);
+            var results = await GetImageById(match.AppleMusicId, cancellationToken);
+            if (results.Count > 0)
+            {
+                return results;
+            }
+        }
 
-        var searchResults = await _metadataSource.SearchAsync(artist.Name, ItemType.Artist, cancellationToken);
+        // The MusicBrainz name is a better search term than the item name, which may be a folder name.
+        var searchTerm = match.IsCollaboration ? artist.Name : match.MusicBrainzName ?? artist.Name;
+        _logger.LogInformation("Apple Music artist ID is not available ({Reason}), using search with term {SearchTerm}", match.Source, searchTerm);
 
-        _logger.LogInformation("Found {Count} search results using term {SearchTerm}", searchResults.Count, artist.Name);
+        var searchResults = await _metadataSource.SearchAsync(searchTerm, ItemType.Artist, cancellationToken);
+
+        _logger.LogInformation("Found {Count} search results using term {SearchTerm}", searchResults.Count, searchTerm);
 
         return searchResults
-            .Where(sr => sr is ITunesArtist amArtist && !string.IsNullOrEmpty(amArtist.ImageUrl))
-            .Select(amArtist => new RemoteImageInfo
-            {
-                Height = 1400,
-                Width = 1400,
-                ProviderName = Name,
-                ThumbnailUrl = PluginUtils.UpdateImageSize(amArtist.ImageUrl!, "100x100cc"),
-                Type = ImageType.Primary,
-                Url = PluginUtils.UpdateImageSize(amArtist.ImageUrl!, "1400x1400cc"),
-            });
+            .OfType<ITunesArtist>()
+            .SelectMany(GetRemoteImages);
     }
 
     private async Task<List<RemoteImageInfo>> GetImageById(string appleMusicId, CancellationToken cancellationToken)
     {
         _logger.LogDebug("Looking up artist by ID {Id}", appleMusicId);
         var artistData = await _metadataSource.GetArtistAsync(appleMusicId, cancellationToken);
-        if (artistData?.ImageUrl is not null)
+        var images = artistData is null ? new List<RemoteImageInfo>() : GetRemoteImages(artistData).ToList();
+        _logger.LogDebug("Found {Count} images for artist ID {Id}", images.Count, appleMusicId);
+        return images;
+    }
+
+    private IEnumerable<RemoteImageInfo> GetRemoteImages(ITunesArtist artist)
+    {
+        if (!string.IsNullOrEmpty(artist.ImageUrl))
         {
-            _logger.LogDebug("Found image for artist ID {Id}", appleMusicId);
-            return
-            [
-                new RemoteImageInfo
-                {
-                    Height = 1400,
-                    Width = 1400,
-                    ProviderName = Name,
-                    ThumbnailUrl = PluginUtils.UpdateImageSize(artistData.ImageUrl, "100x100cc"),
-                    Type = ImageType.Primary,
-                    Url = PluginUtils.UpdateImageSize(artistData.ImageUrl, "1400x1400cc"),
-                },
-            ];
+            yield return new RemoteImageInfo
+            {
+                Height = 1400,
+                Width = 1400,
+                ProviderName = Name,
+                ThumbnailUrl = PluginUtils.UpdateImageSize(artist.ImageUrl, "100x100cc"),
+                Type = ImageType.Primary,
+                Url = PluginUtils.UpdateImageSize(artist.ImageUrl, "1400x1400cc"),
+            };
         }
 
-        _logger.LogDebug("No image found for artist ID {Id}", appleMusicId);
-        return new List<RemoteImageInfo>();
+        if (!string.IsNullOrEmpty(artist.BackdropImageUrl))
+        {
+            yield return new RemoteImageInfo
+            {
+                Height = artist.BackdropHeight,
+                Width = artist.BackdropWidth,
+                ProviderName = Name,
+                ThumbnailUrl = artist.BackdropImageUrl.Replace($"/{artist.BackdropWidth}x{artist.BackdropHeight}sr.", "/400x200sr.", StringComparison.Ordinal),
+                Type = ImageType.Backdrop,
+                Url = artist.BackdropImageUrl,
+            };
+        }
     }
 }
