@@ -34,6 +34,21 @@ public class ITunesArtist : IITunesItem
     /// <inheritdoc />
     public string? About { get; set; }
 
+    /// <summary>
+    /// Gets or sets the URL of a wide (2:1) artist image, used as backdrop.
+    /// </summary>
+    public string? BackdropImageUrl { get; set; }
+
+    /// <summary>
+    /// Gets or sets the width of the backdrop image.
+    /// </summary>
+    public int BackdropWidth { get; set; }
+
+    /// <summary>
+    /// Gets or sets the height of the backdrop image.
+    /// </summary>
+    public int BackdropHeight { get; set; }
+
     /// <inheritdoc />
     public RemoteSearchResult ToRemoteSearchResult()
     {

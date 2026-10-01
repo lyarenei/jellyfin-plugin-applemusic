@@ -1,4 +1,6 @@
+using System;
 using System.Net;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using AngleSharp.Dom;
 using Jellyfin.Plugin.AppleMusic.Dtos;
@@ -15,6 +17,10 @@ namespace Jellyfin.Plugin.AppleMusic.MetadataSources.Web.Scrapers;
 /// </summary>
 public partial class ArtistScraper : IScraper<MusicArtist>
 {
+    private const int MaxBackdropWidth = 3840;
+
+    private static readonly string[] _backdropArtworkKeys = ["wideArtwork", "colorBackdropArtwork", "artwork"];
+
     private readonly ILogger<ArtistScraper> _logger;
 
     /// <summary>
@@ -39,6 +45,7 @@ public partial class ArtistScraper : IScraper<MusicArtist>
         var artist = ParseArtist(script.TextContent, document.Url);
         if (artist is not null)
         {
+            SetBackdrop(artist, document);
             _logger.LogDebug("Artist scraping completed");
         }
 
@@ -52,7 +59,7 @@ public partial class ArtistScraper : IScraper<MusicArtist>
         {
             artistData = JsonConvert.DeserializeObject<MusicGroup>(json);
         }
-        catch (JsonException ex)
+        catch (Newtonsoft.Json.JsonException ex)
         {
             _logger.LogDebug(ex, "Failed to parse schema.org (MusicGroup) data");
             return null;
@@ -74,6 +81,91 @@ public partial class ArtistScraper : IScraper<MusicArtist>
         };
     }
 
+    /// <summary>
+    /// Set the backdrop from the wide artwork of the page header, found in the page's serialized data.
+    /// Some artists have a dedicated wide image, others only a square photo; either way Apple crops it
+    /// to the requested 2:1 size.
+    /// </summary>
+    private void SetBackdrop(ITunesArtist artist, IDocument document)
+    {
+        var script = document.QuerySelector("script#serialized-server-data");
+        if (script is null)
+        {
+            _logger.LogTrace("Serialized page data not found");
+            return;
+        }
+
+        try
+        {
+            using var json = JsonDocument.Parse(script.TextContent);
+            if (FindWideArtwork(json.RootElement, artist.Id) is not { } artwork)
+            {
+                _logger.LogTrace("Artist wide artwork not found");
+                return;
+            }
+
+            var width = Math.Min(MaxBackdropWidth, artwork.Width);
+            artist.BackdropImageUrl = PluginUtils.ResolveArtworkUrl(artwork.Url, width, width / 2, "jpg", "sr");
+            artist.BackdropWidth = width;
+            artist.BackdropHeight = width / 2;
+        }
+        catch (System.Text.Json.JsonException ex)
+        {
+            _logger.LogDebug(ex, "Failed to parse serialized page data");
+        }
+    }
+
+    /// <summary>
+    /// Find the backdrop artwork of the item describing the artist itself (not e.g. a similar artist).
+    /// </summary>
+    private static (string Url, int Width, int Height)? FindWideArtwork(JsonElement element, string artistId)
+    {
+        if (element.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var item in element.EnumerateArray())
+            {
+                if (FindWideArtwork(item, artistId) is { } found)
+                {
+                    return found;
+                }
+            }
+        }
+        else if (element.ValueKind == JsonValueKind.Object)
+        {
+            if (element.TryGetProperty("contentDescriptor", out var descriptor)
+                && descriptor.ValueKind == JsonValueKind.Object
+                && descriptor.TryGetProperty("identifiers", out var identifiers)
+                && GetString(identifiers, "storeAdamID") == artistId)
+            {
+                // Not every artist has dedicated wide artwork; the artist photo is the next best thing.
+                // Artists without a photo get an album cover as artwork, which makes a poor backdrop.
+                foreach (var key in _backdropArtworkKeys)
+                {
+                    if (element.TryGetProperty(key, out var candidate)
+                        && candidate.ValueKind == JsonValueKind.Object
+                        && candidate.TryGetProperty("dictionary", out var artwork)
+                        && GetString(artwork, "url") is { } url
+                        && (key == "wideArtwork" || url.Contains("/AMCArtistImages", StringComparison.Ordinal))
+                        && artwork.TryGetProperty("width", out var width) && width.TryGetInt32(out var widthValue)
+                        && artwork.TryGetProperty("height", out var height) && height.TryGetInt32(out var heightValue))
+                    {
+                        return (url, widthValue, heightValue);
+                    }
+                }
+            }
+
+            foreach (var property in element.EnumerateObject())
+            {
+                if (FindWideArtwork(property.Value, artistId) is { } found)
+                {
+                    return found;
+                }
+            }
+        }
+
+        return null;
+    }
+
     private static string SanitizeDescription(string description)
     {
         var text = WebUtility.HtmlDecode(description);
@@ -83,6 +175,11 @@ public partial class ArtistScraper : IScraper<MusicArtist>
 
     [GeneratedRegex(@"<br\s*/?>", RegexOptions.IgnoreCase)]
     private static partial Regex BrTagRegex();
+
+    private static string? GetString(JsonElement element, string property)
+    {
+        return element.TryGetProperty(property, out var value) && value.ValueKind == JsonValueKind.String ? value.GetString() : null;
+    }
 
     [GeneratedRegex("<[^>]+>")]
     private static partial Regex HtmlTagRegex();

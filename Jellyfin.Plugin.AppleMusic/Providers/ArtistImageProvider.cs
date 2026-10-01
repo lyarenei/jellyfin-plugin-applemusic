@@ -46,7 +46,7 @@ public class ArtistImageProvider : IRemoteImageProvider
     /// <inheritdoc />
     public IEnumerable<ImageType> GetSupportedImages(BaseItem item)
     {
-        return new List<ImageType> { ImageType.Primary };
+        return new List<ImageType> { ImageType.Primary, ImageType.Backdrop };
     }
 
     /// <inheritdoc />
@@ -83,40 +83,45 @@ public class ArtistImageProvider : IRemoteImageProvider
         _logger.LogInformation("Found {Count} search results using term {SearchTerm}", searchResults.Count, artist.Name);
 
         return searchResults
-            .Where(sr => sr is ITunesArtist amArtist && !string.IsNullOrEmpty(amArtist.ImageUrl))
-            .Select(amArtist => new RemoteImageInfo
-            {
-                Height = 1400,
-                Width = 1400,
-                ProviderName = Name,
-                ThumbnailUrl = PluginUtils.UpdateImageSize(amArtist.ImageUrl!, "100x100cc"),
-                Type = ImageType.Primary,
-                Url = PluginUtils.UpdateImageSize(amArtist.ImageUrl!, "1400x1400cc"),
-            });
+            .OfType<ITunesArtist>()
+            .SelectMany(GetRemoteImages);
     }
 
     private async Task<List<RemoteImageInfo>> GetImageById(string appleMusicId, CancellationToken cancellationToken)
     {
         _logger.LogDebug("Looking up artist by ID {Id}", appleMusicId);
         var artistData = await _metadataSource.GetArtistAsync(appleMusicId, cancellationToken);
-        if (artistData?.ImageUrl is not null)
+        var images = artistData is null ? new List<RemoteImageInfo>() : GetRemoteImages(artistData).ToList();
+        _logger.LogDebug("Found {Count} images for artist ID {Id}", images.Count, appleMusicId);
+        return images;
+    }
+
+    private IEnumerable<RemoteImageInfo> GetRemoteImages(ITunesArtist artist)
+    {
+        if (!string.IsNullOrEmpty(artist.ImageUrl))
         {
-            _logger.LogDebug("Found image for artist ID {Id}", appleMusicId);
-            return
-            [
-                new RemoteImageInfo
-                {
-                    Height = 1400,
-                    Width = 1400,
-                    ProviderName = Name,
-                    ThumbnailUrl = PluginUtils.UpdateImageSize(artistData.ImageUrl, "100x100cc"),
-                    Type = ImageType.Primary,
-                    Url = PluginUtils.UpdateImageSize(artistData.ImageUrl, "1400x1400cc"),
-                },
-            ];
+            yield return new RemoteImageInfo
+            {
+                Height = 1400,
+                Width = 1400,
+                ProviderName = Name,
+                ThumbnailUrl = PluginUtils.UpdateImageSize(artist.ImageUrl, "100x100cc"),
+                Type = ImageType.Primary,
+                Url = PluginUtils.UpdateImageSize(artist.ImageUrl, "1400x1400cc"),
+            };
         }
 
-        _logger.LogDebug("No image found for artist ID {Id}", appleMusicId);
-        return new List<RemoteImageInfo>();
+        if (!string.IsNullOrEmpty(artist.BackdropImageUrl))
+        {
+            yield return new RemoteImageInfo
+            {
+                Height = artist.BackdropHeight,
+                Width = artist.BackdropWidth,
+                ProviderName = Name,
+                ThumbnailUrl = artist.BackdropImageUrl.Replace($"/{artist.BackdropWidth}x{artist.BackdropHeight}sr.", "/400x200sr.", StringComparison.Ordinal),
+                Type = ImageType.Backdrop,
+                Url = artist.BackdropImageUrl,
+            };
+        }
     }
 }
