@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 using Jellyfin.Plugin.AppleMusic.Dtos;
 using Jellyfin.Plugin.AppleMusic.ExternalIds;
 using Jellyfin.Plugin.AppleMusic.MetadataSources;
+using Jellyfin.Plugin.AppleMusic.MusicBrainz;
 using Jellyfin.Plugin.AppleMusic.Utils;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
+using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
@@ -26,18 +28,21 @@ public class ArtistImageProvider : IRemoteImageProvider
     private readonly HttpClient _httpClient;
     private readonly ILogger<ArtistImageProvider> _logger;
     private readonly IMetadataSource _metadataSource;
+    private readonly AppleMusicIdResolver _idResolver;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ArtistImageProvider"/> class.
     /// </summary>
     /// <param name="httpClientFactory">Instance of the <see cref="IHttpClientFactory"/> interface.</param>
     /// <param name="loggerFactory">Logger factory.</param>
+    /// <param name="libraryManager">Instance of the <see cref="ILibraryManager"/> interface.</param>
     /// <param name="source">Metadata source. If null, a default source will be used.</param>
-    public ArtistImageProvider(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory, IMetadataSource? source = null)
+    public ArtistImageProvider(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory, ILibraryManager libraryManager, IMetadataSource? source = null)
     {
         _httpClient = httpClientFactory.CreateClient(NamedClient.Default);
         _logger = loggerFactory.CreateLogger<ArtistImageProvider>();
         _metadataSource = source ?? MetadataSourceFactory.Create(httpClientFactory, loggerFactory);
+        _idResolver = new AppleMusicIdResolver(httpClientFactory, libraryManager, loggerFactory.CreateLogger<AppleMusicIdResolver>());
     }
 
     /// <inheritdoc />
@@ -76,11 +81,24 @@ public class ArtistImageProvider : IRemoteImageProvider
             return results;
         }
 
-        _logger.LogInformation("Apple Music artist ID is not available, using search with artist name");
+        var match = await _idResolver.ResolveArtistAsync(artist, cancellationToken);
+        if (match.AppleMusicId is not null)
+        {
+            _logger.LogInformation("Resolved Apple Music ID {Id} for artist {Name} via {Source}", match.AppleMusicId, artist.Name, match.Source);
+            var results = await GetImageById(match.AppleMusicId, cancellationToken);
+            if (results.Count > 0)
+            {
+                return results;
+            }
+        }
 
-        var searchResults = await _metadataSource.SearchAsync(artist.Name, ItemType.Artist, cancellationToken);
+        // The MusicBrainz name is a better search term than the item name, which may be a folder name.
+        var searchTerm = match.IsCollaboration ? artist.Name : match.MusicBrainzName ?? artist.Name;
+        _logger.LogInformation("Apple Music artist ID is not available ({Reason}), using search with term {SearchTerm}", match.Source, searchTerm);
 
-        _logger.LogInformation("Found {Count} search results using term {SearchTerm}", searchResults.Count, artist.Name);
+        var searchResults = await _metadataSource.SearchAsync(searchTerm, ItemType.Artist, cancellationToken);
+
+        _logger.LogInformation("Found {Count} search results using term {SearchTerm}", searchResults.Count, searchTerm);
 
         return searchResults
             .OfType<ITunesArtist>()
