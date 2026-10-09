@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using AngleSharp;
 using AngleSharp.Dom;
-using AngleSharp.Html.Dom;
 using AngleSharp.XPath;
 using Jellyfin.Plugin.AppleMusic.Dtos;
 using Jellyfin.Plugin.AppleMusic.MetadataSources.Web.Schema;
@@ -33,7 +31,6 @@ public class AlbumScraper : IScraper<MusicAlbum>
     public AlbumScraper(ILogger<AlbumScraper> logger)
     {
         _logger = logger;
-        AngleSharp.Configuration.Default.WithDefaultLoader();
     }
 
     /// <inheritdoc />
@@ -109,22 +106,11 @@ public class AlbumScraper : IScraper<MusicAlbum>
         {
             if (string.IsNullOrEmpty(node.TextContent))
             {
-                _logger.LogTrace("Artist name is empty, skipping");
+                _logger.LogDebug("Artist name is empty, skipping");
                 continue;
             }
 
-            var newArtist = new ITunesArtist
-            {
-                Name = node.TextContent.Trim(),
-            };
-
-            if (node is IHtmlAnchorElement anchor)
-            {
-                _logger.LogTrace("Adding URL to artist: {Url}", anchor.Href);
-                newArtist.Url = anchor.Href;
-            }
-
-            artists.Add(newArtist);
+            artists.Add(new ITunesArtist { Name = node.TextContent.Trim(), });
         }
 
         return artists;
