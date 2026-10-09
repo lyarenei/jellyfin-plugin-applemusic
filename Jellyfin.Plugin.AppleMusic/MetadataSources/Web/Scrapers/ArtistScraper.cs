@@ -60,8 +60,7 @@ public partial class ArtistScraper : IScraper<MusicArtist>
 
         if (string.IsNullOrEmpty(artistData?.Name))
         {
-            // TODO: should be caught by HasMetadata(), investigate
-            _logger.LogTrace("Artist name not found");
+            _logger.LogDebug("Artist name not available");
             return null;
         }
 
