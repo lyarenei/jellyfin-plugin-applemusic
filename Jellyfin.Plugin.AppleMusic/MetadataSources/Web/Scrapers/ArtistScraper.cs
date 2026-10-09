@@ -29,7 +29,14 @@ public partial class ArtistScraper : IScraper<MusicArtist>
     /// <inheritdoc />
     public IITunesItem? Scrape(IDocument document)
     {
-        var artist = ScrapeSchema(document);
+        var script = document.GetElementById("schema:music-group");
+        if (script is null)
+        {
+            _logger.LogDebug("No schema.org artist data found");
+            return null;
+        }
+
+        var artist = ParseArtist(script.TextContent, document.Url);
         if (artist is not null)
         {
             _logger.LogDebug("Artist scraping completed");
@@ -38,41 +45,34 @@ public partial class ArtistScraper : IScraper<MusicArtist>
         return artist;
     }
 
-    private ITunesArtist? ScrapeSchema(IDocument document)
+    private ITunesArtist? ParseArtist(string schemaJson, string url)
     {
-        foreach (var script in document.QuerySelectorAll("script[type='application/ld+json']"))
+        try
         {
-            try
+            using var json = JsonDocument.Parse(schemaJson);
+            var root = json.RootElement;
+            if (root.ValueKind != JsonValueKind.Object || GetString(root, "name") is not { Length: > 0 } name)
             {
-                using var json = JsonDocument.Parse(script.TextContent);
-                var root = json.RootElement;
-                if (root.ValueKind != JsonValueKind.Object
-                    || !root.TryGetProperty("@type", out var type)
-                    || type.GetString() is not ("MusicGroup" or "Person")
-                    || GetString(root, "name") is not { Length: > 0 } name)
-                {
-                    continue;
-                }
+                _logger.LogTrace("Artist name not found");
+                return null;
+            }
 
-                var imageUrl = GetString(root, "image");
-                var about = GetString(root, "description");
-                return new ITunesArtist
-                {
-                    Name = name.Trim(),
-                    ImageUrl = imageUrl is null ? null : PluginUtils.UpdateImageSize(imageUrl, "1400x1400cc"),
-                    About = about is null ? null : HtmlTagRegex().Replace(about, string.Empty),
-                    Url = document.Url,
-                    Id = PluginUtils.GetIdFromUrl(document.Url),
-                };
-            }
-            catch (JsonException ex)
+            var imageUrl = GetString(root, "image");
+            var about = GetString(root, "description");
+            return new ITunesArtist
             {
-                _logger.LogDebug(ex, "Failed to parse schema.org data");
-            }
+                Name = name.Trim(),
+                ImageUrl = imageUrl is null ? null : PluginUtils.UpdateImageSize(imageUrl, "1400x1400cc"),
+                About = about is null ? null : HtmlTagRegex().Replace(about, string.Empty),
+                Url = url,
+                Id = PluginUtils.GetIdFromUrl(url),
+            };
         }
-
-        _logger.LogTrace("No schema.org artist data found");
-        return null;
+        catch (JsonException ex)
+        {
+            _logger.LogDebug(ex, "Failed to parse schema.org data");
+            return null;
+        }
     }
 
     private static string? GetString(JsonElement element, string property)
