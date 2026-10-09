@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Text.RegularExpressions;
 using AngleSharp;
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
@@ -23,9 +22,6 @@ public class AlbumScraper : IScraper<MusicAlbum>
     private const string AlbumArtistLinkXPath = "//a[@data-testid='click-action']";
     private const string AlbumArtistSubtitleXPath = "//div[@data-testid='product-subtitles']";
     private const string AboutXPath = "//p[@data-testid='truncate-text']";
-    private const string AlbumDescriptionXPath = "//p[@data-testid='tracklist-footer-description']";
-
-    private const string AlbumDescRegex = @"(?'date'\w+ \d+, \d+)\W(?'runtime'\d+)\W+(?'runtimeUnit'\w+)\W+(?'productionYear'\d+)\W+(?'producer'\w+)";
 
     private readonly ILogger<AlbumScraper> _logger;
 
@@ -60,8 +56,6 @@ public class AlbumScraper : IScraper<MusicAlbum>
 
         var artists = ParseAlbumArtists(document);
         var aboutText = document.Body.SelectSingleNode(AlbumDetailXPath + AboutXPath)?.TextContent;
-        var descString = document.Body.SelectSingleNode(AlbumDescriptionXPath)?.TextContent;
-        var parsedDesc = ParseDescription(descString);
 
         _logger.LogDebug("Album scraping completed");
 
@@ -127,24 +121,6 @@ public class AlbumScraper : IScraper<MusicAlbum>
         }
 
         return artists;
-    }
-
-    private (DateTime Date, int ProductionYear)? ParseDescription(string? details)
-    {
-        if (details is null)
-        {
-            return null;
-        }
-
-        var match = Regex.Match(details, AlbumDescRegex, RegexOptions.Multiline);
-        if (!match.Groups["date"].Success || !match.Groups["productionYear"].Success)
-        {
-            _logger.LogDebug("Failed to parse album details {Details}", details);
-        }
-
-        var date = DateTime.ParseExact(match.Groups["date"].Value, "MMMM d, yyyy", DateTimeFormatInfo.InvariantInfo);
-        var prodYear = int.Parse(match.Groups["productionYear"].Value, NumberStyles.Any, NumberFormatInfo.InvariantInfo);
-        return (date, prodYear);
     }
 
     private Schema.MusicAlbum? ParseAlbumData(string json)
