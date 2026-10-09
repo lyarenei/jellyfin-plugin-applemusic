@@ -15,4 +15,4 @@ artifacts:
 - "Jellyfin.Plugin.AppleMusic.dll"
 changelog: >
   This version contains the following changes:
-      - Artist metadata scraping from schema.org instead of HTML elements
+    - Artist metadata scraping from schema.org instead of HTML elements
