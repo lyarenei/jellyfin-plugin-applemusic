@@ -14,5 +14,5 @@ artifacts:
 - "AngleSharp.XPath.dll"
 - "Jellyfin.Plugin.AppleMusic.dll"
 changelog: >
-  Fix:
-    - Albums without artist (e.g., compilation albums) not being fetched
+  This version contains the following changes:
+      - Artist metadata scraping from schema.org instead of HTML elements
