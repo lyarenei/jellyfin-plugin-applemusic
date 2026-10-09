@@ -55,6 +55,8 @@ public class AlbumScraper : IScraper<MusicAlbum>
         _logger.LogDebug("Processing optional album details");
 
         var artists = ParseAlbumArtists(document);
+
+        // albumData.Description contains generic text => read from HTML DOM
         var aboutText = document.Body.SelectSingleNode(AlbumDetailXPath + AboutXPath)?.TextContent;
 
         _logger.LogDebug("Album scraping completed");
