@@ -1,27 +1,20 @@
-using System.Linq;
-using AngleSharp;
+using System.Net;
+using System.Text.RegularExpressions;
 using AngleSharp.Dom;
-using AngleSharp.Html.Dom;
-using AngleSharp.XPath;
 using Jellyfin.Plugin.AppleMusic.Dtos;
+using Jellyfin.Plugin.AppleMusic.MetadataSources.Web.Schema;
 using Jellyfin.Plugin.AppleMusic.Utils;
 using MediaBrowser.Controller.Entities.Audio;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Jellyfin.Plugin.AppleMusic.MetadataSources.Web.Scrapers;
 
 /// <summary>
 /// Apple Music artist metadata scraper.
 /// </summary>
-public class ArtistScraper : IScraper<MusicArtist>
+public partial class ArtistScraper : IScraper<MusicArtist>
 {
-    private const string ImageXPath = "//div[@data-testid='artist-detail-header']" +
-                                      "//div[@data-testid='artwork-component']" +
-                                      "//source[@type='image/jpeg']/@srcset";
-
-    private const string ArtistNameXPath = "//h1[@data-testid='artist-header-name']";
-    private const string OverviewXPath = "//p[@data-testid='truncate-text']";
-
     private readonly ILogger<ArtistScraper> _logger;
 
     /// <summary>
@@ -31,57 +24,66 @@ public class ArtistScraper : IScraper<MusicArtist>
     public ArtistScraper(ILogger<ArtistScraper> logger)
     {
         _logger = logger;
-        AngleSharp.Configuration.Default.WithDefaultLoader();
     }
 
     /// <inheritdoc />
     public IITunesItem? Scrape(IDocument document)
     {
-        var artistName = document.Body.SelectSingleNode(ArtistNameXPath)?.TextContent;
-        if (artistName is null)
+        var script = document.GetElementById("schema:music-group");
+        if (script is null)
         {
-            _logger.LogTrace("Artist name not found");
+            _logger.LogDebug("No schema.org artist data found");
             return null;
         }
 
-        _logger.LogTrace("Found artist name");
-
-        var overview = document.Body.SelectSingleNode(OverviewXPath)?.TextContent;
-        if (overview is null)
+        var artist = ParseArtist(script.TextContent, document.Url);
+        if (artist is not null)
         {
-            _logger.LogTrace("Artist overview not found");
-        }
-        else
-        {
-            _logger.LogTrace("Found artist overview");
+            _logger.LogDebug("Artist scraping completed");
         }
 
-        var imageUrl = GetImageUrl(document.Body);
-        if (imageUrl is null)
+        return artist;
+    }
+
+    private ITunesArtist? ParseArtist(string json, string url)
+    {
+        MusicGroup? artistData;
+        try
         {
-            _logger.LogTrace("Artist image not found");
+            artistData = JsonConvert.DeserializeObject<MusicGroup>(json);
         }
-        else
+        catch (JsonException ex)
         {
-            _logger.LogTrace("Found artist image");
-            imageUrl = PluginUtils.UpdateImageSize(imageUrl, "1400x1400cc");
+            _logger.LogDebug(ex, "Failed to parse schema.org (MusicGroup) data");
+            return null;
         }
 
-        _logger.LogDebug("Artist scraping completed");
+        if (string.IsNullOrEmpty(artistData?.Name))
+        {
+            _logger.LogDebug("Artist name not available");
+            return null;
+        }
 
         return new ITunesArtist
         {
-            ImageUrl = imageUrl,
-            Name = artistName.Trim(),
-            About = overview,
-            Url = document.Url,
-            Id = PluginUtils.GetIdFromUrl(document.Url),
+            Name = artistData.Name.Trim(),
+            ImageUrl = artistData.Image is null ? null : PluginUtils.UpdateImageSize(artistData.Image, "1400x1400cc"),
+            About = artistData.Description is null ? null : SanitizeDescription(artistData.Description),
+            Url = url,
+            Id = PluginUtils.GetIdFromUrl(url),
         };
     }
 
-    private static string? GetImageUrl(IHtmlElement? body)
+    private static string SanitizeDescription(string description)
     {
-        var content = body?.SelectSingleNode(ImageXPath)?.TextContent;
-        return content?.Split(' ').FirstOrDefault();
+        var text = WebUtility.HtmlDecode(description);
+        text = BrTagRegex().Replace(text, "\n");
+        return HtmlTagRegex().Replace(text, string.Empty);
     }
+
+    [GeneratedRegex(@"<br\s*/?>", RegexOptions.IgnoreCase)]
+    private static partial Regex BrTagRegex();
+
+    [GeneratedRegex("<[^>]+>")]
+    private static partial Regex HtmlTagRegex();
 }

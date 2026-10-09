@@ -1,7 +1,7 @@
 ---
 name: "Apple Music"
 guid: "a9f62a44-fea5-46c3-ac26-55abba29c7c8"
-version: "3.0.7.3"
+version: "3.0.8.2"
 targetAbi: "10.10.0.0"
 framework: "net8.0"
 overview: "Fetch images and metadata from Apple Music."
@@ -14,5 +14,5 @@ artifacts:
 - "AngleSharp.XPath.dll"
 - "Jellyfin.Plugin.AppleMusic.dll"
 changelog: >
-  Fix:
-    - Albums without artist (e.g., compilation albums) not being fetched
+  This version contains the following changes:
+    - Artist metadata scraping from schema.org instead of HTML elements
