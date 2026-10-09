@@ -1,6 +1,5 @@
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using AngleSharp;
 using AngleSharp.Dom;
 using Jellyfin.Plugin.AppleMusic.Dtos;
 using Jellyfin.Plugin.AppleMusic.Utils;
@@ -23,7 +22,6 @@ public partial class ArtistScraper : IScraper<MusicArtist>
     public ArtistScraper(ILogger<ArtistScraper> logger)
     {
         _logger = logger;
-        AngleSharp.Configuration.Default.WithDefaultLoader();
     }
 
     /// <inheritdoc />
