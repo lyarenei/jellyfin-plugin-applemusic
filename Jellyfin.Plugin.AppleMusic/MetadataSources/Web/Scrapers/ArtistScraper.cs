@@ -1,3 +1,4 @@
+using System.Net;
 using System.Text.RegularExpressions;
 using AngleSharp.Dom;
 using Jellyfin.Plugin.AppleMusic.Dtos;
@@ -68,7 +69,7 @@ public partial class ArtistScraper : IScraper<MusicArtist>
         {
             Name = artistData.Name.Trim(),
             ImageUrl = artistData.Image is null ? null : PluginUtils.UpdateImageSize(artistData.Image, "1400x1400cc"),
-            About = artistData.Description is null ? null : HtmlTagRegex().Replace(artistData.Description, string.Empty),
+            About = artistData.Description is null ? null : HtmlTagRegex().Replace(WebUtility.HtmlDecode(artistData.Description), string.Empty),
             Url = url,
             Id = PluginUtils.GetIdFromUrl(url),
         };
