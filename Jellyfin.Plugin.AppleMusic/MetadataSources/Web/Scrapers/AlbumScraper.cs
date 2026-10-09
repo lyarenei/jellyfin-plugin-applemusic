@@ -70,7 +70,7 @@ public class AlbumScraper : IScraper<MusicAlbum>
             Name = albumData.Name.Trim(),
             Artists = artists,
             ImageUrl = albumData.Image is null ? null : PluginUtils.UpdateImageSize(albumData.Image, "1400x1400cc"),
-            ReleaseDate = parsedDesc?.Date,
+            ReleaseDate = ParseReleaseDate(albumData.DatePublished),
             About = aboutText,
             Url = document.Url,
             Id = PluginUtils.GetIdFromUrl(document.Url),
@@ -158,5 +158,21 @@ public class AlbumScraper : IScraper<MusicAlbum>
             _logger.LogDebug(ex, "Failed to parse schema.org (MusicAlbum) data");
             return null;
         }
+    }
+
+    private DateTime? ParseReleaseDate(string? date)
+    {
+        if (date is null)
+        {
+            return null;
+        }
+
+        if (DateTime.TryParseExact(date, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var releaseDate))
+        {
+            return releaseDate;
+        }
+
+        _logger.LogDebug("Failed to parse album release date {Date}", date);
+        return null;
     }
 }
