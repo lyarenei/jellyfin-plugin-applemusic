@@ -25,7 +25,6 @@ public class AlbumScraper : IScraper<MusicAlbum>
                                       "//source[@type='image/jpeg']/@srcset";
 
     private const string AlbumDetailXPath = "//div[@data-testid='container-detail-header']";
-    private const string AlbumNameXPath = "//h1[@data-testid='non-editable-product-title']";
     private const string AlbumArtistLinkXPath = "//a[@data-testid='click-action']";
     private const string AlbumArtistSubtitleXPath = "//div[@data-testid='product-subtitles']";
     private const string AboutXPath = "//p[@data-testid='truncate-text']";
@@ -62,15 +61,6 @@ public class AlbumScraper : IScraper<MusicAlbum>
             return null;
         }
 
-        var albumName = document.Body.SelectSingleNode(AlbumDetailXPath + AlbumNameXPath)?.TextContent;
-        if (albumName is null)
-        {
-            _logger.LogTrace("Album name not found");
-            return null;
-        }
-
-        _logger.LogTrace("Found album name");
-
         var imageUrl = GetImageUrl(document.Body);
         if (imageUrl is null)
         {
@@ -92,7 +82,7 @@ public class AlbumScraper : IScraper<MusicAlbum>
 
         return new ITunesAlbum
         {
-            Name = albumName.Trim(),
+            Name = albumData.Name.Trim(),
             Artists = artists,
             ImageUrl = imageUrl,
             ReleaseDate = parsedDesc?.Date,
