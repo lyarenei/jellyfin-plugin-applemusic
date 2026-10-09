@@ -1,10 +1,7 @@
-using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using AngleSharp;
 using AngleSharp.Dom;
-using AngleSharp.Html.Dom;
-using AngleSharp.XPath;
 using Jellyfin.Plugin.AppleMusic.Dtos;
 using Jellyfin.Plugin.AppleMusic.Utils;
 using MediaBrowser.Controller.Entities.Audio;
@@ -17,13 +14,6 @@ namespace Jellyfin.Plugin.AppleMusic.MetadataSources.Web.Scrapers;
 /// </summary>
 public partial class ArtistScraper : IScraper<MusicArtist>
 {
-    private const string ImageXPath = "//div[@data-testid='artist-detail-header']" +
-                                      "//div[@data-testid='artwork-component']" +
-                                      "//source[@type='image/jpeg']/@srcset";
-
-    private const string ArtistNameXPath = "//h1[@data-testid='artist-header-name']";
-    private const string OverviewXPath = "//p[@data-testid='truncate-text']";
-
     private readonly ILogger<ArtistScraper> _logger;
 
     /// <summary>
@@ -39,53 +29,13 @@ public partial class ArtistScraper : IScraper<MusicArtist>
     /// <inheritdoc />
     public IITunesItem? Scrape(IDocument document)
     {
-        var schemaArtist = ScrapeSchema(document);
-        if (schemaArtist is not null)
+        var artist = ScrapeSchema(document);
+        if (artist is not null)
         {
-            _logger.LogDebug("Artist scraping completed using schema.org data");
-            return schemaArtist;
+            _logger.LogDebug("Artist scraping completed");
         }
 
-        var artistName = document.Body.SelectSingleNode(ArtistNameXPath)?.TextContent;
-        if (artistName is null)
-        {
-            _logger.LogTrace("Artist name not found");
-            return null;
-        }
-
-        _logger.LogTrace("Found artist name");
-
-        var overview = document.Body.SelectSingleNode(OverviewXPath)?.TextContent;
-        if (overview is null)
-        {
-            _logger.LogTrace("Artist overview not found");
-        }
-        else
-        {
-            _logger.LogTrace("Found artist overview");
-        }
-
-        var imageUrl = GetImageUrl(document.Body);
-        if (imageUrl is null)
-        {
-            _logger.LogTrace("Artist image not found");
-        }
-        else
-        {
-            _logger.LogTrace("Found artist image");
-            imageUrl = PluginUtils.UpdateImageSize(imageUrl, "1400x1400cc");
-        }
-
-        _logger.LogDebug("Artist scraping completed");
-
-        return new ITunesArtist
-        {
-            ImageUrl = imageUrl,
-            Name = artistName.Trim(),
-            About = overview,
-            Url = document.Url,
-            Id = PluginUtils.GetIdFromUrl(document.Url),
-        };
+        return artist;
     }
 
     /// <summary>
@@ -136,10 +86,4 @@ public partial class ArtistScraper : IScraper<MusicArtist>
 
     [GeneratedRegex("<[^>]+>")]
     private static partial Regex HtmlTagRegex();
-
-    private static string? GetImageUrl(IHtmlElement? body)
-    {
-        var content = body?.SelectSingleNode(ImageXPath)?.TextContent;
-        return content?.Split(' ').FirstOrDefault();
-    }
 }
