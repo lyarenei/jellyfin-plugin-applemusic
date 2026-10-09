@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text.RegularExpressions;
 using AngleSharp;
 using AngleSharp.Dom;
@@ -20,10 +19,6 @@ namespace Jellyfin.Plugin.AppleMusic.MetadataSources.Web.Scrapers;
 /// </summary>
 public class AlbumScraper : IScraper<MusicAlbum>
 {
-    private const string ImageXPath = "//div[@data-testid='container-detail-header']" +
-                                      "//div[@data-testid='artwork-component']" +
-                                      "//source[@type='image/jpeg']/@srcset";
-
     private const string AlbumDetailXPath = "//div[@data-testid='container-detail-header']";
     private const string AlbumArtistLinkXPath = "//a[@data-testid='click-action']";
     private const string AlbumArtistSubtitleXPath = "//div[@data-testid='product-subtitles']";
@@ -61,16 +56,6 @@ public class AlbumScraper : IScraper<MusicAlbum>
             return null;
         }
 
-        var imageUrl = GetImageUrl(document.Body);
-        if (imageUrl is null)
-        {
-            _logger.LogTrace("No album image found");
-        }
-        else
-        {
-            _logger.LogTrace("Found album image");
-        }
-
         _logger.LogDebug("Processing optional album details");
 
         var artists = ParseAlbumArtists(document);
@@ -84,7 +69,7 @@ public class AlbumScraper : IScraper<MusicAlbum>
         {
             Name = albumData.Name.Trim(),
             Artists = artists,
-            ImageUrl = imageUrl,
+            ImageUrl = albumData.Image is null ? null : PluginUtils.UpdateImageSize(albumData.Image, "1400x1400cc"),
             ReleaseDate = parsedDesc?.Date,
             About = aboutText,
             Url = document.Url,
@@ -160,12 +145,6 @@ public class AlbumScraper : IScraper<MusicAlbum>
         var date = DateTime.ParseExact(match.Groups["date"].Value, "MMMM d, yyyy", DateTimeFormatInfo.InvariantInfo);
         var prodYear = int.Parse(match.Groups["productionYear"].Value, NumberStyles.Any, NumberFormatInfo.InvariantInfo);
         return (date, prodYear);
-    }
-
-    private static string? GetImageUrl(IHtmlElement? body)
-    {
-        var content = body?.SelectSingleNode(ImageXPath)?.TextContent;
-        return content?.Split(' ').FirstOrDefault();
     }
 
     private Schema.MusicAlbum? ParseAlbumData(string json)
