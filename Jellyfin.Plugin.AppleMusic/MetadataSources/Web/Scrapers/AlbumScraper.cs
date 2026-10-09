@@ -11,6 +11,7 @@ using Jellyfin.Plugin.AppleMusic.Dtos;
 using Jellyfin.Plugin.AppleMusic.Utils;
 using MediaBrowser.Controller.Entities.Audio;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Jellyfin.Plugin.AppleMusic.MetadataSources.Web.Scrapers;
 
@@ -47,6 +48,20 @@ public class AlbumScraper : IScraper<MusicAlbum>
     /// <inheritdoc />
     public IITunesItem? Scrape(IDocument document)
     {
+        var script = document.GetElementById("schema:music-album");
+        if (script is null)
+        {
+            _logger.LogDebug("No schema.org album data found");
+            return null;
+        }
+
+        var albumData = ParseAlbumData(script.TextContent);
+        if (string.IsNullOrEmpty(albumData?.Name))
+        {
+            _logger.LogDebug("Album name not available");
+            return null;
+        }
+
         var albumName = document.Body.SelectSingleNode(AlbumDetailXPath + AlbumNameXPath)?.TextContent;
         if (albumName is null)
         {
@@ -161,5 +176,18 @@ public class AlbumScraper : IScraper<MusicAlbum>
     {
         var content = body?.SelectSingleNode(ImageXPath)?.TextContent;
         return content?.Split(' ').FirstOrDefault();
+    }
+
+    private Schema.MusicAlbum? ParseAlbumData(string json)
+    {
+        try
+        {
+            return JsonConvert.DeserializeObject<Schema.MusicAlbum>(json);
+        }
+        catch (JsonException ex)
+        {
+            _logger.LogDebug(ex, "Failed to parse schema.org (MusicAlbum) data");
+            return null;
+        }
     }
 }
