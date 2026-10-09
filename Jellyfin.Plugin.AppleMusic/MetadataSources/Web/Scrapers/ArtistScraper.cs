@@ -1,10 +1,11 @@
-using System.Text.Json;
 using System.Text.RegularExpressions;
 using AngleSharp.Dom;
 using Jellyfin.Plugin.AppleMusic.Dtos;
+using Jellyfin.Plugin.AppleMusic.MetadataSources.Web.Schema;
 using Jellyfin.Plugin.AppleMusic.Utils;
 using MediaBrowser.Controller.Entities.Audio;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Jellyfin.Plugin.AppleMusic.MetadataSources.Web.Scrapers;
 
@@ -43,39 +44,34 @@ public partial class ArtistScraper : IScraper<MusicArtist>
         return artist;
     }
 
-    private ITunesArtist? ParseArtist(string schemaJson, string url)
+    private ITunesArtist? ParseArtist(string json, string url)
     {
+        MusicGroup? artistData;
         try
         {
-            using var json = JsonDocument.Parse(schemaJson);
-            var root = json.RootElement;
-            if (root.ValueKind != JsonValueKind.Object || GetString(root, "name") is not { Length: > 0 } name)
-            {
-                _logger.LogTrace("Artist name not found");
-                return null;
-            }
-
-            var imageUrl = GetString(root, "image");
-            var about = GetString(root, "description");
-            return new ITunesArtist
-            {
-                Name = name.Trim(),
-                ImageUrl = imageUrl is null ? null : PluginUtils.UpdateImageSize(imageUrl, "1400x1400cc"),
-                About = about is null ? null : HtmlTagRegex().Replace(about, string.Empty),
-                Url = url,
-                Id = PluginUtils.GetIdFromUrl(url),
-            };
+            artistData = JsonConvert.DeserializeObject<MusicGroup>(json);
         }
         catch (JsonException ex)
         {
-            _logger.LogDebug(ex, "Failed to parse schema.org data");
+            _logger.LogDebug(ex, "Failed to parse schema.org (MusicGroup) data");
             return null;
         }
-    }
 
-    private static string? GetString(JsonElement element, string property)
-    {
-        return element.TryGetProperty(property, out var value) && value.ValueKind == JsonValueKind.String ? value.GetString() : null;
+        if (string.IsNullOrEmpty(artistData?.Name))
+        {
+            // TODO: should be caught by HasMetadata(), investigate
+            _logger.LogTrace("Artist name not found");
+            return null;
+        }
+
+        return new ITunesArtist
+        {
+            Name = artistData.Name.Trim(),
+            ImageUrl = artistData.Image is null ? null : PluginUtils.UpdateImageSize(artistData.Image, "1400x1400cc"),
+            About = artistData.Description is null ? null : HtmlTagRegex().Replace(artistData.Description, string.Empty),
+            Url = url,
+            Id = PluginUtils.GetIdFromUrl(url),
+        };
     }
 
     [GeneratedRegex("<[^>]+>")]
