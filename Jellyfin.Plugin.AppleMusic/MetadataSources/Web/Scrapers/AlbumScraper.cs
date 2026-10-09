@@ -1,15 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using AngleSharp;
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using AngleSharp.XPath;
 using Jellyfin.Plugin.AppleMusic.Dtos;
+using Jellyfin.Plugin.AppleMusic.MetadataSources.Web.Schema;
 using Jellyfin.Plugin.AppleMusic.Utils;
-using MediaBrowser.Controller.Entities.Audio;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using MusicAlbum = MediaBrowser.Controller.Entities.Audio.MusicAlbum;
 
 namespace Jellyfin.Plugin.AppleMusic.MetadataSources.Web.Scrapers;
 
@@ -19,7 +21,6 @@ namespace Jellyfin.Plugin.AppleMusic.MetadataSources.Web.Scrapers;
 public class AlbumScraper : IScraper<MusicAlbum>
 {
     private const string AlbumDetailXPath = "//div[@data-testid='container-detail-header']";
-    private const string AlbumArtistLinkXPath = "//a[@data-testid='click-action']";
     private const string AlbumArtistSubtitleXPath = "//div[@data-testid='product-subtitles']";
     private const string AboutXPath = "//p[@data-testid='truncate-text']";
 
@@ -54,7 +55,7 @@ public class AlbumScraper : IScraper<MusicAlbum>
 
         _logger.LogDebug("Processing optional album details");
 
-        var artists = ParseAlbumArtists(document);
+        var artists = ParseAlbumArtists(albumData.ByArtist, document);
 
         // albumData.Description contains generic text => read from HTML DOM
         var aboutText = document.Body.SelectSingleNode(AlbumDetailXPath + AboutXPath)?.TextContent;
@@ -73,19 +74,23 @@ public class AlbumScraper : IScraper<MusicAlbum>
         };
     }
 
-    private List<ITunesArtist> ParseAlbumArtists(IDocument document)
+    private List<ITunesArtist> ParseAlbumArtists(IReadOnlyList<MusicGroup>? albumArtists, IDocument document)
     {
-        // Artists with links => we can scrape them
-        var artistLinkNodes = document.Body.SelectNodes(AlbumDetailXPath + AlbumArtistLinkXPath);
-        if (artistLinkNodes.Count > 0)
+        // Artists from albumData can be scraped (have URL)
+        var artists = (albumArtists ?? [])
+            .Where(artist => !string.IsNullOrEmpty(artist.Name))
+            .Select(artist => new ITunesArtist { Name = artist.Name!.Trim(), Url = artist.Url ?? string.Empty })
+            .ToList();
+
+        if (artists.Count > 0)
         {
-            _logger.LogDebug("Found {Count} artist nodes in album", artistLinkNodes.Count);
-            return ParseArtists(artistLinkNodes);
+            _logger.LogDebug("Parsed {Count} artists from album", artists.Count);
+            return artists;
         }
 
-        _logger.LogTrace("No album artists with links found, trying to parse artists from subtitle");
+        _logger.LogDebug("No scrape-able artists are available, trying to parse artists from subtitle");
 
-        // Artists without links => we can only get their names
+        // Artists may still be outside albumData (compilations, etc...), these have no URLs
         var artistSubtitleNodes = document.Body.SelectNodes(AlbumDetailXPath + AlbumArtistSubtitleXPath);
         if (artistSubtitleNodes.Count > 0)
         {
