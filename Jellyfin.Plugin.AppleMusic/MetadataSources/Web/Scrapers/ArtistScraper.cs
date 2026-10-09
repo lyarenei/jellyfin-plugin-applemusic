@@ -38,10 +38,6 @@ public partial class ArtistScraper : IScraper<MusicArtist>
         return artist;
     }
 
-    /// <summary>
-    /// Scrape the schema.org JSON-LD data embedded in the artist page.
-    /// This is more stable than the page markup, which Apple changes from time to time.
-    /// </summary>
     private ITunesArtist? ScrapeSchema(IDocument document)
     {
         foreach (var script in document.QuerySelectorAll("script[type='application/ld+json']"))
