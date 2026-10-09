@@ -68,11 +68,21 @@ public partial class ArtistScraper : IScraper<MusicArtist>
         {
             Name = artistData.Name.Trim(),
             ImageUrl = artistData.Image is null ? null : PluginUtils.UpdateImageSize(artistData.Image, "1400x1400cc"),
-            About = artistData.Description is null ? null : HtmlTagRegex().Replace(WebUtility.HtmlDecode(artistData.Description), string.Empty),
+            About = artistData.Description is null ? null : SanitizeDescription(artistData.Description),
             Url = url,
             Id = PluginUtils.GetIdFromUrl(url),
         };
     }
+
+    private static string SanitizeDescription(string description)
+    {
+        var text = WebUtility.HtmlDecode(description);
+        text = BrTagRegex().Replace(text, "\n");
+        return HtmlTagRegex().Replace(text, string.Empty);
+    }
+
+    [GeneratedRegex(@"<br\s*/?>", RegexOptions.IgnoreCase)]
+    private static partial Regex BrTagRegex();
 
     [GeneratedRegex("<[^>]+>")]
     private static partial Regex HtmlTagRegex();
