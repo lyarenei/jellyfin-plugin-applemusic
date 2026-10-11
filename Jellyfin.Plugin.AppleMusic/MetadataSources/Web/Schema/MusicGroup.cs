@@ -24,4 +24,10 @@ public class MusicGroup
     /// </summary>
     [JsonProperty("image")]
     public string? Image { get; set; }
+
+    /// <summary>
+    /// Gets or sets the artist URL.
+    /// </summary>
+    [JsonProperty("url")]
+    public string? Url { get; set; }
 }

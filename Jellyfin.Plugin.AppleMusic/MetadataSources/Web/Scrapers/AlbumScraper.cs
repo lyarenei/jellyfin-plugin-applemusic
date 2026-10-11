@@ -2,15 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text.RegularExpressions;
-using AngleSharp;
 using AngleSharp.Dom;
-using AngleSharp.Html.Dom;
 using AngleSharp.XPath;
 using Jellyfin.Plugin.AppleMusic.Dtos;
+using Jellyfin.Plugin.AppleMusic.MetadataSources.Web.Schema;
 using Jellyfin.Plugin.AppleMusic.Utils;
-using MediaBrowser.Controller.Entities.Audio;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using MusicAlbum = MediaBrowser.Controller.Entities.Audio.MusicAlbum;
 
 namespace Jellyfin.Plugin.AppleMusic.MetadataSources.Web.Scrapers;
 
@@ -19,18 +18,9 @@ namespace Jellyfin.Plugin.AppleMusic.MetadataSources.Web.Scrapers;
 /// </summary>
 public class AlbumScraper : IScraper<MusicAlbum>
 {
-    private const string ImageXPath = "//div[@data-testid='container-detail-header']" +
-                                      "//div[@data-testid='artwork-component']" +
-                                      "//source[@type='image/jpeg']/@srcset";
-
     private const string AlbumDetailXPath = "//div[@data-testid='container-detail-header']";
-    private const string AlbumNameXPath = "//h1[@data-testid='non-editable-product-title']";
-    private const string AlbumArtistLinkXPath = "//a[@data-testid='click-action']";
     private const string AlbumArtistSubtitleXPath = "//div[@data-testid='product-subtitles']";
     private const string AboutXPath = "//p[@data-testid='truncate-text']";
-    private const string AlbumDescriptionXPath = "//p[@data-testid='tracklist-footer-description']";
-
-    private const string AlbumDescRegex = @"(?'date'\w+ \d+, \d+)\W(?'runtime'\d+)\W+(?'runtimeUnit'\w+)\W+(?'productionYear'\d+)\W+(?'producer'\w+)";
 
     private readonly ILogger<AlbumScraper> _logger;
 
@@ -41,65 +31,63 @@ public class AlbumScraper : IScraper<MusicAlbum>
     public AlbumScraper(ILogger<AlbumScraper> logger)
     {
         _logger = logger;
-        AngleSharp.Configuration.Default.WithDefaultLoader();
     }
 
     /// <inheritdoc />
     public IITunesItem? Scrape(IDocument document)
     {
-        var albumName = document.Body.SelectSingleNode(AlbumDetailXPath + AlbumNameXPath)?.TextContent;
-        if (albumName is null)
+        var script = document.GetElementById("schema:music-album");
+        if (script is null)
         {
-            _logger.LogTrace("Album name not found");
+            _logger.LogDebug("No schema.org album data found");
             return null;
         }
 
-        _logger.LogTrace("Found album name");
-
-        var imageUrl = GetImageUrl(document.Body);
-        if (imageUrl is null)
+        var albumData = ParseAlbumData(script.TextContent);
+        if (string.IsNullOrEmpty(albumData?.Name))
         {
-            _logger.LogTrace("No album image found");
-        }
-        else
-        {
-            _logger.LogTrace("Found album image");
+            _logger.LogDebug("Album name not available");
+            return null;
         }
 
         _logger.LogDebug("Processing optional album details");
 
-        var artists = ParseAlbumArtists(document);
+        var artists = ParseAlbumArtists(albumData.ByArtist, document);
+
+        // albumData.Description contains generic text => read from HTML DOM
         var aboutText = document.Body.SelectSingleNode(AlbumDetailXPath + AboutXPath)?.TextContent;
-        var descString = document.Body.SelectSingleNode(AlbumDescriptionXPath)?.TextContent;
-        var parsedDesc = ParseDescription(descString);
 
         _logger.LogDebug("Album scraping completed");
 
         return new ITunesAlbum
         {
-            Name = albumName.Trim(),
+            Name = albumData.Name.Trim(),
             Artists = artists,
-            ImageUrl = imageUrl,
-            ReleaseDate = parsedDesc?.Date,
+            ImageUrl = albumData.Image is null ? null : PluginUtils.UpdateImageSize(albumData.Image, "1400x1400cc"),
+            ReleaseDate = ParseReleaseDate(albumData.DatePublished),
             About = aboutText,
             Url = document.Url,
             Id = PluginUtils.GetIdFromUrl(document.Url),
         };
     }
 
-    private List<ITunesArtist> ParseAlbumArtists(IDocument document)
+    private List<ITunesArtist> ParseAlbumArtists(IReadOnlyList<MusicGroup>? albumArtists, IDocument document)
     {
-        // Artists with links => we can scrape them
-        var artistLinkNodes = document.Body.SelectNodes(AlbumDetailXPath + AlbumArtistLinkXPath);
-        if (artistLinkNodes.Count > 0)
+        // Artists from albumData can be scraped (have URL)
+        var artists = (albumArtists ?? [])
+            .Where(artist => !string.IsNullOrEmpty(artist.Name))
+            .Select(artist => new ITunesArtist { Name = artist.Name!.Trim(), Url = artist.Url ?? string.Empty })
+            .ToList();
+
+        if (artists.Count > 0)
         {
-            _logger.LogDebug("Found {Count} artist nodes in album", artistLinkNodes.Count);
-            return ParseArtists(artistLinkNodes);
+            _logger.LogDebug("Parsed {Count} artists from album", artists.Count);
+            return artists;
         }
 
-        _logger.LogTrace("No album artists with links found, trying to parse artists from subtitle");
+        _logger.LogDebug("No scrape-able artists are available, trying to parse artists from subtitle");
 
-        // Artists without links => we can only get their names
+        // Artists may still be outside albumData (compilations, etc...), these have no URLs
         var artistSubtitleNodes = document.Body.SelectNodes(AlbumDetailXPath + AlbumArtistSubtitleXPath);
         if (artistSubtitleNodes.Count > 0)
         {
@@ -118,48 +106,42 @@ public class AlbumScraper : IScraper<MusicAlbum>
         {
             if (string.IsNullOrEmpty(node.TextContent))
             {
-                _logger.LogTrace("Artist name is empty, skipping");
+                _logger.LogDebug("Artist name is empty, skipping");
                 continue;
             }
 
-            var newArtist = new ITunesArtist
-            {
-                Name = node.TextContent.Trim(),
-            };
-
-            if (node is IHtmlAnchorElement anchor)
-            {
-                _logger.LogTrace("Adding URL to artist: {Url}", anchor.Href);
-                newArtist.Url = anchor.Href;
-            }
-
-            artists.Add(newArtist);
+            artists.Add(new ITunesArtist { Name = node.TextContent.Trim(), });
         }
 
         return artists;
     }
 
-    private (DateTime Date, int ProductionYear)? ParseDescription(string? details)
+    private Schema.MusicAlbum? ParseAlbumData(string json)
     {
-        if (details is null)
+        try
+        {
+            return JsonConvert.DeserializeObject<Schema.MusicAlbum>(json);
+        }
+        catch (JsonException ex)
+        {
+            _logger.LogDebug(ex, "Failed to parse schema.org (MusicAlbum) data");
+            return null;
+        }
+    }
+
+    private DateTime? ParseReleaseDate(string? date)
+    {
+        if (date is null)
         {
             return null;
         }
 
-        var match = Regex.Match(details, AlbumDescRegex, RegexOptions.Multiline);
-        if (!match.Groups["date"].Success || !match.Groups["productionYear"].Success)
+        if (DateTime.TryParseExact(date, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var releaseDate))
         {
-            _logger.LogDebug("Failed to parse album details {Details}", details);
+            return releaseDate;
         }
 
-        var date = DateTime.ParseExact(match.Groups["date"].Value, "MMMM d, yyyy", DateTimeFormatInfo.InvariantInfo);
-        var prodYear = int.Parse(match.Groups["productionYear"].Value, NumberStyles.Any, NumberFormatInfo.InvariantInfo);
-        return (date, prodYear);
-    }
-
-    private static string? GetImageUrl(IHtmlElement? body)
-    {
-        var content = body?.SelectSingleNode(ImageXPath)?.TextContent;
-        return content?.Split(' ').FirstOrDefault();
+        _logger.LogDebug("Failed to parse album release date {Date}", date);
+        return null;
     }
 }
