@@ -115,10 +115,10 @@ public class ArtistImageProvider : IRemoteImageProvider
         {
             yield return new RemoteImageInfo
             {
-                Height = artist.BackdropHeight,
-                Width = artist.BackdropWidth,
+                Height = 1080,
+                Width = 1920,
                 ProviderName = Name,
-                ThumbnailUrl = artist.BackdropImageUrl.Replace($"/{artist.BackdropWidth}x{artist.BackdropHeight}sr.", "/400x200sr.", StringComparison.Ordinal),
+                ThumbnailUrl = PluginUtils.UpdateImageSize(artist.BackdropImageUrl, "400x225sr"),
                 Type = ImageType.Backdrop,
                 Url = artist.BackdropImageUrl,
             };

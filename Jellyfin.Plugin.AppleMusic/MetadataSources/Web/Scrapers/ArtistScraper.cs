@@ -17,8 +17,6 @@ namespace Jellyfin.Plugin.AppleMusic.MetadataSources.Web.Scrapers;
 /// </summary>
 public partial class ArtistScraper : IScraper<MusicArtist>
 {
-    private const int MaxBackdropWidth = 3840;
-
     private static readonly string[] _backdropArtworkKeys = ["wideArtwork", "colorBackdropArtwork", "artwork"];
 
     private readonly ILogger<ArtistScraper> _logger;
@@ -84,7 +82,7 @@ public partial class ArtistScraper : IScraper<MusicArtist>
     /// <summary>
     /// Set the backdrop from the wide artwork of the page header, found in the page's serialized data.
     /// Some artists have a dedicated wide image, others only a square photo; either way Apple crops it
-    /// to the requested 2:1 size.
+    /// to the requested size.
     /// </summary>
     private void SetBackdrop(ITunesArtist artist, IDocument document)
     {
@@ -104,10 +102,7 @@ public partial class ArtistScraper : IScraper<MusicArtist>
                 return;
             }
 
-            var width = Math.Min(MaxBackdropWidth, artwork.Width);
-            artist.BackdropImageUrl = PluginUtils.ResolveArtworkUrl(artwork.Url, width, width / 2, "jpg", "sr");
-            artist.BackdropWidth = width;
-            artist.BackdropHeight = width / 2;
+            artist.BackdropImageUrl = PluginUtils.UpdateImageSize(artwork.Url, "1920x1080sr");
         }
         catch (System.Text.Json.JsonException ex)
         {
