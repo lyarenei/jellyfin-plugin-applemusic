@@ -42,7 +42,7 @@ public partial class ArtistScraper : IScraper<MusicArtist>
         var artist = ParseArtist(script.TextContent, document.Url);
         if (artist is not null)
         {
-            SetBackdrop(artist, document);
+            artist.BackdropImageUrl = GetBackdropUrl(artist, document);
             _logger.LogDebug("Artist scraping completed");
         }
 
@@ -79,18 +79,18 @@ public partial class ArtistScraper : IScraper<MusicArtist>
     }
 
     /// <summary>
-    /// Set the backdrop from the wide artwork of the page header, falling back to the artist photo.
+    /// Get the backdrop URL from the wide artwork of the page header, falling back to the artist photo.
     /// </summary>
-    private void SetBackdrop(ITunesArtist artist, IDocument document)
+    private string? GetBackdropUrl(ITunesArtist artist, IDocument document)
     {
         var imageUrl = GetWideArtworkUrl(document, artist.Id) ?? GetArtistPhotoUrl(artist);
         if (imageUrl is null)
         {
             _logger.LogDebug("No suitable artist backdrop image found");
-            return;
+            return null;
         }
 
-        artist.BackdropImageUrl = PluginUtils.UpdateImageSize(imageUrl, "1920x1080sr");
+        return PluginUtils.UpdateImageSize(imageUrl, "1920x1080sr");
     }
 
     /// <summary>
