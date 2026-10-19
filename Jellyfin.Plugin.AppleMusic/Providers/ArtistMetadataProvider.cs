@@ -116,6 +116,7 @@ public class ArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist, Artis
 
         if (artistData.BackdropImageUrl is not null)
         {
+            _logger.LogTrace("Adding backdrop image for artist {ArtistName}", artistData.Name);
             metadataResult.RemoteImages.Add((artistData.BackdropImageUrl, ImageType.Backdrop));
         }
 
