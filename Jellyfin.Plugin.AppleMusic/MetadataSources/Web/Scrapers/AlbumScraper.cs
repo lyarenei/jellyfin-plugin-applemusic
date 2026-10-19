@@ -63,7 +63,7 @@ public class AlbumScraper : IScraper<MusicAlbum>
         {
             Name = albumData.Name.Trim(),
             Artists = artists,
-            ImageUrl = albumData.Image is null ? null : PluginUtils.UpdateImageSize(albumData.Image, "1400x1400cc"),
+            ImageUrl = albumData.Image is null ? null : PluginUtils.UpdateImageSize(albumData.Image, ImageSize.Primary),
             ReleaseDate = ParseReleaseDate(albumData.DatePublished),
             About = aboutText,
             Url = document.Url,

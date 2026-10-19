@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using AngleSharp.Dom;
@@ -7,6 +9,7 @@ using Jellyfin.Plugin.AppleMusic.Utils;
 using MediaBrowser.Controller.Entities.Audio;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Jellyfin.Plugin.AppleMusic.MetadataSources.Web.Scrapers;
 
@@ -39,6 +42,7 @@ public partial class ArtistScraper : IScraper<MusicArtist>
         var artist = ParseArtist(script.TextContent, document.Url);
         if (artist is not null)
         {
+            artist.BackdropImageUrl = GetBackdropUrl(artist, document);
             _logger.LogDebug("Artist scraping completed");
         }
 
@@ -67,11 +71,66 @@ public partial class ArtistScraper : IScraper<MusicArtist>
         return new ITunesArtist
         {
             Name = artistData.Name.Trim(),
-            ImageUrl = artistData.Image is null ? null : PluginUtils.UpdateImageSize(artistData.Image, "1400x1400cc"),
+            ImageUrl = artistData.Image is null ? null : PluginUtils.UpdateImageSize(artistData.Image, ImageSize.Primary),
             About = artistData.Description is null ? null : SanitizeDescription(artistData.Description),
             Url = url,
             Id = PluginUtils.GetIdFromUrl(url),
         };
+    }
+
+    /// <summary>
+    /// Get the backdrop URL from the wide artwork of the page header, falling back to the artist photo.
+    /// </summary>
+    private string? GetBackdropUrl(ITunesArtist artist, IDocument document)
+    {
+        var imageUrl = GetWideArtworkUrl(document, artist.Id) ?? GetArtistPhotoUrl(artist);
+        if (imageUrl is null)
+        {
+            _logger.LogDebug("No suitable artist backdrop image found");
+            return null;
+        }
+
+        return PluginUtils.UpdateImageSize(imageUrl, ImageSize.Backdrop);
+    }
+
+    /// <summary>
+    /// Get the artist photo URL, if the artist has one.
+    /// </summary>
+    private static string? GetArtistPhotoUrl(ITunesArtist artist)
+    {
+        var imageUrl = artist.ImageUrl;
+        if (imageUrl is null)
+        {
+            return null;
+        }
+
+        return imageUrl.Contains("/AMCArtistImages", StringComparison.Ordinal) ? imageUrl : null;
+    }
+
+    /// <summary>
+    /// Get the wide artwork URL of the artist (not e.g. a similar artist), found in the page's serialized data.
+    /// </summary>
+    private string? GetWideArtworkUrl(IDocument document, string artistId)
+    {
+        var script = document.GetElementById("serialized-server-data");
+        if (script is null)
+        {
+            _logger.LogDebug("Serialized page data not found");
+            return null;
+        }
+
+        try
+        {
+            return JToken.Parse(script.TextContent)
+                .SelectTokens($"$..[?(@.contentDescriptor.identifiers.storeAdamID == '{artistId}')].wideArtwork.dictionary.url")
+                .FirstOrDefault()?
+                .Value<string>();
+        }
+        catch (JsonException ex)
+        {
+            _logger.LogDebug(ex, "Failed to parse serialized page data");
+            return null;
+        }
     }
 
     private static string SanitizeDescription(string description)

@@ -114,6 +114,12 @@ public class ArtistMetadataProvider : IRemoteMetadataProvider<MusicArtist, Artis
             metadataResult.RemoteImages.Add((artistData.ImageUrl, ImageType.Primary));
         }
 
+        if (artistData.BackdropImageUrl is not null)
+        {
+            _logger.LogTrace("Adding backdrop image for artist {ArtistName}", artistData.Name);
+            metadataResult.RemoteImages.Add((artistData.BackdropImageUrl, ImageType.Backdrop));
+        }
+
         _logger.LogDebug("Setting provider ID {Id} for artist {ArtistName}", artistData.Id, artistData.Name);
         metadataResult.Item.SetProviderId(nameof(ProviderKey.ITunesArtist), artistData.Id);
         return metadataResult;
