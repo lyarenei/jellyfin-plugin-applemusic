@@ -91,9 +91,13 @@ public class ArtistImageProvider : IRemoteImageProvider
     {
         _logger.LogDebug("Looking up artist by ID {Id}", appleMusicId);
         var artistData = await _metadataSource.GetArtistAsync(appleMusicId, cancellationToken);
-        var images = artistData is null ? new List<RemoteImageInfo>() : GetRemoteImages(artistData).ToList();
-        _logger.LogDebug("Found {Count} images for artist ID {Id}", images.Count, appleMusicId);
-        return images;
+        if (artistData is null)
+        {
+            _logger.LogDebug("No artist found for ID {Id}", appleMusicId);
+            return new List<RemoteImageInfo>();
+        }
+
+        return GetRemoteImages(artistData).ToList();
     }
 
     private IEnumerable<RemoteImageInfo> GetRemoteImages(ITunesArtist artist)
