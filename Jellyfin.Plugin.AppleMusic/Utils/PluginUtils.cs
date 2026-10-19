@@ -24,13 +24,12 @@ public static class PluginUtils
     public static string AppleMusicApiBaseUrl => "https://api.music.apple.com/v1";
 
     /// <summary>
-    /// Update image resolution (width)x(height)(opts) in image URL.
-    /// For example 1440x1440cc is an image with 1440x1440 resolution with ?center crop? from the source image.
+    /// Update image size in image URL.
     /// </summary>
     /// <param name="url">URL to work with.</param>
-    /// <param name="newImageRes">New image resolution.</param>
+    /// <param name="size">New image size.</param>
     /// <returns>Updated URL.</returns>
-    public static string UpdateImageSize(string url, string newImageRes)
+    public static string UpdateImageSize(string url, ImageSize size)
     {
         var idx = url.LastIndexOf('/');
         if (idx < 0)
@@ -38,7 +37,7 @@ public static class PluginUtils
             return url;
         }
 
-        return string.Concat(url.AsSpan(0, idx + 1), newImageRes, ".jpg");
+        return string.Concat(url.AsSpan(0, idx + 1), size.ToString(), ".jpg");
     }
 
     /// <summary>

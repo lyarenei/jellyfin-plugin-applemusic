@@ -86,12 +86,12 @@ public class AlbumImageProvider : IRemoteImageProvider
             .Where(sr => sr is ITunesAlbum amAlbum && !string.IsNullOrEmpty(amAlbum.ImageUrl))
             .Select(amAlbum => new RemoteImageInfo
             {
-                Height = 1400,
-                Width = 1400,
+                Height = ImageSize.Primary.Height,
+                Width = ImageSize.Primary.Width,
                 ProviderName = Name,
-                ThumbnailUrl = PluginUtils.UpdateImageSize(amAlbum.ImageUrl!, "100x100cc"),
+                ThumbnailUrl = PluginUtils.UpdateImageSize(amAlbum.ImageUrl!, ImageSize.Thumbnail),
                 Type = ImageType.Primary,
-                Url = PluginUtils.UpdateImageSize(amAlbum.ImageUrl!, "1400x1400cc"),
+                Url = PluginUtils.UpdateImageSize(amAlbum.ImageUrl!, ImageSize.Primary),
             });
     }
 
@@ -112,12 +112,12 @@ public class AlbumImageProvider : IRemoteImageProvider
             [
                 new RemoteImageInfo
                 {
-                    Height = 1400,
-                    Width = 1400,
+                    Height = ImageSize.Primary.Height,
+                    Width = ImageSize.Primary.Width,
                     ProviderName = Name,
-                    ThumbnailUrl = PluginUtils.UpdateImageSize(albumData.ImageUrl, "100x100cc"),
+                    ThumbnailUrl = PluginUtils.UpdateImageSize(albumData.ImageUrl, ImageSize.Thumbnail),
                     Type = ImageType.Primary,
-                    Url = PluginUtils.UpdateImageSize(albumData.ImageUrl, "1400x1400cc"),
+                    Url = PluginUtils.UpdateImageSize(albumData.ImageUrl, ImageSize.Primary),
                 },
             ];
         }

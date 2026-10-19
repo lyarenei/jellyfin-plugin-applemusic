@@ -71,7 +71,7 @@ public partial class ArtistScraper : IScraper<MusicArtist>
         return new ITunesArtist
         {
             Name = artistData.Name.Trim(),
-            ImageUrl = artistData.Image is null ? null : PluginUtils.UpdateImageSize(artistData.Image, "1400x1400cc"),
+            ImageUrl = artistData.Image is null ? null : PluginUtils.UpdateImageSize(artistData.Image, ImageSize.Primary),
             About = artistData.Description is null ? null : SanitizeDescription(artistData.Description),
             Url = url,
             Id = PluginUtils.GetIdFromUrl(url),
@@ -90,7 +90,7 @@ public partial class ArtistScraper : IScraper<MusicArtist>
             return null;
         }
 
-        return PluginUtils.UpdateImageSize(imageUrl, "1920x1080sr");
+        return PluginUtils.UpdateImageSize(imageUrl, ImageSize.Backdrop);
     }
 
     /// <summary>

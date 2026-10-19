@@ -106,12 +106,12 @@ public class ArtistImageProvider : IRemoteImageProvider
         {
             yield return new RemoteImageInfo
             {
-                Height = 1400,
-                Width = 1400,
+                Height = ImageSize.Primary.Height,
+                Width = ImageSize.Primary.Width,
                 ProviderName = Name,
-                ThumbnailUrl = PluginUtils.UpdateImageSize(artist.ImageUrl, "100x100cc"),
+                ThumbnailUrl = PluginUtils.UpdateImageSize(artist.ImageUrl, ImageSize.Thumbnail),
                 Type = ImageType.Primary,
-                Url = PluginUtils.UpdateImageSize(artist.ImageUrl, "1400x1400cc"),
+                Url = PluginUtils.UpdateImageSize(artist.ImageUrl, ImageSize.Primary),
             };
         }
 
@@ -119,10 +119,10 @@ public class ArtistImageProvider : IRemoteImageProvider
         {
             yield return new RemoteImageInfo
             {
-                Height = 1080,
-                Width = 1920,
+                Height = ImageSize.Backdrop.Height,
+                Width = ImageSize.Backdrop.Width,
                 ProviderName = Name,
-                ThumbnailUrl = PluginUtils.UpdateImageSize(artist.BackdropImageUrl, "400x225sr"),
+                ThumbnailUrl = PluginUtils.UpdateImageSize(artist.BackdropImageUrl, ImageSize.BackdropThumbnail),
                 Type = ImageType.Backdrop,
                 Url = artist.BackdropImageUrl,
             };
