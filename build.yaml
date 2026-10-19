@@ -15,5 +15,4 @@ artifacts:
 - "Jellyfin.Plugin.AppleMusic.dll"
 changelog: >
   This version contains the following changes:
-    - Artist metadata scraping from schema.org instead of HTML elements
-    - Album metadata scraping from schema.org in addition to HTML elements
+    - Support for providing artist backdrop images
